@@ -13,22 +13,28 @@ import logic.exception.IllegalMoveException;
 public class Game {
 
     private final Set<Integer> startValues;
+    private final Set<Integer> continueTurnValues;
     private final List<Team> teams;
     private final Board board;
     private final Die die;
+    private int turnIndex;
+    private Turn currentTurn;
 
     public Game() {
-        this(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_NUMBER_OF_TEAMS, Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH);
+        this(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, Constants.DEFAULT_NUMBER_OF_TEAMS,
+                Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH);
     }
 
-    public Game(Set<Integer> startValues, int numberOfTeams, int numberOfPieces, int sideLength) {
+    public Game(Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfTeams, int numberOfPieces, int sideLength) {
         teams = new ArrayList<>(numberOfTeams);
         for (int i = 0; i < numberOfTeams; i++) {
             teams.add(new Team(i, numberOfPieces));
         }
         this.startValues = startValues;
+        this.continueTurnValues = continueTurnValues;
         this.board = new Board(numberOfTeams, numberOfPieces, sideLength);
         this.die = new Die();
+        this.turnIndex = -1;
     }
 
     public Board getBoard() {
@@ -51,11 +57,76 @@ public class Game {
         return teams.size();
     }
 
+    public GameStart startGame() {
+        if (this.turnIndex != -1) {
+            throw new RuntimeException("Game::startGame can be called only once!");
+        }
+        GameStart gameStart = new GameStart(teams, die);
+        this.turnIndex = gameStart.getStartingTeamIndex();
+        return gameStart;
+    }
+
+    public Turn getNextTurn() {
+        if (turnIndex == -1) {
+            throw new RuntimeException("Game::startGame must be called before the first call to Game::getNextTurn!");
+        }
+        if (currentTurn != null) {
+            throw new RuntimeException("No move selected from last turn!");
+        }
+        Team team = getTeamInTurn();
+        int roll = die.roll();
+        List<Move> moves = new ArrayList<>();
+        for (Piece piece : team.getPieces()) {
+            Move move = new Move(this, piece, roll);
+            if (move.isValidMove()) {
+                moves.add(move);
+            }
+        }
+        this.currentTurn = new Turn(roll, moves);
+        return currentTurn;
+    }
+
+    public void executeMove(int i) {
+        if (i < 0 || i >= currentTurn.size()) {
+            throw new RuntimeException("Move index out of bounds!");
+        }
+        if (currentTurn == null) {
+            throw new RuntimeException("No moves to select from! Game::getNextTurn must be called before calling Game::executeMove!");
+        }
+        try {
+            currentTurn.getMove(i).execute();
+        } catch (IllegalMoveException e) {
+            throw new RuntimeException("Could not execute move!", e);
+        }
+        nextTurn();
+    }
+
+    public void executeNoMove() {
+        if (!currentTurn.getMoves().isEmpty()) {
+            throw new RuntimeException("Must select a move if possible!");
+        }
+        nextTurn();
+    }
+
+    private void nextTurn() {
+        if (!continueTurnValues.contains(currentTurn.getDieRoll())) {
+            if (++turnIndex >= teams.size()) {
+                turnIndex = 0;
+            }
+        }
+        currentTurn = null;
+    }
+
+    public Team getTeamInTurn() {
+        return teams.get(turnIndex);
+    }
+
     @Override
     public String toString() {
         // <editor-fold defaultstate="collapsed" desc="Complicated code to get the current game status as a string.">
         StringBuilder s = new StringBuilder();
 
+        // home squares
         for (int i = 0; i < getNumberOfTeams(); i++) {
             int pieces = getTeam(i).getPieces().size();
             for (int j = 0; j < pieces; j++) {
@@ -65,11 +136,13 @@ public class Game {
                     s.append(".");
                 }
             }
-            s.append(" ");
+            for (int j = 0; j < board.getSideLength() - pieces - 1; j++) {
+                s.append(" ");
+            }
         }
-
         s.append("\n");
 
+        // main board
         for (int i = 0; i < board.getSquares().size(); ++i) {
             Square square = board.getSquare(i);
             if (square.isPiecePresent()) {
@@ -82,35 +155,29 @@ public class Game {
                 }
             }
         }
+        s.append("\n");
+
+        // goal squares
+        for (int i = 0; i < getNumberOfTeams(); i++) {
+            int pieces = getTeam(i).getPieces().size();
+            Square square = board.getGoalSquare(i);
+            for (int j = 0; j < pieces; j++) {
+                if (square.isPiecePresent()) {
+                    s.append(square.getPiece().getTeamId());
+                } else {
+                    s.append(".");
+                }
+                square = square.getNext();
+            }
+            for (int j = 0; j < board.getSideLength() - pieces - 1; j++) {
+                s.append(" ");
+            }
+        }
 
         return s.toString();
         // </editor-fold>
     }
 
     public static void main(String[] args) throws IllegalMoveException {
-        Game game = new Game();
-        System.out.println(game);
-        System.out.println("-----------------------");
-        Piece p0 = game.getTeam(0).getPiece(1);
-        Piece p1 = game.getTeam(1).getPiece(1);
-        for (int i = 0; i < 100; i++) {
-            int roll = new Random().nextInt(6) + 1;
-            System.out.println("Player 0 rolled " + roll + ".");
-            Move move = new Move(game, p0, roll);
-            if (move.isValidMove()) {
-                move.execute();
-            }
-            System.out.println(game);
-            System.out.println("-----------------------");
-
-            roll = new Random().nextInt(6) + 1;
-            System.out.println("Player 1 rolled " + roll + ".");
-            move = new Move(game, p1, roll);
-            if (move.isValidMove()) {
-                move.execute();
-            }
-            System.out.println(game);
-            System.out.println("-----------------------");
-        }
     }
 }

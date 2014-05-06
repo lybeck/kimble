@@ -39,7 +39,7 @@ public class Move {
         this.illegalMoveException = exc;
     }
 
-    public void execute() throws IllegalMoveException {
+    void execute() throws IllegalMoveException {
         if (illegalMoveException != null) {
             throw illegalMoveException;
         }

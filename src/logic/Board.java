@@ -51,6 +51,7 @@ public class Board {
             prev = square;
             for (int j = 0; j < numberOfPieces - 1; j++) {
                 square = new Square();
+                goalSquares.add(square);
                 square.setPrev(prev);
                 prev.setNext(square);
                 prev = square;
@@ -90,5 +91,9 @@ public class Board {
 
     private int getGoalSquareIndex(int teamId) {
         return teamId * numberOfPieces;
+    }
+
+    public int getSideLength() {
+        return sideLength;
     }
 }
