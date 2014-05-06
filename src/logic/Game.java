@@ -1,8 +1,9 @@
 package logic;
 
+import logic.board.Board;
+import logic.board.Square;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import logic.exception.IllegalMoveException;
 

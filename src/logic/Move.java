@@ -1,5 +1,6 @@
 package logic;
 
+import logic.board.Square;
 import logic.exception.IllegalMoveException;
 
 /**
