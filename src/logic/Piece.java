@@ -6,22 +6,26 @@ package logic;
  */
 public class Piece {
 
-    private final int team;
+    private final int teamId;
     private Square position;
 
-    public Piece(int team) {
-        this.team = team;
+    public Piece(int teamId) {
+        this.teamId = teamId;
     }
 
-    public int getTeam() {
-        return team;
+    public boolean isHome() {
+        return this.position == null;
+    }
+
+    public void setPosition(Square position) {
+        this.position = position;
     }
 
     public Square getPosition() {
         return position;
     }
 
-    public void setPosition(Square position) {
-        this.position = position;
+    public int getTeamId() {
+        return teamId;
     }
 }

@@ -20,26 +20,31 @@ public class BoardTest {
     @After
     public void tearDown() {
     }
-
+    
     @Test
-    public void testRightNumberOfSquares() {
-        Square square1 = new Board().getSquares();
-        Square s = square1;
-        int count = 1;
-        int expected = Board.NUMBER_OF_TEAMS * (Board.SIDE_LENGTH - 1);
-        while ((s = s.getNext()) != square1 && count++ < expected);
-        assertEquals(expected, count);
+    public void testNothing() {
+        fail("This is a placeholder test.");
     }
 
-    @Test
-    public void testRightNumberOfGoalSquares() {
-        int expected = Board.NUMBER_OF_PIECES;
-        Board board = new Board();
-        for (int i = 0; i < Board.NUMBER_OF_TEAMS; i++) {
-            Square s = board.getGoalSquare(i);
-            int count = 1;
-            while ((s = s.getNext()) != null && count++ < expected);
-            assertEquals(expected, count);
-        }
-    }
+//    @Test
+//    public void testRightNumberOfSquares() {
+//        Square square1 = new Board().getSquares();
+//        Square s = square1;
+//        int count = 1;
+//        int expected = Board.DEFAULT_NUMBER_OF_TEAMS * (Board.DEFAULT_SIDE_LENGTH - 1);
+//        while ((s = s.getNext()) != square1 && count++ < expected);
+//        assertEquals(expected, count);
+//    }
+//
+//    @Test
+//    public void testRightNumberOfGoalSquares() {
+//        int expected = Board.DEFAULT_NUMBER_OF_PIECES;
+//        Board board = new Board();
+//        for (int i = 0; i < Board.DEFAULT_NUMBER_OF_TEAMS; i++) {
+//            Square s = board.getGoalSquare(i);
+//            int count = 1;
+//            while ((s = s.getNext()) != null && count++ < expected);
+//            assertEquals(expected, count);
+//        }
+//    }
 }

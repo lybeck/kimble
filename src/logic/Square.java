@@ -8,12 +8,7 @@ public class Square {
 
     private Square next;
     private Square prev;
-    private int teamSpawn;
     private Piece piece;
-
-    public Square() {
-        this.teamSpawn = -1;
-    }
 
     public Square getNext() {
         return next;
@@ -29,18 +24,6 @@ public class Square {
 
     public void setPrev(Square prev) {
         this.prev = prev;
-    }
-
-    public int getTeamSpawn() {
-        return teamSpawn;
-    }
-
-    public void setTeamSpawn(int teamSpawn) {
-        this.teamSpawn = teamSpawn;
-    }
-
-    public boolean isSpawnSquare() {
-        return teamSpawn > -1;
     }
 
     public Piece getPiece() {
