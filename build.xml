@@ -70,4 +70,10 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <mkdir dir="${dist.dir}/lib/natives/" />
+        <copy todir="${dist.dir}/lib/natives/">
+            <fileset dir="lib/natives/"/>
+        </copy>
+    </target>
 </project>
