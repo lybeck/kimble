@@ -3,7 +3,6 @@ package kimble;
 import graphic.BoardGraphic;
 import graphic.Camera;
 import graphic.Screen;
-import logic.Game;
 import org.lwjgl.util.vector.Vector3f;
 import logic.Constants;
 import org.lwjgl.input.Keyboard;
@@ -31,7 +30,7 @@ public class Kimble {
 
         Camera camera = new Camera(70, new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 0.3f, 1000f);
 
-        Game game = new Game(Constants.DEFAULT_START_VALUES, 4, 4, 8);
+        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 4, 8);
         BoardGraphic board = new BoardGraphic(game, 10, 5);
 
 //        Mouse.setGrabbed(true);

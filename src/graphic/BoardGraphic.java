@@ -7,9 +7,9 @@ package graphic;
 
 import java.util.ArrayList;
 import java.util.List;
-import logic.Board;
 import logic.Game;
-import logic.Square;
+import logic.board.Board;
+import logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
 
 /**

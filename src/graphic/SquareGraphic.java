@@ -5,7 +5,7 @@
  */
 package graphic;
 
-import logic.Square;
+import logic.board.Square;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor3f;
