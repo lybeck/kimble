@@ -1,9 +1,16 @@
 package kimble;
 
+import graphic.board.BoardGraphic;
+import graphic.Screen;
+import graphic.Camera;
+import graphic.Shader;
+import org.lwjgl.util.vector.Vector3f;
+import logic.Constants;
 import java.util.Random;
 import logic.Game;
 import logic.GameStart;
 import logic.Turn;
+import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -11,11 +18,51 @@ import logic.Turn;
  */
 public class Kimble {
 
+    private BoardGraphic board;
+    private Camera camera;
+    private Shader shader;
+
+    public Kimble() {
+
+        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 70f, 0.3f, 1000f);
+
+        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 4, 8);
+        board = new BoardGraphic(game.getBoard(), game.getNumberOfTeams(), 10, 5);
+        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+
+        Mouse.setGrabbed(true);
+        while (!Screen.isCloseRequested()) {
+            Screen.clear();
+
+            float dt = 0.16f;
+
+            camera.update(dt);
+            board.update(dt);
+
+            shader.bind();
+            board.render(shader);
+            shader.unbind();
+
+            Screen.update(60);
+        }
+
+        shader.cleanUp();
+        board.cleanUp();
+        Screen.cleanUp();
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        runExample();
+
+        Screen.setupNativesLWJGL();
+        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
+        Screen.setupOpenGL();
+
+        new Kimble();
+
+//        runExample();
     }
 
     static void runExample() {
