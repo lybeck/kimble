@@ -1,4 +1,4 @@
-package logic;
+package logic.board;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Board {
         Square prev = null;
         for (int i = 0; i < numberOfTeams; i++) {
             for (int j = 0; j < sideLength - 1; j++) {
-                square = new Square();
+                square = new RegularSquare();
                 squares.add(square);
                 if (prev != null) {
                     square.setPrev(prev);
@@ -45,12 +45,13 @@ public class Board {
         prev.setNext(firstSquare);
 
         for (int i = 0; i < numberOfTeams; i++) {
-            square = new Square();
+            square = new GoalSquare();
             goalSquares.add(square);
             square.setPrev(getStartSquare(i).getPrev());
             prev = square;
             for (int j = 0; j < numberOfPieces - 1; j++) {
-                square = new Square();
+                square = new GoalSquare();
+                goalSquares.add(square);
                 square.setPrev(prev);
                 prev.setNext(square);
                 prev = square;
@@ -67,7 +68,7 @@ public class Board {
         return squares.get(i);
     }
 
-    boolean isStartSquare(int squareIndex) {
+    public boolean isStartSquare(int squareIndex) {
         for (int i = 0; i < numberOfTeams; i++) {
             if (getStartSquareIndex(i) == squareIndex) {
                 return true;
@@ -90,5 +91,9 @@ public class Board {
 
     private int getGoalSquareIndex(int teamId) {
         return teamId * numberOfPieces;
+    }
+
+    public int getSideLength() {
+        return sideLength;
     }
 }

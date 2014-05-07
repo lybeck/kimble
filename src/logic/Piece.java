@@ -1,5 +1,7 @@
 package logic;
 
+import logic.board.Square;
+
 /**
  *
  * @author Lasse Lybeck
