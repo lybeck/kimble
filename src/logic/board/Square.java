@@ -1,10 +1,12 @@
-package logic;
+package logic.board;
+
+import logic.Piece;
 
 /**
  *
  * @author Lasse Lybeck
  */
-public class Square {
+public abstract class Square {
 
     private Square next;
     private Square prev;
@@ -37,4 +39,8 @@ public class Square {
     public boolean isPiecePresent() {
         return this.piece != null;
     }
+
+    public abstract boolean isRegularSquare();
+
+    public abstract boolean isGoalSquare();
 }

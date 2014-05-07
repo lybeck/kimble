@@ -1,5 +1,6 @@
 package logic;
 
+import logic.board.Square;
 import logic.exception.IllegalMoveException;
 
 /**
@@ -39,7 +40,7 @@ public class Move {
         this.illegalMoveException = exc;
     }
 
-    public void execute() throws IllegalMoveException {
+    void execute() throws IllegalMoveException {
         if (illegalMoveException != null) {
             throw illegalMoveException;
         }

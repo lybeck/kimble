@@ -6,12 +6,12 @@ import java.util.List;
  *
  * @author Lasse Lybeck
  */
-public class ValidMoves {
+public class Turn {
 
     private final int dieRoll;
     private final List<Move> moves;
 
-    public ValidMoves(int dieRoll, List<Move> moves) {
+    public Turn(int dieRoll, List<Move> moves) {
         this.dieRoll = dieRoll;
         this.moves = moves;
     }
@@ -22,6 +22,10 @@ public class ValidMoves {
 
     public int size() {
         return moves.size();
+    }
+
+    public List<Move> getMoves() {
+        return moves;
     }
 
     public Move getMove(int i) {
