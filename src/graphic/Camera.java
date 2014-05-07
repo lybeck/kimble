@@ -131,6 +131,9 @@ public class Camera {
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             move(0, -moveSpeed * dt, 0);
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+            Mouse.setGrabbed(false);
+        }
     }
 
     public void move(float dx, float dy, float dz) {

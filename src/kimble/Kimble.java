@@ -32,7 +32,8 @@ public class Kimble {
 
         int numberOfTeams = 4;
         int numberOfPieces = 4;
-        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, 10);
+        int sideLength = 8;
+        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
         board = new BoardGraphic(game, 10, 3, 1);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 

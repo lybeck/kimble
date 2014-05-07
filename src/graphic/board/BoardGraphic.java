@@ -73,9 +73,9 @@ public class BoardGraphic extends Model {
                     // Creates the goal squares for team 'i'
                     for (int j = 0; j < game.getTeam(i).getPieces().size(); j++) {
                         float tempRadius = (radius - ((j + 1) * (squareSideLength + goalSquarePadding)));
-                        Vector3f goalPosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - segmentAngle)));
+                        Vector3f goalPosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - .5f * segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - .5f * segmentAngle)));
                         SquareGraphic goalSquareGraphic = new SquareGraphic(goalPosition, squareSideLength, squareColor);
-                        goalSquareGraphic.rotate(0, -(currentAngle - segmentAngle), 0);
+                        goalSquareGraphic.rotate(0, -(currentAngle - .5f * segmentAngle), 0);
                         squares.add(goalSquareGraphic);
                     }
                 }
