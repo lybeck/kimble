@@ -85,6 +85,10 @@ public class Board {
         return teamId * (sideLength - 1);
     }
 
+    public List<Square> getGoalSquares() {
+        return goalSquares;
+    }
+
     public Square getGoalSquare(int teamId) {
         return goalSquares.get(getGoalSquareIndex(teamId));
     }

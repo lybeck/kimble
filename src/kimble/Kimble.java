@@ -1,6 +1,6 @@
 package kimble;
 
-import graphic.BoardGraphic;
+import graphic.board.BoardGraphic;
 import graphic.Screen;
 import graphic.Camera;
 import graphic.Shader;

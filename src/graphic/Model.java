@@ -5,6 +5,7 @@
  */
 package graphic;
 
+import graphic.Shader;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;

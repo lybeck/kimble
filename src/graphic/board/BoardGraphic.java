@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphic;
+package graphic.board;
 
+import graphic.Model;
+import graphic.Shader;
 import java.util.ArrayList;
 import java.util.List;
 import logic.board.Board;
@@ -38,7 +40,16 @@ public class BoardGraphic extends Model {
         for (Square s : board.getSquares()) {
             Vector3f squarePosition = new Vector3f((float) (radius * Math.cos(currentAngle)), 0f, (float) (radius * Math.sin(currentAngle)));
 
-            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength);
+            Vector3f squareColor;
+            if (s.isRegularSquare()) {
+                squareColor = new Vector3f(0, 0, 1);
+            } else if (s.isGoalSquare()) {
+                squareColor = new Vector3f(0, 1, 0);
+            } else {
+                squareColor = new Vector3f(0, 0, 0);
+            }
+
+            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength, squareColor);
             squareGraphic.rotate(0, -currentAngle, 0);
             squares.add(squareGraphic);
 

@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphic;
+package graphic.board;
 
+import graphic.VertexData;
+import graphic.Model;
+import graphic.Shader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
@@ -40,8 +43,12 @@ public class SquareGraphic extends Model {
 
     private int indexCount;
 
-    public SquareGraphic(Vector3f position, float sideLength) {
+    private Vector3f color;
+
+    public SquareGraphic(Vector3f position, float sideLength, Vector3f color) {
         super(position, new Vector3f(0, 0, 0));
+
+        this.color = color;
 
         setup(sideLength);
     }
@@ -85,23 +92,23 @@ public class SquareGraphic extends Model {
 
     private VertexData[] setupVertexData(float sideLength) {
         VertexData v0 = new VertexData();
-        v0.setPosition(new Vector3f(-sideLength/2, 0, sideLength/2));
-        v0.setColor(new Vector3f(1, 0, 0));
+        v0.setPosition(new Vector3f(-sideLength / 2, 0, sideLength / 2));
+        v0.setColor(color);
         v0.setTexCoords(new Vector2f(0, 0));
 
         VertexData v1 = new VertexData();
-        v1.setPosition(new Vector3f(-sideLength/2, 0, -sideLength/2));
-        v1.setColor(new Vector3f(0, 1, 0));
+        v1.setPosition(new Vector3f(-sideLength / 2, 0, -sideLength / 2));
+        v1.setColor(color);
         v1.setTexCoords(new Vector2f(0, 1));
 
         VertexData v2 = new VertexData();
-        v2.setPosition(new Vector3f(sideLength/2, 0, -sideLength/2));
-        v2.setColor(new Vector3f(0, 0, 1));
+        v2.setPosition(new Vector3f(sideLength / 2, 0, -sideLength / 2));
+        v2.setColor(color);
         v2.setTexCoords(new Vector2f(1, 1));
 
         VertexData v3 = new VertexData();
-        v3.setPosition(new Vector3f(sideLength/2, 0, sideLength/2));
-        v3.setColor(new Vector3f(1, 1, 1));
+        v3.setPosition(new Vector3f(sideLength / 2, 0, sideLength / 2));
+        v3.setColor(color);
         v3.setTexCoords(new Vector2f(1, 0));
 
         return new VertexData[]{v0, v1, v2, v3};
@@ -142,5 +149,13 @@ public class SquareGraphic extends Model {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vertexArrayObjectID);
+    }
+
+    public void setColor(Vector3f color) {
+        this.color = color;
+    }
+
+    public Vector3f getColor() {
+        return color;
     }
 }
