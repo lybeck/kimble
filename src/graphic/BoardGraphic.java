@@ -7,7 +7,6 @@ package graphic;
 
 import java.util.ArrayList;
 import java.util.List;
-import logic.Game;
 import logic.board.Board;
 import logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
@@ -16,82 +15,55 @@ import org.lwjgl.util.vector.Vector3f;
  *
  * @author Christoffer
  */
-public class BoardGraphic {
+public class BoardGraphic extends Model {
 
-    private final Game game;
+    private final Board board;
     private List<SquareGraphic> squares;
 
-    public BoardGraphic(Game game, float squareWidth, float squarePadding) {
-        this.game = game;
-        setupSquaresInPolygon(squareWidth, squarePadding);
-//        setupSquaresInCircle(squareWidth, squarePadding);
+    public BoardGraphic(Board board, int numberOfTeams, float squareSideLength, float squarePadding) {
+        this.board = board;
+
+        float radius = (float) ((squareSideLength + squarePadding) * board.getSquares().size() / (2 * Math.PI));
+
+        generateBoard(numberOfTeams, radius, squareSideLength);
     }
 
-    private void setupSquaresInCircle(float squareWidth, float squarePadding) {
-        Board board = game.getBoard();
+    private void generateBoard(int numberOfTeams, float radius, float squareSideLength) {
         int numberOfSquares = board.getSquares().size();
 
-        float cornerAngle = 0;
-        cornerAngle = (float) (2 * Math.PI) / numberOfSquares;
-
-        System.out.println("Corner Angle: " + cornerAngle + " = " + Math.toDegrees(cornerAngle));
-
-        float distance = squareWidth + squarePadding;
-        float currentAngle = 0f;
-
+        float segmentAngle = (float) (2 * Math.PI) / numberOfSquares;
+        float currentAngle = 0;
         squares = new ArrayList<>();
 
-        Vector3f directionVector;
-        Vector3f position = new Vector3f();
         for (Square s : board.getSquares()) {
-            directionVector = new Vector3f((float) Math.cos(currentAngle), 0f, (float) Math.sin(currentAngle));
-            System.out.println("directionVector: " + directionVector);
-            currentAngle += cornerAngle;
-            position = new Vector3f(position.x + directionVector.x * distance, 0, position.z + directionVector.z * distance);
-            squares.add(new SquareGraphic(s, squareWidth, position));
+            Vector3f squarePosition = new Vector3f((float) (radius * Math.cos(currentAngle)), 0f, (float) (radius * Math.sin(currentAngle)));
+
+            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength);
+            squareGraphic.rotate(0, -currentAngle, 0);
+            squares.add(squareGraphic);
+
+            currentAngle += segmentAngle;
         }
     }
 
-    private void setupSquaresInPolygon(float squareWidth, float squarePadding) {
-        Board board = game.getBoard();
-        int numberOfTeams = game.getNumberOfTeams();
-
-        if (numberOfTeams < 3) {
-            throw new UnsupportedOperationException("Can't play with less than three teams yet!");
-        }
-
-        float cornerAngle = 0;
-        if (numberOfTeams == 3) {
-            cornerAngle = (float) (Math.PI - Math.PI / numberOfTeams);
-        } else {
-            cornerAngle = (float) (2 * Math.PI) / numberOfTeams;
-        }
-
-        System.out.println("Corner Angle: " + cornerAngle + " = " + Math.toDegrees(cornerAngle));
-
-        float distance = squareWidth + squarePadding;
-        float currentAngle = 0f;
-
-        squares = new ArrayList<>();
-
-        Vector3f directionVector;
-        Vector3f position = new Vector3f();
-        for (Square s : board.getSquares()) {
-            directionVector = new Vector3f((float) Math.cos(currentAngle), 0f, (float) Math.sin(currentAngle));
-            System.out.println("directionVector: " + directionVector);
-            for (int teamId = 0; teamId < game.getNumberOfTeams(); teamId++) {
-                if (s.equals(board.getStartSquare(teamId))) {
-                    currentAngle += cornerAngle;
-                }
-            }
-            position = new Vector3f(position.x + directionVector.x * distance, 0f, position.z + directionVector.z * distance);
-            squares.add(new SquareGraphic(s, squareWidth, position));
-        }
-    }
-
-    public void render() {
+    @Override
+    public void update(float dt) {
         for (SquareGraphic s : squares) {
-            s.render();
+            s.update(dt);
+        }
+    }
+
+    @Override
+    public void render(Shader shader) {
+        for (SquareGraphic s : squares) {
+            s.render(shader);
+        }
+    }
+
+    @Override
+    public void cleanUp() {
+        for (SquareGraphic s : squares) {
+            s.cleanUp();
         }
     }
 }

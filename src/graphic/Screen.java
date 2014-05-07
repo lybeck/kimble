@@ -11,10 +11,12 @@ import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
 import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
+import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.PixelFormat;
 
 /**
  *
@@ -24,9 +26,15 @@ public class Screen {
 
     public static void setupDisplay(String title, int width, int height) {
         try {
+            PixelFormat pixelFormat = new PixelFormat();
+            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
+                    .withForwardCompatible(true)
+                    .withProfileCore(true);
+
             Display.setDisplayMode(new DisplayMode(width, height));
             Display.setTitle(title);
-            Display.create();
+            Display.create(pixelFormat, contextAtrributes);
+
         } catch (LWJGLException ex) {
             Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
@@ -35,7 +43,6 @@ public class Screen {
 
     public static void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.2f, 0.2f, 0f, 1f);
     }
 
     public static void setVSyncEnabled(boolean vSync) {
@@ -74,22 +81,21 @@ public class Screen {
         Display.destroy();
     }
 
-    public static void setupLWJGL() {
-        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+    public static void setupOpenGL() {
 
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+        glClearColor(0.4f, 0.6f, 0.9f, 0f);
+
+//        glEnable(GL_TEXTURE_2D);
+//        glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
-    public static void updateViewport(Camera camera, boolean windowResized) {
+    public static void updateViewport() {
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        camera.setAspectRatio(getAspectRatio());
-        if (windowResized) {
-            camera.applyPerspectiveMatrix();
-        }
     }
 
     /**

@@ -1,23 +1,55 @@
 package kimble;
 
 import graphic.BoardGraphic;
-import graphic.Camera;
 import graphic.Screen;
+import graphic.Camera;
+import graphic.Shader;
 import org.lwjgl.util.vector.Vector3f;
 import logic.Constants;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import java.util.Random;
 import logic.Game;
 import logic.GameStart;
 import logic.Turn;
+import org.lwjgl.input.Mouse;
 
 /**
  *
  * @author Lasse Lybeck
  */
 public class Kimble {
+
+    private BoardGraphic board;
+    private Camera camera;
+    private Shader shader;
+
+    public Kimble() {
+
+        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 70f, 0.3f, 1000f);
+
+        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 4, 8);
+        board = new BoardGraphic(game.getBoard(), game.getNumberOfTeams(), 10, 5);
+        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+
+        Mouse.setGrabbed(true);
+        while (!Screen.isCloseRequested()) {
+            Screen.clear();
+
+            float dt = 0.16f;
+
+            camera.update(dt);
+            board.update(dt);
+
+            shader.bind();
+            board.render(shader);
+            shader.unbind();
+
+            Screen.update(60);
+        }
+
+        shader.cleanUp();
+        board.cleanUp();
+        Screen.cleanUp();
+    }
 
     /**
      * @param args the command line arguments
@@ -26,41 +58,11 @@ public class Kimble {
 
         Screen.setupNativesLWJGL();
         Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
-        Screen.setupLWJGL();
+        Screen.setupOpenGL();
 
-        Camera camera = new Camera(70, new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 0.3f, 1000f);
+        new Kimble();
 
-        Game game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 4, 8);
-        BoardGraphic board = new BoardGraphic(game, 10, 5);
-
-//        Mouse.setGrabbed(true);
-        while (!Screen.isCloseRequested()) {
-            Screen.clear();
-
-            while (Mouse.next()) {
-                if (Mouse.isButtonDown(1)) {
-                    Mouse.setGrabbed(true);
-                }
-            }
-
-            while (Keyboard.next()) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-                    Mouse.setGrabbed(false);
-                }
-            }
-
-            GL11.glLoadIdentity();
-            camera.applyTranslations();
-            if (Mouse.isGrabbed()) {
-                camera.processMouse(1);
-                camera.processKeyboard(16, 5);
-            }
-
-            board.render();
-
-            Screen.update(60);
-        }
-        // runExample();
+//        runExample();
     }
 
     static void runExample() {
