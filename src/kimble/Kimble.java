@@ -14,7 +14,6 @@ import kimble.logic.GameStart;
 import kimble.logic.Piece;
 import kimble.logic.Turn;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
