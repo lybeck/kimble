@@ -10,7 +10,7 @@ public class Kimble {
 
     public static void main(String[] args) {
         setupLWJGL();
-        new GameTest();
+        new TestGame();
     }
 
     private static void setupLWJGL() {
