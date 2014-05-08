@@ -38,7 +38,7 @@ public class Kimble {
         while (!Screen.isCloseRequested()) {
             Screen.clear();
 
-            float dt = 0.16f;
+            float dt = 0.016f;
 
             update(dt);
             render();
@@ -57,8 +57,8 @@ public class Kimble {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 4;
-        int numberOfPieces = 4;
+        int numberOfTeams = 8;
+        int numberOfPieces = 8;
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
@@ -86,13 +86,24 @@ public class Kimble {
         Mouse.setGrabbed(true);
     }
 
+    private float timer = 0;
+
     private void update(float dt) {
-        if(Screen.wasResized()){
+        if (Screen.wasResized()) {
             Screen.updateViewport();
             camera.updateProjectionMatrixAttributes();
         }
-        
-        executeMove();
+        while (Keyboard.next()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                executeMove();
+            }
+        }
+        timer += dt;
+        if (timer >= 0.5f) {
+            executeMove();
+            timer = 0;
+        }
+
         camera.update(dt);
         board.update(dt);
 
@@ -106,24 +117,19 @@ public class Kimble {
     int lastKey = -1;
 
     private void executeMove() {
-        while (Keyboard.next()) {
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                System.out.println("Team in turn: " + game.getTeamInTurn().getId());
-                Turn nextTurn = game.getNextTurn();
-                System.out.println("Rolled: " + nextTurn.getDieRoll());
-                if (nextTurn.getMoves().isEmpty()) {
-                    System.out.println("No possible moves...");
-                    game.executeNoMove();
-                } else {
-                    int selection = random.nextInt(nextTurn.getMoves().size());
-                    game.executeMove(selection);
-                    System.out.println(game);
-                }
-                System.out.println("--------------------------------------------------");
-                System.out.println("");
-            }
+        System.out.println("Team in turn: " + game.getTeamInTurn().getId());
+        Turn nextTurn = game.getNextTurn();
+        System.out.println("Rolled: " + nextTurn.getDieRoll());
+        if (nextTurn.getMoves().isEmpty()) {
+            System.out.println("No possible moves...");
+            game.executeNoMove();
+        } else {
+            int selection = random.nextInt(nextTurn.getMoves().size());
+            game.executeMove(selection);
+            System.out.println(game);
         }
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
     }
 
     private void render() {
