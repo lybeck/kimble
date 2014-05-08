@@ -58,6 +58,10 @@ public class Camera {
         updateProjectionMatrixAttributes(fov, zNear, zFar);
     }
 
+    public void updateProjectionMatrixAttributes() {
+        updateProjectionMatrixAttributes(fov, zNear, zFar);
+    }
+
     public void updateProjectionMatrixAttributes(float fov) {
         updateProjectionMatrixAttributes(fov, zNear, zFar);
     }

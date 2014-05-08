@@ -57,8 +57,8 @@ public class Kimble {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 7;
-        int numberOfPieces = 8;
+        int numberOfTeams = 4;
+        int numberOfPieces = 4;
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
@@ -87,6 +87,11 @@ public class Kimble {
     }
 
     private void update(float dt) {
+        if(Screen.wasResized()){
+            Screen.updateViewport();
+            camera.updateProjectionMatrixAttributes();
+        }
+        
         executeMove();
         camera.update(dt);
         board.update(dt);
@@ -139,6 +144,7 @@ public class Kimble {
         Screen.setupNativesLWJGL();
         Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
         Screen.setupOpenGL();
+        Screen.setResizable(true);
 
         new Kimble();
     }
