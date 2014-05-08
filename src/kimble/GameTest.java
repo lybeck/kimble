@@ -71,7 +71,7 @@ public class GameTest {
 
         ModelManager.loadModels();
 
-        board = new BoardGraphic(game, 10, 3, 1);
+        board = new BoardGraphic(game, 1, 0.3f, 0.1f, 1.15f, 1f);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
@@ -79,10 +79,10 @@ public class GameTest {
         pieces = new ArrayList<>();
         for (int i = 0; i < game.getTeams().size(); i++) {
             for (Piece p : game.getTeam(i).getPieces()) {
-                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.teamColors.get(i), 4, 10));
+                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.teamColors.get(i), 0.4f, 1f));
             }
         }
-        die = new DieGraphic(game.getDie(), 10);
+        die = new DieGraphic(game.getDie(), 1f);
 
         GameStart gameStart = game.startGame();
         System.out.println("Game start:");
@@ -103,8 +103,8 @@ public class GameTest {
     private void update(float dt) {
 
         cameraPositionAngle += dt * 0.1;
-//        camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
-//        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+        camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
+        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
 
         if (Screen.wasResized()) {
             Screen.updateViewport();

@@ -16,28 +16,36 @@ import org.lwjgl.util.vector.Vector4f;
 public class VertexData {
 
     private Vector4f position;
+    private Vector3f normal;
     private Vector4f color;
     private Vector2f texCoords;
 
     public static final int positionByteCount = 4 * 4;
+    public static final int normalByteCount = 4 * 3;
     public static final int colorByteCount = 4 * 4;
     public static final int texCoordsByteCount = 4 * 2;
 
     public static final int positionByteOffset = 0;
-    public static final int colorByteOffset = positionByteOffset + positionByteCount;
+    public static final int normalByteOffset = positionByteOffset + positionByteCount;
+    public static final int colorByteOffset = normalByteOffset + normalByteCount;
     public static final int texCoordsByteOffset = colorByteOffset + colorByteCount;
 
-    public static final int elementCount = 4 + 4 + 2;
-    public static final int stride = positionByteCount + colorByteCount + texCoordsByteCount;
+    public static final int elementCount = 4 + 3 + 4 + 2;
+    public static final int stride = positionByteCount + normalByteCount + colorByteCount + texCoordsByteCount;
 
     public VertexData() {
         position = new Vector4f();
+        normal = new Vector3f();
         color = new Vector4f(1, 1, 1, 1);
         texCoords = new Vector2f();
     }
 
     public void setPosition(Vector3f position) {
         this.position = new Vector4f(position.x, position.y, position.z, 1);
+    }
+
+    public void setNormal(Vector3f normal) {
+        this.normal = normal;
     }
 
     public void setColor(Vector4f color) {
@@ -63,6 +71,10 @@ public class VertexData {
         out[i++] = position.z;
         out[i++] = position.w;
 
+        out[i++] = normal.x;
+        out[i++] = normal.y;
+        out[i++] = normal.z;
+
         out[i++] = color.x;
         out[i++] = color.y;
         out[i++] = color.z;
@@ -76,6 +88,10 @@ public class VertexData {
 
     public Vector3f getPosition() {
         return new Vector3f(position.x, position.y, position.z);
+    }
+
+    public Vector3f getNormal() {
+        return normal;
     }
 
     public Vector4f getColor() {

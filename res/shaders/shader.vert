@@ -4,9 +4,8 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
-uniform vec4 color;
-
 in vec4 in_Position;
+in vec3 in_Normal;
 in vec4 in_Color;
 in vec2 in_TextureCoord;
 

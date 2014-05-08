@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -38,8 +37,9 @@ public class Shader {
         glDeleteShader(fragmentShaderID);
 
         glBindAttribLocation(programID, 0, "in_Position");
-        glBindAttribLocation(programID, 1, "in_Color");
-        glBindAttribLocation(programID, 2, "in_TextureCoord");
+        glBindAttribLocation(programID, 1, "in_Normal");
+        glBindAttribLocation(programID, 2, "in_Color");
+        glBindAttribLocation(programID, 3, "in_TextureCoord");
 
         glLinkProgram(programID);
         if (glGetShaderi(programID, GL_LINK_STATUS) == GL_FALSE) {

@@ -97,6 +97,12 @@ public abstract class Model {
         return scale;
     }
 
+    public void setScale(float x, float y, float z) {
+        this.scale.x = x;
+        this.scale.y = y;
+        this.scale.z = z;
+    }
+
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
     }

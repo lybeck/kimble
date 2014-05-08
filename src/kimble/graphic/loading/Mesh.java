@@ -61,8 +61,9 @@ public abstract class Mesh {
             glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
 
             glVertexAttribPointer(0, 4, GL_FLOAT, false, VertexData.stride, VertexData.positionByteOffset);
-            glVertexAttribPointer(1, 4, GL_FLOAT, false, VertexData.stride, VertexData.colorByteOffset);
-            glVertexAttribPointer(2, 2, GL_FLOAT, false, VertexData.stride, VertexData.texCoordsByteOffset);
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, VertexData.stride, VertexData.normalByteOffset);
+            glVertexAttribPointer(2, 4, GL_FLOAT, false, VertexData.stride, VertexData.colorByteOffset);
+            glVertexAttribPointer(3, 2, GL_FLOAT, false, VertexData.stride, VertexData.texCoordsByteOffset);
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
@@ -92,6 +93,7 @@ public abstract class Mesh {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
@@ -99,6 +101,7 @@ public abstract class Mesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
 
         glBindVertexArray(0);
     }
@@ -108,6 +111,7 @@ public abstract class Mesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(vertexBufferID);

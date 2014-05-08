@@ -53,7 +53,10 @@ public class OBJLoader {
                     float z = Float.parseFloat(args[3]);
                     vertices.add(new Vector3f(x, y, z));
                 } else if (line.startsWith("vn ")) {
-
+                    float x = Float.parseFloat(args[1]);
+                    float y = Float.parseFloat(args[2]);
+                    float z = Float.parseFloat(args[3]);
+                    normals.add(new Vector3f(x, y, z));
                 } else if (line.startsWith("f ")) {
                     faces.add(extractIndices(args[1], args[2], args[3]));
                 } else if (line.startsWith("#")) {
@@ -81,7 +84,25 @@ public class OBJLoader {
 
         face.setVertexIndices(i0, i1, i2);
 
+        int n0 = Integer.parseInt(args0[2]) - 1;
+        int n1 = Integer.parseInt(args1[2]) - 1;
+        int n2 = Integer.parseInt(args2[2]) - 1;
+
+        face.setNormalIndices(n0, n1, n2);
+
         return face;
+    }
+
+    public static List<Vector3f> getVertices() {
+        return vertices;
+    }
+
+    public static List<Vector3f> getNormals() {
+        return normals;
+    }
+
+    public static List<Face> getFaces() {
+        return faces;
     }
 
     public static class Face {
@@ -100,20 +121,19 @@ public class OBJLoader {
             vertexIndices[2] = i2;
         }
 
+        public void setNormalIndices(int n0, int n1, int n2) {
+            normalIndices[0] = n0;
+            normalIndices[1] = n1;
+            normalIndices[2] = n2;
+        }
+
         public int[] getVertexIndices() {
             return vertexIndices;
         }
+
+        public int[] getNormalIndices() {
+            return normalIndices;
+        }
     }
 
-    public static List<Vector3f> getVertices() {
-        return vertices;
-    }
-
-    public static List<Vector3f> getNormals() {
-        return normals;
-    }
-
-    public static List<Face> getFaces() {
-        return faces;
-    }
 }

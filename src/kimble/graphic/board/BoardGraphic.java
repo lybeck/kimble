@@ -45,16 +45,16 @@ public class BoardGraphic extends Model {
     private float radius;
     private float squareSideLength;
     private float goalSquarePadding;
-    private float dieCupRadius = 10;
+    private float dieCupRadius;
 
     private float fade = 0.6f;
 
-    private float boardOuterPadding = 1.15f;
+    private float boardOuterPadding;
     private float segmentAngle;
     private int vertexCount;
     private int firstGoalSquareIndex;
 
-    public BoardGraphic(Game game, float squareSideLength, float squarePadding, float goalSquarePadding) {
+    public BoardGraphic(Game game, float squareSideLength, float squarePadding, float goalSquarePadding, float boardOuterPadding, float dieCupRadius) {
 
         this.game = game;
 
@@ -64,6 +64,9 @@ public class BoardGraphic extends Model {
 
         this.squareSideLength = squareSideLength;
         this.goalSquarePadding = goalSquarePadding;
+
+        this.boardOuterPadding = boardOuterPadding;
+        this.dieCupRadius = dieCupRadius;
 
         radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
 
