@@ -130,10 +130,10 @@ public class GameUIDemo extends Widget {
         lastSelectedRadialEntry.setText("Right click on the background");
         add(lastSelectedRadialEntry);
 
-        digits = new SimpleChangableListModel<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-        wheels = new ArrayList<WheelWidget<String>>();
+        digits = new SimpleChangableListModel<>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+        wheels = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            WheelWidget<String> wheel = new WheelWidget<String>(digits);
+            WheelWidget<String> wheel = new WheelWidget<>(digits);
             wheels.add(wheel);
             wheel.setCyclic(true);
             add(wheel);
