@@ -39,11 +39,11 @@ public class Camera {
     private float zFar;
 
     public Camera(Vector3f position, Vector3f rotation, float fov, float zNear, float zFar) {
-        this.mouseSpeed = 0.05f;
+        this.mouseSpeed = 0.5f;
         this.maxYaw = (float) Math.PI / 2;
         this.minYaw = -(float) Math.PI / 2;
 
-        this.moveSpeed = 2;
+        this.moveSpeed = 20;
 
         this.projectionMatrix = new Matrix4f();
         this.viewMatrix = new Matrix4f();

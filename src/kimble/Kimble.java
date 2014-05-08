@@ -34,6 +34,9 @@ public class Kimble {
     private Camera camera;
     private Shader shader;
 
+    private static final float TURN_TIME_STEP = 0.1f;
+    private static final boolean DEBUG = false;
+
     public Kimble() {
 
         setup();
@@ -41,7 +44,7 @@ public class Kimble {
         while (!Screen.isCloseRequested()) {
             Screen.clear();
 
-            float dt = 0.16f;
+            float dt = 0.016f;
 
             update(dt);
             render();
@@ -60,8 +63,8 @@ public class Kimble {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f(50, 220, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 4;
-        int numberOfPieces = 4;
+        int numberOfTeams = 8;
+        int numberOfPieces = 8;
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
@@ -89,13 +92,25 @@ public class Kimble {
         Mouse.setGrabbed(true);
     }
 
+    private float timer = 0;
+
     private void update(float dt) {
         if (Screen.wasResized()) {
             Screen.updateViewport();
             camera.updateProjectionMatrixAttributes();
         }
 
-        executeMove();
+        while (Keyboard.next()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                executeMove();
+            }
+        }
+        timer += dt;
+        if (timer >= TURN_TIME_STEP) {
+            executeMove();
+            timer = 0;
+        }
+
         camera.update(dt);
         board.update(dt);
 
@@ -109,36 +124,24 @@ public class Kimble {
     int lastKey = -1;
 
     private void executeMove() {
-        while (Keyboard.next()) {
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                System.out.println("Team in turn: " + game.getTeamInTurn().getId());
-                Turn nextTurn = game.getNextTurn();
-                System.out.println("Rolled: " + nextTurn.getDieRoll());
-                
-                // remove optional moves
-                List<Move> moves = new ArrayList<>();
-                Map<Integer, Integer> map = new HashMap<>();
-                int j = 0;
-                for (int i = 0; i < nextTurn.getMoves().size(); ++i) {
-                    Move move = nextTurn.getMove(i);
-                    if (!move.isOptional()) {
-                        moves.add(move);
-                        map.put(j++, i);
-                    }
-                }
-                
-                if (moves.isEmpty()) {
-                    System.out.println("No possible moves...");
-                    game.executeNoMove();
-                } else {
-                    int selection = random.nextInt(moves.size());
-                    game.executeMove(map.get(selection));
-                    System.out.println(game);
-                }
-                System.out.println("--------------------------------------------------");
-                System.out.println("");
+        Turn nextTurn = game.getNextTurn();
+        if (DEBUG) {
+            System.out.println("Team in turn: " + game.getTeamInTurn().getId());
+            System.out.println("Rolled: " + nextTurn.getDieRoll());
+        }
+        if (nextTurn.getMoves().isEmpty()) {
+            if (DEBUG) {
+                System.out.println("No possible moves...");
             }
+            game.executeNoMove();
+        } else {
+            int selection = random.nextInt(nextTurn.getMoves().size());
+            game.executeMove(selection);
+        }
+        if (DEBUG) {
+            System.out.println(game);
+            System.out.println("--------------------------------------------------");
+            System.out.println("");
         }
     }
 

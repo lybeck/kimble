@@ -7,6 +7,7 @@ package graphic.board;
 
 import graphic.Model;
 import graphic.Shader;
+import graphic.VertexData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class BoardGraphic extends Model {
         teamColors.add(new Vector3f(1, 0, 1));
         teamColors.add(new Vector3f(0, 1, 1));
         teamColors.add(new Vector3f(1, 1, 1));
+        teamColors.add(new Vector3f(0.3f, 0.3f, 0.3f));
     }
 
     private final Game game;
@@ -42,7 +44,7 @@ public class BoardGraphic extends Model {
     private float squareSideLength;
     private float goalSquarePadding;
     private float dieCupRadius = 10;
-    
+
     private float fade = 0.8f;
 
     public BoardGraphic(Game game, float squareSideLength, float squarePadding, float goalSquarePadding) {
@@ -58,6 +60,20 @@ public class BoardGraphic extends Model {
         float radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
 
         generateBoard(radius);
+        
+        setup();
+    }
+
+    @Override
+    public VertexData[] setupVertexData() {
+        VertexData v0 = new VertexData();
+        v0.setPosition(new Vector3f(0, 0, 0));
+        return new VertexData[]{v0};
+    }
+
+    @Override
+    public byte[] setupIndexData() {
+        return new byte[]{0};
     }
 
     private float calcRadius(float squareSideLength, float squarePadding, Game game, float goalSquarePadding) {
