@@ -181,6 +181,8 @@ public class Game {
         // </editor-fold>
     }
 
-    public static void main(String[] args) throws IllegalMoveException {
+    public Die getDie() {
+        return die;
     }
+
 }

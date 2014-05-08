@@ -7,8 +7,7 @@ package kimble.graphic.board;
 
 import kimble.graphic.Model;
 import kimble.graphic.VertexData;
-import kimble.logic.Piece;
-import kimble.logic.board.Square;
+import kimble.logic.Die;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -16,25 +15,17 @@ import org.lwjgl.util.vector.Vector3f;
  *
  * @author Christoffer
  */
-public class PieceGraphic extends Model {
+public class DieGraphic extends Model {
 
-    private Vector3f color;
+    private final Die die;
     private final float width;
-    private final float height;
 
-    private final Piece pieceLogic;
-    private final BoardGraphic board;
+    private Vector3f color = new Vector3f(0.8f, 0.8f, 0.8f);
 
-    public PieceGraphic(BoardGraphic board, Piece pieceLogic, Vector3f position, Vector3f color, float width, float height) {
-        super(position, new Vector3f(0, 0, 0));
+    public DieGraphic(Die die, float width) {
 
-        this.board = board;
-        this.pieceLogic = pieceLogic;
-
+        this.die = die;
         this.width = width;
-        this.height = height;
-
-        this.color = color;
 
         setup();
     }
@@ -62,22 +53,22 @@ public class PieceGraphic extends Model {
         v3.setTexCoords(new Vector2f(1, 0));
 
         VertexData v4 = new VertexData();
-        v4.setPosition(new Vector3f(-width / 2, height, width / 2));
+        v4.setPosition(new Vector3f(-width / 2, width, width / 2));
         v4.setColor(color);
         v4.setTexCoords(new Vector2f(0, 0));
 
         VertexData v5 = new VertexData();
-        v5.setPosition(new Vector3f(-width / 2, height, -width / 2));
+        v5.setPosition(new Vector3f(-width / 2, width, -width / 2));
         v5.setColor(color);
         v5.setTexCoords(new Vector2f(0, 1));
 
         VertexData v6 = new VertexData();
-        v6.setPosition(new Vector3f(width / 2, height, -width / 2));
+        v6.setPosition(new Vector3f(width / 2, width, -width / 2));
         v6.setColor(color);
         v6.setTexCoords(new Vector2f(1, 1));
 
         VertexData v7 = new VertexData();
-        v7.setPosition(new Vector3f(width / 2, height, width / 2));
+        v7.setPosition(new Vector3f(width / 2, width, width / 2));
         v7.setColor(color);
         v7.setTexCoords(new Vector2f(1, 0));
 
@@ -92,45 +83,6 @@ public class PieceGraphic extends Model {
             2, 3, 7, 7, 6, 2,
             3, 0, 4, 4, 7, 3,
             4, 5, 6, 6, 7, 5};
-    }
-
-    @Override
-    public void update(float dt) {
-        super.update(dt);
-
-        SquareGraphic currentSquare = null;
-
-        if (pieceLogic.getPosition() != null) {
-            int squareID = pieceLogic.getPosition().getID();
-            if (pieceLogic.getPosition().isGoalSquare()) {
-                currentSquare = board.getGoalSquares().get(squareID);
-            } else {
-                currentSquare = board.getSquares().get(squareID);
-            }
-            setPosition(currentSquare.getPosition());
-            rotate(0, currentSquare.getRotation().y, 0);
-        } else {
-            currentSquare = board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId());
-            setPosition(currentSquare.getPosition());
-            rotate(0, currentSquare.getRotation().y, 0);
-        }
-
-    }
-
-    public void setColor(Vector3f color) {
-        this.color = color;
-    }
-
-    public Vector3f getColor() {
-        return color;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
     }
 
 }
