@@ -19,9 +19,9 @@ import java.util.logging.Logger;
  */
 public enum License {
 
-    LWJGL_LICENSE("lwjgl_license.txt");
+    LWJGL_LICENSE("lwjgl_license.txt"),
+    TWL_LICENSE("twl_license.txt");
 
-    
     // Enum instance code below. To add a new license just extend the list above this comment.
     // Save the license file in the res/licenses/ directory
     //
@@ -29,7 +29,7 @@ public enum License {
     // LICENSE_1("filename_1"), LICENSE_2("filename_2"); etc
     //
     // You access the license text with "License.LICENSE_1.getText();".
-    
+    //
     public static final String LICENSE_DIR = "res/licenses/";
     private final String filename;
 

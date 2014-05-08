@@ -71,12 +71,14 @@
 
     -->
     <target name="-post-jar">
-        <mkdir dir="${dist.dir}/lib/natives/" />
+        <!-- <mkdir dir="${dist.dir}/lib/natives/" /> -->
         <copy todir="${dist.dir}/lib/natives/">
             <fileset dir="lib/natives/"/>
         </copy>
         
-        <copydir src="res/" dest="${dist.dir}/res" />
+        <copy todir="${dist.dir}/res/">
+            <fileset dir="res"/>
+        </copy>
         
     </target>
 </project>
