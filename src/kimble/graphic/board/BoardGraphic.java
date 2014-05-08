@@ -83,6 +83,7 @@ public class BoardGraphic extends Model {
 
         VertexData v0 = new VertexData();
         v0.setPosition(new Vector3f(0, -1, 0));
+        v0.setColor(new Vector3f(0.2f, 0.2f, 0.2f));
         vertices[0] = v0;
 
         int index = 1;

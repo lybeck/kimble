@@ -8,6 +8,7 @@ import kimble.graphic.board.PieceGraphic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import kimble.graphic.board.DieGraphic;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -26,6 +27,7 @@ public class GameTest {
 
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
+    private DieGraphic die;
 
     private Camera camera;
     private Shader shader;
@@ -60,7 +62,7 @@ public class GameTest {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 5;
+        int numberOfTeams = 4;
         int numberOfPieces = 4;
         int sideLength = 8;
 
@@ -77,6 +79,7 @@ public class GameTest {
                 pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.teamColors.get(i), 4, 10));
             }
         }
+        die = new DieGraphic(game.getDie(), 10);
 
         GameStart gameStart = game.startGame();
         System.out.println("Game start:");
@@ -121,6 +124,8 @@ public class GameTest {
         camera.update(dt);
         board.update(dt);
 
+        die.update(dt);
+
         for (PieceGraphic p : pieces) {
             p.update(dt);
         }
@@ -156,6 +161,8 @@ public class GameTest {
 
         shader.bind();
         board.render(shader);
+        die.render(shader);
+
         for (PieceGraphic p : pieces) {
             p.render(shader);
         }
