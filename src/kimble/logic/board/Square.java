@@ -59,7 +59,7 @@ public abstract class Square {
         if (!(obj instanceof Square)) {
             return false;
         }
-        return ((Square) obj).id == id;
+        return ((Square) obj).id == this.id;
     }
 
     @Override
