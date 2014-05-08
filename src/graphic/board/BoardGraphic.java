@@ -60,7 +60,7 @@ public class BoardGraphic extends Model {
         float radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
 
         generateBoard(radius);
-        
+
         setup();
     }
 
@@ -94,7 +94,7 @@ public class BoardGraphic extends Model {
 
         generateRegularSquares(radius, segmentAngle);
         generateGoalSquares(radius, segmentAngle);
-        generateHomeSquares(radius);
+        generateHomeSquares(radius, segmentAngle);
     }
 
     private void generateRegularSquares(float radius, float segmentAngle) {
@@ -149,7 +149,7 @@ public class BoardGraphic extends Model {
         }
     }
 
-    private void generateHomeSquares(float radius) {
+    private void generateHomeSquares(float radius, float segmentAngle) {
         homeSquares = new HashMap<>();
         for (int teamID = 0; teamID < game.getTeams().size(); teamID++) {
 
@@ -157,7 +157,7 @@ public class BoardGraphic extends Model {
             float currentAngle = -squares.get(startSquare.getID()).getRotation().y;
 
             float tempRadius = radius + squareSideLength + goalSquarePadding;
-            Vector3f homePosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle)));
+            Vector3f homePosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - 0.5f * segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - 0.5f * segmentAngle)));
             Vector3f right = new Vector3f();
             Vector3f.cross(new Vector3f(0, 1, 0), homePosition, right);
 
@@ -170,7 +170,7 @@ public class BoardGraphic extends Model {
                 int squareID = game.getTeam(teamID).getPieces().size() * teamID + i;
                 Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
                 SquareGraphic squareGraphic = new SquareGraphic(homePosition, squareSideLength, color);
-                squareGraphic.rotate(0, -currentAngle, 0);
+                squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 homeSquares.put(squareID, squareGraphic);
 
                 homePosition = new Vector3f(homePosition.x + right.x, homePosition.y + right.y, homePosition.z + right.z);
