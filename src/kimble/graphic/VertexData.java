@@ -15,11 +15,11 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class VertexData {
 
-    private Vector3f position;
+    private Vector4f position;
     private Vector4f color;
     private Vector2f texCoords;
 
-    public static final int positionByteCount = 4 * 3;
+    public static final int positionByteCount = 4 * 4;
     public static final int colorByteCount = 4 * 4;
     public static final int texCoordsByteCount = 4 * 2;
 
@@ -27,17 +27,17 @@ public class VertexData {
     public static final int colorByteOffset = positionByteOffset + positionByteCount;
     public static final int texCoordsByteOffset = colorByteOffset + colorByteCount;
 
-    public static final int elementCount = 3 + 4 + 2;
+    public static final int elementCount = 4 + 4 + 2;
     public static final int stride = positionByteCount + colorByteCount + texCoordsByteCount;
 
     public VertexData() {
-        position = new Vector3f();
+        position = new Vector4f();
         color = new Vector4f(1, 1, 1, 1);
         texCoords = new Vector2f();
     }
 
     public void setPosition(Vector3f position) {
-        this.position = position;
+        this.position = new Vector4f(position.x, position.y, position.z, 1);
     }
 
     public void setColor(Vector4f color) {
@@ -61,6 +61,7 @@ public class VertexData {
         out[i++] = position.x;
         out[i++] = position.y;
         out[i++] = position.z;
+        out[i++] = position.w;
 
         out[i++] = color.x;
         out[i++] = color.y;
@@ -74,7 +75,7 @@ public class VertexData {
     }
 
     public Vector3f getPosition() {
-        return position;
+        return new Vector3f(position.x, position.y, position.z);
     }
 
     public Vector4f getColor() {

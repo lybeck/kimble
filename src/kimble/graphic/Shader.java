@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -120,4 +121,5 @@ public class Shader {
     public int getModelMatrixLocation() {
         return modelMatrixLocation;
     }
+
 }

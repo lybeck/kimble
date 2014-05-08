@@ -7,6 +7,7 @@ package kimble.graphic.board;
 
 import kimble.graphic.Model;
 import kimble.graphic.VertexData;
+import kimble.graphic.loading.OBJLoader;
 import kimble.logic.Piece;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector2f;

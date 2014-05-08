@@ -5,8 +5,10 @@
  */
 package kimble.graphic.board;
 
+import java.io.File;
 import kimble.graphic.VertexData;
 import kimble.graphic.Model;
+import kimble.graphic.loading.OBJLoader;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -21,6 +23,8 @@ public class SquareGraphic extends Model {
 
     public SquareGraphic(Vector3f position, float sideLength, Vector3f color) {
         super(position, new Vector3f(0, 0, 0));
+
+//        OBJLoader.load(this.getClass().getResource("/res/models/game_board_positions.obj").getFile());
 
         this.sideLength = sideLength;
         this.color = color;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import kimble.graphic.board.DieGraphic;
+import kimble.graphic.loading.ModelManager;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -67,6 +68,8 @@ public class GameTest {
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
+
+        ModelManager.loadModels();
 
         board = new BoardGraphic(game, 10, 3, 1);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
