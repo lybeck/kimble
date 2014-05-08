@@ -34,6 +34,9 @@ public class Kimble {
     private Camera camera;
     private Shader shader;
 
+    private static final float TURN_TIME_STEP = 0.1f;
+    private static final boolean DEBUG = false;
+
     public Kimble() {
 
         setup();
@@ -103,7 +106,7 @@ public class Kimble {
             }
         }
         timer += dt;
-        if (timer >= 0.5f) {
+        if (timer >= TURN_TIME_STEP) {
             executeMove();
             timer = 0;
         }
@@ -121,20 +124,25 @@ public class Kimble {
     int lastKey = -1;
 
     private void executeMove() {
-        System.out.println("Team in turn: " + game.getTeamInTurn().getId());
         Turn nextTurn = game.getNextTurn();
-        System.out.println("Rolled: " + nextTurn.getDieRoll());
+        if (DEBUG) {
+            System.out.println("Team in turn: " + game.getTeamInTurn().getId());
+            System.out.println("Rolled: " + nextTurn.getDieRoll());
+        }
         if (nextTurn.getMoves().isEmpty()) {
-            System.out.println("No possible moves...");
+            if (DEBUG) {
+                System.out.println("No possible moves...");
+            }
             game.executeNoMove();
         } else {
             int selection = random.nextInt(nextTurn.getMoves().size());
             game.executeMove(selection);
-            System.out.println(game);
-
         }
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
+        if (DEBUG) {
+            System.out.println(game);
+            System.out.println("--------------------------------------------------");
+            System.out.println("");
+        }
     }
 
     private void render() {
