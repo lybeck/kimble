@@ -75,9 +75,9 @@ public class OBJLoader {
 
         Face face = new Face();
 
-        int i0 = Integer.parseInt(args0[0]);
-        int i1 = Integer.parseInt(args1[0]);
-        int i2 = Integer.parseInt(args2[0]);
+        int i0 = Integer.parseInt(args0[0]) - 1;
+        int i1 = Integer.parseInt(args1[0]) - 1;
+        int i2 = Integer.parseInt(args2[0]) - 1;
 
         face.setVertexIndices(i0, i1, i2);
 
