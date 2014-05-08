@@ -1,21 +1,24 @@
 package kimble;
 
-import graphic.board.BoardGraphic;
-import graphic.Screen;
 import graphic.Camera;
+import graphic.Screen;
 import graphic.Shader;
+import graphic.board.BoardGraphic;
 import graphic.board.PieceGraphic;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import org.lwjgl.util.vector.Vector3f;
-import logic.Constants;
+import java.util.Map;
 import java.util.Random;
+import logic.Constants;
 import logic.Game;
 import logic.GameStart;
+import logic.Move;
 import logic.Piece;
 import logic.Turn;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -87,11 +90,11 @@ public class Kimble {
     }
 
     private void update(float dt) {
-        if(Screen.wasResized()){
+        if (Screen.wasResized()) {
             Screen.updateViewport();
             camera.updateProjectionMatrixAttributes();
         }
-        
+
         executeMove();
         camera.update(dt);
         board.update(dt);
@@ -112,12 +115,25 @@ public class Kimble {
                 System.out.println("Team in turn: " + game.getTeamInTurn().getId());
                 Turn nextTurn = game.getNextTurn();
                 System.out.println("Rolled: " + nextTurn.getDieRoll());
-                if (nextTurn.getMoves().isEmpty()) {
+                
+                // remove optional moves
+                List<Move> moves = new ArrayList<>();
+                Map<Integer, Integer> map = new HashMap<>();
+                int j = 0;
+                for (int i = 0; i < nextTurn.getMoves().size(); ++i) {
+                    Move move = nextTurn.getMove(i);
+                    if (!move.isOptional()) {
+                        moves.add(move);
+                        map.put(j++, i);
+                    }
+                }
+                
+                if (moves.isEmpty()) {
                     System.out.println("No possible moves...");
                     game.executeNoMove();
                 } else {
-                    int selection = random.nextInt(nextTurn.getMoves().size());
-                    game.executeMove(selection);
+                    int selection = random.nextInt(moves.size());
+                    game.executeMove(map.get(selection));
                     System.out.println(game);
                 }
                 System.out.println("--------------------------------------------------");

@@ -53,4 +53,19 @@ public abstract class Square {
     public abstract boolean isRegularSquare();
 
     public abstract boolean isGoalSquare();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Square)) {
+            return false;
+        }
+        return ((Square) obj).id == id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + this.id;
+        return hash;
+    }
 }
