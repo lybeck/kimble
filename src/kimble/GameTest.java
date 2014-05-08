@@ -60,7 +60,7 @@ public class GameTest {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 4;
+        int numberOfTeams = 5;
         int numberOfPieces = 4;
         int sideLength = 8;
 

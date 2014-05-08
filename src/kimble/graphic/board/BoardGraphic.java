@@ -26,14 +26,14 @@ public class BoardGraphic extends Model {
 
     static {
         teamColors = new ArrayList<>();
-        teamColors.add(new Vector3f(1, 0, 0));
-        teamColors.add(new Vector3f(0, 1, 0));
-        teamColors.add(new Vector3f(0, 0, 1));
-        teamColors.add(new Vector3f(1, 1, 0));
+        teamColors.add(new Vector3f(.8f, 0, 0));
+        teamColors.add(new Vector3f(0, 0, 0.8f));
+        teamColors.add(new Vector3f(0.8f, 0.8f, 0));
+        teamColors.add(new Vector3f(0, 0.6f, 0f));
         teamColors.add(new Vector3f(1, 0, 1));
-        teamColors.add(new Vector3f(0, 1, 1));
-        teamColors.add(new Vector3f(1, 1, 1));
-        teamColors.add(new Vector3f(0.3f, 0.3f, 0.3f));
+        teamColors.add(new Vector3f(0, 0.8f, 0.8f));
+        teamColors.add(new Vector3f(1, 0.4f, 0));
+        teamColors.add(new Vector3f(.3f, 0.3f, 0.45f));
     }
 
     private final Game game;
@@ -46,7 +46,12 @@ public class BoardGraphic extends Model {
     private float goalSquarePadding;
     private float dieCupRadius = 10;
 
-    private float fade = 0.8f;
+    private float fade = 0.6f;
+
+    private float boardOuterPadding = 1.15f;
+    private float segmentAngle;
+    private int vertexCount;
+    private int firstGoalSquareIndex;
 
     public BoardGraphic(Game game, float squareSideLength, float squarePadding, float goalSquarePadding) {
         this.game = game;
@@ -67,18 +72,72 @@ public class BoardGraphic extends Model {
 
     @Override
     public VertexData[] setupVertexData() {
+
+        this.vertexCount = game.getNumberOfTeams() * 2;
+
+        VertexData[] vertices = new VertexData[vertexCount + 1];
+
+        float segmentLength = (float) (2 * Math.PI / game.getNumberOfTeams());
+
+        float currentAngle = -0.5f * segmentAngle;
+
         VertexData v0 = new VertexData();
-        v0.setPosition(new Vector3f(0, 0, 0));
-        return new VertexData[]{v0};
+        v0.setPosition(new Vector3f(0, -1, 0));
+        vertices[0] = v0;
+
+        int index = 1;
+        for (int i = 0; i < game.getNumberOfTeams(); i++) {
+
+            Vector3f tempPosition = goalSquares.get(firstGoalSquareIndex + i * game.getTeam(i).getPieces().size()).getPosition();
+            float boardRadius = boardOuterPadding * (tempPosition.length() + 2.5f * (squareSideLength + goalSquarePadding));
+
+            Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), -1, (float) (boardRadius * (Math.sin(currentAngle))));
+
+            Vector3f right = new Vector3f();
+            Vector3f.cross(tempPosition, new Vector3f(0, 1, 0), right);
+            right.normalise().scale((squareSideLength + goalSquarePadding) * game.getTeam(0).getPieces().size() / 1.5f);
+
+            Vector3f leftPoint = new Vector3f();
+            Vector3f rightPoint = new Vector3f();
+            Vector3f.sub(startPoint, right, leftPoint);
+            Vector3f.add(startPoint, right, rightPoint);
+
+            VertexData leftVertex = new VertexData();
+            leftVertex.setPosition(leftPoint);
+            leftVertex.setColor(new Vector3f(0, 0, 0));
+            VertexData rightVertex = new VertexData();
+            rightVertex.setPosition(rightPoint);
+            rightVertex.setColor(new Vector3f(0, 0, 0));
+
+            vertices[index++] = leftVertex;
+            vertices[index++] = rightVertex;
+
+            currentAngle += segmentLength;
+        }
+
+        return vertices;
     }
 
     @Override
     public byte[] setupIndexData() {
-        return new byte[]{0};
+
+        byte[] indices = new byte[vertexCount * 3];
+
+        int index = 0;
+        for (byte i = 1; i < vertexCount; i++) {
+            indices[index++] = 0;
+            indices[index++] = i;
+            indices[index++] = (byte) (i + 1);
+        }
+        indices[index++] = 0;
+        indices[index++] = (byte) vertexCount;
+        indices[index++] = (byte) 1;
+
+        return indices;
     }
 
     private float calcRadius(float squareSideLength, float squarePadding, Game game, float goalSquarePadding) {
-        float radius = (float) ((squareSideLength + squarePadding) * game.getBoard().getSquares().size() / (2 * Math.PI));
+        radius = (float) ((squareSideLength + squarePadding) * game.getBoard().getSquares().size() / (2 * Math.PI));
         float radiusOfGoalSquares = (game.getBoard().getGoalSquares(0).size() + 1) * (squareSideLength + goalSquarePadding) + dieCupRadius;
         radius = Math.max(radius, radiusOfGoalSquares);
 
@@ -91,7 +150,7 @@ public class BoardGraphic extends Model {
     private void generateBoard() {
         int numberOfSquares = game.getBoard().getSquares().size();
 
-        float segmentAngle = (float) (2 * Math.PI) / numberOfSquares;
+        this.segmentAngle = (float) (2 * Math.PI) / numberOfSquares;
 
         generateRegularSquares(radius, segmentAngle);
         generateGoalSquares(radius, segmentAngle);
@@ -142,6 +201,9 @@ public class BoardGraphic extends Model {
                 Vector3f goalPosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - 0.5f * segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - 0.5f * segmentAngle)));
 
                 int squareID = goalSquare.getID();
+                if (firstGoalSquareIndex == 0) {
+                    firstGoalSquareIndex = squareID;
+                }
                 Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
                 SquareGraphic squareGraphic = new SquareGraphic(goalPosition, squareSideLength, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
@@ -181,6 +243,7 @@ public class BoardGraphic extends Model {
 
     @Override
     public void update(float dt) {
+        super.update(dt);
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).update(dt);
         }
@@ -194,6 +257,7 @@ public class BoardGraphic extends Model {
 
     @Override
     public void render(Shader shader) {
+        super.render(shader);
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).render(shader);
         }
@@ -207,6 +271,7 @@ public class BoardGraphic extends Model {
 
     @Override
     public void cleanUp() {
+        super.cleanUp();
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).cleanUp();
         }

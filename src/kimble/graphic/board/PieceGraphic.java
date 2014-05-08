@@ -98,17 +98,21 @@ public class PieceGraphic extends Model {
     public void update(float dt) {
         super.update(dt);
 
+        SquareGraphic currentSquare = null;
+
         if (pieceLogic.getPosition() != null) {
             int squareID = pieceLogic.getPosition().getID();
-            SquareGraphic currentSquare = null;
             if (pieceLogic.getPosition().isGoalSquare()) {
                 currentSquare = board.getGoalSquares().get(squareID);
             } else {
                 currentSquare = board.getSquares().get(squareID);
             }
             setPosition(currentSquare.getPosition());
+            rotate(0, currentSquare.getRotation().y, 0);
         } else {
-            setPosition(board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId()).getPosition());
+            currentSquare = board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId());
+            setPosition(currentSquare.getPosition());
+            rotate(0, currentSquare.getRotation().y, 0);
         }
 
     }
