@@ -3,6 +3,7 @@ package kimble.logic;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import kimble.logic.exception.IllegalMoveException;
@@ -16,6 +17,7 @@ public class Game {
     private final Set<Integer> startValues;
     private final Set<Integer> continueTurnValues;
     private final List<Team> teams;
+    private final List<Team> finishedTeams;
     private final Board board;
     private final Die die;
     private int turnIndex;
@@ -31,6 +33,7 @@ public class Game {
         for (int i = 0; i < numberOfTeams; i++) {
             teams.add(new Team(i, numberOfPieces));
         }
+        finishedTeams = new ArrayList<>(numberOfTeams);
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
         this.board = new Board(numberOfTeams, numberOfPieces, sideLength);
@@ -74,6 +77,9 @@ public class Game {
         if (currentTurn != null) {
             throw new RuntimeException("No move selected from last turn!");
         }
+        if (isGameOver()) {
+            throw new RuntimeException("Game is already over!");
+        }
         Team team = getTeamInTurn();
         int roll = die.roll();
         List<Move> moves = new ArrayList<>();
@@ -99,7 +105,16 @@ public class Game {
         } catch (IllegalMoveException e) {
             throw new RuntimeException("Could not execute move!", e);
         }
-        nextTurn();
+        if (isFinished(teams.get(turnIndex))) {
+            finishedTeams.add(teams.get(turnIndex));
+            System.out.println("Team " + teams.get(turnIndex).getId() + " finished!");
+        }
+        // check if game just finished
+        if (isGameOver()) {
+            addLastTeamToFinishedTeams();
+        } else {
+            nextTurn();
+        }
     }
 
     public void executeNoMove() {
@@ -113,15 +128,45 @@ public class Game {
 
     private void nextTurn() {
         if (!continueTurnValues.contains(currentTurn.getDieRoll())) {
-            if (++turnIndex >= teams.size()) {
-                turnIndex = 0;
-            }
+            do {
+                if (++turnIndex >= teams.size()) {
+                    turnIndex = 0;
+                }
+            } while (isFinished(teams.get(turnIndex)));
         }
         currentTurn = null;
     }
 
     public Team getTeamInTurn() {
         return teams.get(turnIndex);
+    }
+
+    public boolean isGameOver() {
+        // all but one team is finishedTeams
+        return finishedTeams.size() >= teams.size() - 1;
+    }
+
+    private boolean isFinished(Team team) {
+        for (Piece piece : team.getPieces()) {
+            if (piece.getPosition() == null || !piece.getPosition().isGoalSquare()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Team> getFinishedTeams() {
+        return finishedTeams;
+    }
+
+    private void addLastTeamToFinishedTeams() {
+        Set<Team> teamSet = new HashSet<>(teams);
+        for (Team team : finishedTeams) {
+            teamSet.remove(team);
+        }
+        for (Team team : teamSet) {
+            finishedTeams.add(team);
+        }
     }
 
     @Override
@@ -184,5 +229,4 @@ public class Game {
     public Die getDie() {
         return die;
     }
-
 }
