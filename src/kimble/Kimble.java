@@ -1,21 +1,24 @@
 package kimble;
 
-import graphic.board.BoardGraphic;
-import graphic.Screen;
 import graphic.Camera;
+import graphic.Screen;
 import graphic.Shader;
+import graphic.board.BoardGraphic;
 import graphic.board.PieceGraphic;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import org.lwjgl.util.vector.Vector3f;
-import logic.Constants;
+import java.util.Map;
 import java.util.Random;
+import logic.Constants;
 import logic.Game;
 import logic.GameStart;
+import logic.Move;
 import logic.Piece;
 import logic.Turn;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -93,6 +96,7 @@ public class Kimble {
             Screen.updateViewport();
             camera.updateProjectionMatrixAttributes();
         }
+
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 executeMove();
@@ -127,6 +131,7 @@ public class Kimble {
             int selection = random.nextInt(nextTurn.getMoves().size());
             game.executeMove(selection);
             System.out.println(game);
+
         }
         System.out.println("--------------------------------------------------");
         System.out.println("");

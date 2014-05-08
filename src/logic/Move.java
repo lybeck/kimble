@@ -11,10 +11,16 @@ public class Move {
 
     private final Piece piece;
     private final Square destination;
+    private final boolean optional;
     private final IllegalMoveException illegalMoveException;
 
     Move(Game game, Piece piece, int dieRoll) {
         this.piece = piece;
+        if (piece.getPosition() != null) {
+            this.optional = piece.getPosition().isGoalSquare();
+        } else {
+            this.optional = false;
+        }
         IllegalMoveException exc = null;
         Square dest = null;
         if (piece.isHome()) {
@@ -24,15 +30,36 @@ public class Move {
                 dest = game.getBoard().getStartSquare(piece.getTeamId());
             }
         } else {
-            // TODO: move into goal squares
+
+            // this is used when in goal squares
+            boolean movingBack = false;
+
             dest = piece.getPosition();
+            Square next;
             for (int i = 0; i < dieRoll; i++) {
-                dest = dest.getNext();
+                if (movingBack) {
+                    next = dest.getPrev();
+                } else {
+                    next = dest.getNext();
+                }
+                if (next == null) {
+                    // at last goal square; start going back
+                    movingBack = true;
+                    next = dest.getPrev();
+                }
+                if (!movingBack && next.equals(game.getBoard().getStartSquare(piece.getTeamId()))) {
+                    next = game.getBoard().getGoalSquare(piece.getTeamId(), 0);
+                }
+                dest = next;
+            }
+            if (movingBack && dest.isRegularSquare()) {
+                // backed out from the goal squares
+                exc = new IllegalMoveException("Cannot move out from the goal squares!");
             }
         }
 
         // trying to eat own?
-        if (dest != null && dest.isPiecePresent() && dest.getPiece().getTeamId() == piece.getTeamId()) {
+        if (exc == null && dest != null && dest.isPiecePresent() && dest.getPiece().getTeamId() == piece.getTeamId()) {
             exc = new IllegalMoveException("Cannot eat own piece!");
         }
 
@@ -61,6 +88,10 @@ public class Move {
 
     public Square getDestination() {
         return destination;
+    }
+
+    public boolean isOptional() {
+        return optional;
     }
 
     public boolean isValidMove() {

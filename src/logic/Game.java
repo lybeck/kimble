@@ -103,8 +103,10 @@ public class Game {
     }
 
     public void executeNoMove() {
-        if (!currentTurn.getMoves().isEmpty()) {
-            throw new RuntimeException("Must select a move if possible!");
+        for (Move move : currentTurn.getMoves()) {
+            if (!move.isOptional()) {
+                throw new RuntimeException("Must select a move if possible!");
+            }
         }
         nextTurn();
     }
