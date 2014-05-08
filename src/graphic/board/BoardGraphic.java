@@ -8,7 +8,9 @@ package graphic.board;
 import graphic.Model;
 import graphic.Shader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import logic.Game;
 import logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
@@ -33,10 +35,15 @@ public class BoardGraphic extends Model {
     }
 
     private final Game game;
-    private List<SquareGraphic> squares;
+    private Map<Integer, SquareGraphic> squares;
+    private Map<Integer, SquareGraphic> goalSquares;
+    private Map<Integer, SquareGraphic> homeSquares;
 
     private float squareSideLength;
     private float goalSquarePadding;
+    private float dieCupRadius = 10;
+    
+    private float fade = 0.8f;
 
     public BoardGraphic(Game game, float squareSideLength, float squarePadding, float goalSquarePadding) {
         this.game = game;
@@ -48,36 +55,47 @@ public class BoardGraphic extends Model {
         this.squareSideLength = squareSideLength;
         this.goalSquarePadding = goalSquarePadding;
 
-        float radius = (float) ((squareSideLength + squarePadding) * game.getBoard().getSquares().size() / (2 * Math.PI));
+        float radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
 
         generateBoard(radius);
+    }
+
+    private float calcRadius(float squareSideLength, float squarePadding, Game game, float goalSquarePadding) {
+        float radius = (float) ((squareSideLength + squarePadding) * game.getBoard().getSquares().size() / (2 * Math.PI));
+        float radiusOfGoalSquares = (game.getBoard().getGoalSquares(0).size() + 1) * (squareSideLength + goalSquarePadding) + dieCupRadius;
+        radius = Math.max(radius, radiusOfGoalSquares);
+
+        System.out.println("radius = " + radius);
+        System.out.println("radiusOfGoalSquares = " + radiusOfGoalSquares);
+
+        return radius;
     }
 
     private void generateBoard(float radius) {
         int numberOfSquares = game.getBoard().getSquares().size();
 
         float segmentAngle = (float) (2 * Math.PI) / numberOfSquares;
-        float currentAngle = 0;
-        squares = new ArrayList<>();
 
+        generateRegularSquares(radius, segmentAngle);
+        generateGoalSquares(radius, segmentAngle);
+        generateHomeSquares(radius);
+    }
+
+    private void generateRegularSquares(float radius, float segmentAngle) {
+        float currentAngle = 0;
+
+        squares = new HashMap<>();
         for (Square s : game.getBoard().getSquares()) {
+
             Vector3f squarePosition = new Vector3f((float) (radius * Math.cos(currentAngle)), 0f, (float) (radius * Math.sin(currentAngle)));
 
             Vector3f squareColor = null;
-            // Loops over all teams and creates their goal squares and changes the color on the starting square.
-            for (int i = 0; i < game.getTeams().size(); i++) {
-                if (s.equals(game.getBoard().getStartSquare(game.getTeams().get(i).getId()))) {
-                    Vector3f c = teamColors.get(i);
-                    squareColor = new Vector3f(c.x * 0.7f, c.y * 0.7f, c.z * 0.7f);
+            int squareID = s.getID();
 
-                    // Creates the goal squares for team 'i'
-                    for (int j = 0; j < game.getTeam(i).getPieces().size(); j++) {
-                        float tempRadius = (radius - ((j + 1) * (squareSideLength + goalSquarePadding)));
-                        Vector3f goalPosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - .5f * segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - .5f * segmentAngle)));
-                        SquareGraphic goalSquareGraphic = new SquareGraphic(goalPosition, squareSideLength, squareColor);
-                        goalSquareGraphic.rotate(0, -(currentAngle - .5f * segmentAngle), 0);
-                        squares.add(goalSquareGraphic);
-                    }
+            for (int teamID = 0; teamID < game.getTeams().size(); teamID++) {
+                if (game.getBoard().getStartSquare(teamID).getID() == squareID) {
+                    squareColor = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                    break;
                 }
             }
             if (squareColor == null) {
@@ -86,34 +104,116 @@ public class BoardGraphic extends Model {
 
             SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength, squareColor);
             squareGraphic.rotate(0, -currentAngle, 0);
-            squares.add(squareGraphic);
+            squares.put(squareID, squareGraphic);
 
             currentAngle += segmentAngle;
         }
     }
 
+    private void generateGoalSquares(float radius, float segmentAngle) {
+        goalSquares = new HashMap<>();
+        for (int teamID = 0; teamID < game.getTeams().size(); teamID++) {
+
+            Square startSquare = game.getBoard().getStartSquare(teamID);
+            float currentAngle = -squares.get(startSquare.getID()).getRotation().y;
+
+            for (int i = 0; i < game.getBoard().getGoalSquares(teamID).size(); i++) {
+
+                Square goalSquare = game.getBoard().getGoalSquares(teamID).get(i);
+
+                float tempRadius = radius - ((i + 1) * (squareSideLength + goalSquarePadding));
+                Vector3f goalPosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle - 0.5f * segmentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle - 0.5f * segmentAngle)));
+
+                int squareID = goalSquare.getID();
+                Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                SquareGraphic squareGraphic = new SquareGraphic(goalPosition, squareSideLength, color);
+                squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
+                goalSquares.put(squareID, squareGraphic);
+            }
+        }
+    }
+
+    private void generateHomeSquares(float radius) {
+        homeSquares = new HashMap<>();
+        for (int teamID = 0; teamID < game.getTeams().size(); teamID++) {
+
+            Square startSquare = game.getBoard().getStartSquare(teamID);
+            float currentAngle = -squares.get(startSquare.getID()).getRotation().y;
+
+            float tempRadius = radius + squareSideLength + goalSquarePadding;
+            Vector3f homePosition = new Vector3f((float) (tempRadius * Math.cos(currentAngle)), 0, (float) (tempRadius * Math.sin(currentAngle)));
+            Vector3f right = new Vector3f();
+            Vector3f.cross(new Vector3f(0, 1, 0), homePosition, right);
+
+            right.normalise().scale((squareSideLength + goalSquarePadding) * game.getTeam(teamID).getPieces().size() / 2.0f - 0.5f * (squareSideLength + goalSquarePadding));
+            homePosition.translate(-right.x, -right.y, -right.z);
+
+            right.normalise().scale(squareSideLength + goalSquarePadding);
+
+            for (int i = 0; i < game.getTeam(teamID).getPieces().size(); i++) {
+                int squareID = game.getTeam(teamID).getPieces().size() * teamID + i;
+                Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                SquareGraphic squareGraphic = new SquareGraphic(homePosition, squareSideLength, color);
+                squareGraphic.rotate(0, -currentAngle, 0);
+                homeSquares.put(squareID, squareGraphic);
+
+                homePosition = new Vector3f(homePosition.x + right.x, homePosition.y + right.y, homePosition.z + right.z);
+            }
+        }
+    }
+
     @Override
     public void update(float dt) {
-        for (SquareGraphic s : squares) {
-            s.update(dt);
+        for (int squareIndex : squares.keySet()) {
+            squares.get(squareIndex).update(dt);
+        }
+        for (int squareIndex : goalSquares.keySet()) {
+            goalSquares.get(squareIndex).update(dt);
+        }
+        for (int squareIndex : homeSquares.keySet()) {
+            homeSquares.get(squareIndex).update(dt);
         }
     }
 
     @Override
     public void render(Shader shader) {
-        for (SquareGraphic s : squares) {
-            s.render(shader);
+        for (int squareIndex : squares.keySet()) {
+            squares.get(squareIndex).render(shader);
+        }
+        for (int squareIndex : goalSquares.keySet()) {
+            goalSquares.get(squareIndex).render(shader);
+        }
+        for (int squareIndex : homeSquares.keySet()) {
+            homeSquares.get(squareIndex).render(shader);
         }
     }
 
     @Override
     public void cleanUp() {
-        for (SquareGraphic s : squares) {
-            s.cleanUp();
+        for (int squareIndex : squares.keySet()) {
+            squares.get(squareIndex).cleanUp();
+        }
+        for (int squareIndex : goalSquares.keySet()) {
+            goalSquares.get(squareIndex).cleanUp();
+        }
+        for (int squareIndex : homeSquares.keySet()) {
+            homeSquares.get(squareIndex).cleanUp();
         }
     }
 
-    public List<SquareGraphic> getSquares() {
+    public Map<Integer, SquareGraphic> getSquares() {
         return squares;
+    }
+
+    public Map<Integer, SquareGraphic> getGoalSquares() {
+        return goalSquares;
+    }
+
+    public Map<Integer, SquareGraphic> getHomeSquares() {
+        return homeSquares;
+    }
+
+    public SquareGraphic getEmptyHomeSquare(int pieceID, int teamID) {
+        return homeSquares.get(teamID * game.getTeam(teamID).getPieces().size() + pieceID);
     }
 }

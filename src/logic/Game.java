@@ -161,7 +161,7 @@ public class Game {
         // goal squares
         for (int i = 0; i < getNumberOfTeams(); i++) {
             int pieces = getTeam(i).getPieces().size();
-            Square square = board.getGoalSquare(i);
+            Square square = board.getGoalSquare(i, 0);
             for (int j = 0; j < pieces; j++) {
                 if (square.isPiecePresent()) {
                     s.append(square.getPiece().getTeamId());

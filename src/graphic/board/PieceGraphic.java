@@ -11,7 +11,6 @@ import graphic.VertexData;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import logic.Piece;
-import logic.board.Square;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -50,10 +49,12 @@ public class PieceGraphic extends Model {
     private final float height;
 
     private final Piece pieceLogic;
+    private final BoardGraphic board;
 
-    public PieceGraphic(Piece pieceLogic, Vector3f position, Vector3f color, float width, float height) {
+    public PieceGraphic(BoardGraphic board, Piece pieceLogic, Vector3f position, Vector3f color, float width, float height) {
         super(position, new Vector3f(0, 0, 0));
 
+        this.board = board;
         this.pieceLogic = pieceLogic;
 
         this.width = width;
@@ -153,7 +154,13 @@ public class PieceGraphic extends Model {
     public void update(float dt) {
         super.update(dt);
 
-        Square s = pieceLogic.getPosition();
+        if (pieceLogic.getPosition() != null) {
+            int squareID = pieceLogic.getPosition().getID();
+            setPosition(board.getSquares().get(squareID).getPosition());
+        } else {
+            setPosition(board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId()).getPosition());
+        }
+
     }
 
     @Override

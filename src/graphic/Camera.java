@@ -5,7 +5,6 @@
  */
 package graphic;
 
-import graphic.Screen;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
