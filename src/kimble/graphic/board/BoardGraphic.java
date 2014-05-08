@@ -41,6 +41,7 @@ public class BoardGraphic extends Model {
     private Map<Integer, SquareGraphic> goalSquares;
     private Map<Integer, SquareGraphic> homeSquares;
 
+    private float radius;
     private float squareSideLength;
     private float goalSquarePadding;
     private float dieCupRadius = 10;
@@ -57,9 +58,9 @@ public class BoardGraphic extends Model {
         this.squareSideLength = squareSideLength;
         this.goalSquarePadding = goalSquarePadding;
 
-        float radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
+        radius = calcRadius(squareSideLength, squarePadding, game, goalSquarePadding);
 
-        generateBoard(radius);
+        generateBoard();
 
         setup();
     }
@@ -87,7 +88,7 @@ public class BoardGraphic extends Model {
         return radius;
     }
 
-    private void generateBoard(float radius) {
+    private void generateBoard() {
         int numberOfSquares = game.getBoard().getSquares().size();
 
         float segmentAngle = (float) (2 * Math.PI) / numberOfSquares;
@@ -231,5 +232,9 @@ public class BoardGraphic extends Model {
 
     public SquareGraphic getEmptyHomeSquare(int pieceID, int teamID) {
         return homeSquares.get(teamID * game.getTeam(teamID).getPieces().size() + pieceID);
+    }
+
+    public float getRadius() {
+        return radius;
     }
 }
