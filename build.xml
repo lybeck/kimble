@@ -75,5 +75,8 @@
         <copy todir="${dist.dir}/lib/natives/">
             <fileset dir="lib/natives/"/>
         </copy>
+        
+        <copydir src="res/" dest="${dist.dir}/res" />
+        
     </target>
 </project>
