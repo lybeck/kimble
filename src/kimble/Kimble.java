@@ -6,14 +6,12 @@ import graphic.Shader;
 import graphic.board.BoardGraphic;
 import graphic.board.PieceGraphic;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import license.License;
 import logic.Constants;
 import logic.Game;
 import logic.GameStart;
-import logic.Move;
 import logic.Piece;
 import logic.Turn;
 import org.lwjgl.input.Keyboard;
@@ -159,6 +157,8 @@ public class Kimble {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+//        System.out.println(License.LWJGL_LICENSE.getText());
 
         Screen.setupNativesLWJGL();
         Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
