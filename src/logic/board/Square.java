@@ -8,9 +8,19 @@ import logic.Piece;
  */
 public abstract class Square {
 
+    private final int id;
+
     private Square next;
     private Square prev;
     private Piece piece;
+
+    public Square(int id) {
+        this.id = id;
+    }
+
+    public final int getID() {
+        return id;
+    }
 
     public Square getNext() {
         return next;

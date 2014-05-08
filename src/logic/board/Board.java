@@ -1,7 +1,9 @@
 package logic.board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -14,13 +16,15 @@ public class Board {
     private final int numberOfPieces;
 
     private final List<Square> squares;
-    private final List<Square> goalSquares;
+//    private final List<Square> goalSquares;
+    private final Map<Integer, List<Square>> goalSquares;
 
     public Board(int numberOfTeams, int numberOfPieces, int sideLength) {
         this.numberOfTeams = numberOfTeams;
         this.numberOfPieces = numberOfPieces;
         this.squares = new ArrayList<>();
-        this.goalSquares = new ArrayList<>();
+//        this.goalSquares = new ArrayList<>();
+        this.goalSquares = new HashMap<>();
         this.sideLength = sideLength;
         initBoard();
     }
@@ -29,9 +33,10 @@ public class Board {
         // <editor-fold defaultstate="collapsed" desc="Initializing the board.">
         Square square;
         Square prev = null;
+        int squareID = 0;
         for (int i = 0; i < numberOfTeams; i++) {
             for (int j = 0; j < sideLength - 1; j++) {
-                square = new RegularSquare();
+                square = new RegularSquare(squareID++);
                 squares.add(square);
                 if (prev != null) {
                     square.setPrev(prev);
@@ -44,14 +49,16 @@ public class Board {
         firstSquare.setPrev(prev);
         prev.setNext(firstSquare);
 
+        squareID = 0;
         for (int i = 0; i < numberOfTeams; i++) {
-            square = new GoalSquare();
-            goalSquares.add(square);
+            square = new GoalSquare(squareID++);
+            goalSquares.put(i, new ArrayList<>());
+            goalSquares.get(i).add(square);
             square.setPrev(getStartSquare(i).getPrev());
             prev = square;
             for (int j = 0; j < numberOfPieces - 1; j++) {
-                square = new GoalSquare();
-                goalSquares.add(square);
+                square = new GoalSquare(squareID++);
+                goalSquares.get(i).add(square);
                 square.setPrev(prev);
                 prev.setNext(square);
                 prev = square;
@@ -85,14 +92,22 @@ public class Board {
         return teamId * (sideLength - 1);
     }
 
-    public List<Square> getGoalSquares() {
-        return goalSquares;
+    public List<Square> getGoalSquares(int teamId) {
+        return goalSquares.get(teamId);
     }
 
-    public Square getGoalSquare(int teamId) {
-        return goalSquares.get(getGoalSquareIndex(teamId));
+    public Square getGoalSquare(int teamId, int i) {
+        return goalSquares.get(teamId).get(i);
     }
 
+    @Deprecated
+    /**
+     * This method isn't working properly anymore! Moved the list structure to a
+     * Map structure for easier accessing the goal squares...
+     *
+     * @param teamId
+     * @return
+     */
     private int getGoalSquareIndex(int teamId) {
         return teamId * numberOfPieces;
     }

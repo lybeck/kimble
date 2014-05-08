@@ -8,10 +8,12 @@ import logic.board.Square;
  */
 public class Piece {
 
+    private final int id;
     private final int teamId;
     private Square position;
 
-    public Piece(int teamId) {
+    public Piece(int id, int teamId) {
+        this.id = id;
         this.teamId = teamId;
     }
 
@@ -25,6 +27,10 @@ public class Piece {
 
     public Square getPosition() {
         return position;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getTeamId() {

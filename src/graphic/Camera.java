@@ -5,7 +5,6 @@
  */
 package graphic;
 
-import graphic.Screen;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
@@ -56,6 +55,10 @@ public class Camera {
         this.nPosition = new Vector3f();
         this.rotation = rotation;
 
+        updateProjectionMatrixAttributes(fov, zNear, zFar);
+    }
+
+    public void updateProjectionMatrixAttributes() {
         updateProjectionMatrixAttributes(fov, zNear, zFar);
     }
 

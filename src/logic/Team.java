@@ -16,7 +16,7 @@ public class Team {
         this.id = id;
         this.pieces = new ArrayList<>(numberOfPieces);
         for (int i = 0; i < numberOfPieces; i++) {
-            pieces.add(new Piece(id));
+            pieces.add(new Piece(i, id));
         }
     }
 
