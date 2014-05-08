@@ -8,6 +8,7 @@ package graphic.board;
 import graphic.Model;
 import graphic.VertexData;
 import logic.Piece;
+import logic.board.Square;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -99,7 +100,13 @@ public class PieceGraphic extends Model {
 
         if (pieceLogic.getPosition() != null) {
             int squareID = pieceLogic.getPosition().getID();
-            setPosition(board.getSquares().get(squareID).getPosition());
+            SquareGraphic currentSquare = null;
+            if (pieceLogic.getPosition().isGoalSquare()) {
+                currentSquare = board.getGoalSquares().get(squareID);
+            } else {
+                currentSquare = board.getSquares().get(squareID);
+            }
+            setPosition(currentSquare.getPosition());
         } else {
             setPosition(board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId()).getPosition());
         }
