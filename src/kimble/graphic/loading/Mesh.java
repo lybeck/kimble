@@ -7,7 +7,6 @@ package kimble.graphic.loading;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import kimble.graphic.VertexData;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;

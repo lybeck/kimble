@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.graphic;
+package kimble.graphic.loading;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -34,8 +34,6 @@ public class VertexData {
     public static final int stride = positionByteCount + normalByteCount + colorByteCount + texCoordsByteCount;
 
     public VertexData() {
-        position = new Vector4f();
-        normal = new Vector3f();
         color = new Vector4f(1, 1, 1, 1);
         texCoords = new Vector2f();
     }
@@ -45,7 +43,11 @@ public class VertexData {
     }
 
     public void setNormal(Vector3f normal) {
-        this.normal = normal;
+        if (this.normal == null) {
+            this.normal = normal;
+        } else {
+            Vector3f.add(this.normal, normal, this.normal).normalise(this.normal);
+        }
     }
 
     public void setColor(Vector4f color) {
@@ -71,9 +73,15 @@ public class VertexData {
         out[i++] = position.z;
         out[i++] = position.w;
 
-        out[i++] = normal.x;
-        out[i++] = normal.y;
-        out[i++] = normal.z;
+        if (normal != null) {
+            out[i++] = normal.x;
+            out[i++] = normal.y;
+            out[i++] = normal.z;
+        } else {
+            out[i++] = 0;
+            out[i++] = 1;
+            out[i++] = 0;
+        }
 
         out[i++] = color.x;
         out[i++] = color.y;

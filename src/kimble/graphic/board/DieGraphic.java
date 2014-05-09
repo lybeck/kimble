@@ -6,7 +6,7 @@
 package kimble.graphic.board;
 
 import kimble.graphic.Model;
-import kimble.graphic.VertexData;
+import kimble.graphic.loading.VertexData;
 import kimble.graphic.loading.Mesh;
 import kimble.logic.Die;
 import org.lwjgl.util.vector.Vector2f;

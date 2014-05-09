@@ -7,7 +7,7 @@ package kimble.graphic.board;
 
 import kimble.graphic.Model;
 import kimble.graphic.Shader;
-import kimble.graphic.VertexData;
+import kimble.graphic.loading.VertexData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
