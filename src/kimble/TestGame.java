@@ -102,7 +102,7 @@ public class TestGame {
     private float cameraPositionAngle = 0;
 
     private void update(float dt) {
-        
+
         cameraPositionAngle += dt * 0.1;
         camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
         camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));

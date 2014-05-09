@@ -10,6 +10,7 @@ import kimble.graphic.loading.Mesh;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -65,7 +66,11 @@ public abstract class Model {
     }
 
     public void render(Shader shader) {
-        shader.render(getModelMatrixBuffer());
+        this.render(shader, new Vector3f(1, 1, 1));
+    }
+
+    public void render(Shader shader, Vector3f color) {
+        shader.render(getModelMatrixBuffer(), new Vector4f(color.x, color.y, color.z, 1));
         if (mesh != null) {
             mesh.render();
         }

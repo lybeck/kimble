@@ -63,6 +63,11 @@ public class PieceGraphic extends Model {
             rotate(0, currentSquare.getRotation().y, 0);
         }
     }
+    
+    @Override
+    public void render(Shader shader){
+        super.render(shader, color);
+    }
 
     public void setColor(Vector3f color) {
         this.color = color;
