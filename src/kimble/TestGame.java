@@ -14,6 +14,7 @@ import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
 import kimble.logic.Piece;
+import kimble.logic.Team;
 import kimble.logic.Turn;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
@@ -22,7 +23,7 @@ import org.lwjgl.util.vector.Vector3f;
  *
  * @author Lasse Lybeck
  */
-public class GameTest {
+public class TestGame {
 
     private Game game;
 
@@ -37,7 +38,7 @@ public class GameTest {
     private static final float TURN_TIME_STEP = 0.1f;
     private static final boolean DEBUG = false;
 
-    public GameTest() {
+    public TestGame() {
 
         setup();
 
@@ -101,7 +102,7 @@ public class GameTest {
     private float cameraPositionAngle = 0;
 
     private void update(float dt) {
-
+        
         cameraPositionAngle += dt * 0.1;
         camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
         camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
@@ -139,6 +140,9 @@ public class GameTest {
     int lastKey = -1;
 
     private void executeMove() {
+        if (game.isGameOver()) {
+            return;
+        }
         Turn nextTurn = game.getNextTurn();
         if (DEBUG) {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());
@@ -156,6 +160,16 @@ public class GameTest {
         if (DEBUG) {
             System.out.println(game);
             System.out.println("--------------------------------------------------");
+            System.out.println("");
+        }
+        // check if game just ended
+        if (game.isGameOver()) {
+            System.out.println("");
+            System.out.println("Game finished!");
+            System.out.println("Finishing order: ");
+            for (Team team : game.getFinishedTeams()) {
+                System.out.println(team.getId());
+            }
             System.out.println("");
         }
     }
