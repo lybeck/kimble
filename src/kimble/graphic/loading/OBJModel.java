@@ -14,15 +14,13 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class OBJModel extends Mesh {
 
-//    private Vector3f color;
     private List<OBJLoader.Face> faceList;
     private List<Vector3f> vertexList;
     private List<Vector3f> normalList;
 
     private VertexData[] vertices;
 
-    public OBJModel(Vector3f color, List<OBJLoader.Face> faces, List<Vector3f> vertices, List<Vector3f> normals) {
-//        this.color = color;
+    public OBJModel(List<OBJLoader.Face> faces, List<Vector3f> vertices, List<Vector3f> normals) {
         this.faceList = faces;
         this.vertexList = vertices;
         this.normalList = normals;
@@ -36,7 +34,6 @@ public class OBJModel extends Mesh {
         for (int i = 0; i < vertexList.size(); i++) {
             vertices[i] = new VertexData();
             vertices[i].setPosition(vertexList.get(i));
-//            vertices[i].setColor(color);
         }
         return vertices;
     }

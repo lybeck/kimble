@@ -22,16 +22,14 @@ public class ModelManager {
 
     public static void loadModels() {
         String dir = "/res/models/";
-        for (int j = 0; j < BoardGraphic.teamColors.size(); j++) {
-            for (int i = 0; i < modelNames.length; i++) {
-                load(modelNames[i] + "_" + j, ModelManager.class.getResource(dir + modelNames[i] + ".obj").getFile(), BoardGraphic.teamColors.get(j));
-            }
+        for (int i = 0; i < modelNames.length; i++) {
+            load(modelNames[i], ModelManager.class.getResource(dir + modelNames[i] + ".obj").getFile());
         }
     }
 
-    private static void load(String key, String filename, Vector3f color) {
+    private static void load(String key, String filename) {
         OBJLoader.load(filename);
-        OBJModel model = new OBJModel(color, OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getNormals());
+        OBJModel model = new OBJModel(OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getNormals());
         models.put(key, model);
     }
 

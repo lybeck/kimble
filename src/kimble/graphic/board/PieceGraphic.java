@@ -37,9 +37,7 @@ public class PieceGraphic extends Model {
         this.height = height;
 
         this.color = color;
-
-//        this.setMesh(new PieceMesh(width, height, color));
-        this.setMesh(ModelManager.getModel("game_piece_" + pieceLogic.getTeamId()));
+        this.setMesh(ModelManager.getModel("game_piece"));
     }
 
     @Override
@@ -63,9 +61,9 @@ public class PieceGraphic extends Model {
             rotate(0, currentSquare.getRotation().y, 0);
         }
     }
-    
+
     @Override
-    public void render(Shader shader){
+    public void render(Shader shader) {
         super.render(shader, color);
     }
 
