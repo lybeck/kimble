@@ -7,7 +7,9 @@ package kimble.graphic.board;
 
 import kimble.graphic.loading.VertexData;
 import kimble.graphic.Model;
+import kimble.graphic.Shader;
 import kimble.graphic.loading.Mesh;
+import kimble.graphic.loading.ModelManager;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -24,7 +26,8 @@ public class SquareGraphic extends Model {
 
         this.color = color;
 
-        this.setMesh(new SquareMesh(sideLength, color));
+//        this.setMesh(new SquareMesh(sideLength, color));
+        this.setMesh(ModelManager.getModel("game_board_position"));
     }
 
     public void setColor(Vector3f color) {
@@ -33,6 +36,11 @@ public class SquareGraphic extends Model {
 
     public Vector3f getColor() {
         return color;
+    }
+    
+    @Override
+    public void render(Shader shader){
+        super.render(shader, color);
     }
 
     private static class SquareMesh extends Mesh {

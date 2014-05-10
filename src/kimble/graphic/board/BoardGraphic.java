@@ -199,13 +199,13 @@ public class BoardGraphic extends Model {
     public void render(Shader shader) {
         super.render(shader);
         for (int squareIndex : squares.keySet()) {
-            squares.get(squareIndex).render(shader, squares.get(squareIndex).getColor());
+            squares.get(squareIndex).render(shader);
         }
         for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).render(shader, goalSquares.get(squareIndex).getColor());
+            goalSquares.get(squareIndex).render(shader);
         }
         for (int squareIndex : homeSquares.keySet()) {
-            homeSquares.get(squareIndex).render(shader, homeSquares.get(squareIndex).getColor());
+            homeSquares.get(squareIndex).render(shader);
         }
     }
 

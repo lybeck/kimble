@@ -16,7 +16,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class ModelManager {
 
-    private static String[] modelNames = new String[]{"game_piece"};
+    private static String[] modelNames = new String[]{"game_piece", "game_board_position"};
 
     private static final Map<String, OBJModel> models = new HashMap<>();
 

@@ -64,15 +64,15 @@ public class TestGame {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 4;
-        int numberOfPieces = 4;
+        int numberOfTeams = 8;
+        int numberOfPieces = 8;
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
 
         ModelManager.loadModels();
 
-        board = new BoardGraphic(game, 1, 0.3f, 0.1f, 1.15f, 1f);
+        board = new BoardGraphic(game, 1, 0.01f, 0.003f, 1.15f, 0.5f);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
