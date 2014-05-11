@@ -5,11 +5,11 @@
  */
 package kimble.graphic.board;
 
-import kimble.graphic.loading.VertexData;
+import kimble.graphic.model.VertexData;
 import kimble.graphic.Model;
 import kimble.graphic.Shader;
-import kimble.graphic.loading.Mesh;
-import kimble.graphic.loading.ModelManager;
+import kimble.graphic.model.Mesh;
+import kimble.graphic.model.ModelManager;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 

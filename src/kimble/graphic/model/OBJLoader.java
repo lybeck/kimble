@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.graphic.loading;
+package kimble.graphic.model;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -24,11 +25,13 @@ public class OBJLoader {
 
     private static List<Vector3f> vertices;
     private static List<Vector3f> normals;
+    private static List<Vector2f> texCoords;
     private static List<Face> faces;
 
     private static void createLists() {
         vertices = new ArrayList<>();
         normals = new ArrayList<>();
+        texCoords = new ArrayList<>();
         faces = new ArrayList<>();
     }
 
@@ -57,6 +60,10 @@ public class OBJLoader {
                     float y = Float.parseFloat(args[2]);
                     float z = Float.parseFloat(args[3]);
                     normals.add(new Vector3f(x, y, z));
+                } else if (line.startsWith("vt ")) {
+                    float s = Float.parseFloat(args[1]);
+                    float t = Float.parseFloat(args[2]);
+                    texCoords.add(new Vector2f(s, t));
                 } else if (line.startsWith("f ")) {
                     faces.add(extractIndices(args[1], args[2], args[3]));
                 } else if (line.startsWith("#")) {
@@ -84,6 +91,14 @@ public class OBJLoader {
 
         face.setVertexIndices(i0, i1, i2);
 
+        if (!(args0[1].length() == 0 || args1[1].length() == 0 || args2[1].length() == 0)) {
+            int t0 = Integer.parseInt(args0[1]) - 1;
+            int t1 = Integer.parseInt(args1[1]) - 1;
+            int t2 = Integer.parseInt(args2[1]) - 1;
+
+            face.setTexCoordIndices(t0, t1, t2);
+        }
+
         int n0 = Integer.parseInt(args0[2]) - 1;
         int n1 = Integer.parseInt(args1[2]) - 1;
         int n2 = Integer.parseInt(args2[2]) - 1;
@@ -107,11 +122,16 @@ public class OBJLoader {
 
     public static class Face {
 
+        private boolean normals;
+        private boolean texCoords;
+
         private int[] vertexIndices;
+        private int[] texCoordIndices;
         private int[] normalIndices;
 
         public Face() {
             vertexIndices = new int[3];
+            texCoordIndices = new int[3];
             normalIndices = new int[3];
         }
 
@@ -121,18 +141,38 @@ public class OBJLoader {
             vertexIndices[2] = i2;
         }
 
+        public void setTexCoordIndices(int t0, int t1, int t2) {
+            texCoordIndices[0] = t0;
+            texCoordIndices[1] = t1;
+            texCoordIndices[2] = t2;
+            texCoords = true;
+        }
+
         public void setNormalIndices(int n0, int n1, int n2) {
             normalIndices[0] = n0;
             normalIndices[1] = n1;
             normalIndices[2] = n2;
+            normals = true;
         }
 
         public int[] getVertexIndices() {
             return vertexIndices;
         }
 
+        public int[] getTexCoordIndices() {
+            return texCoordIndices;
+        }
+
         public int[] getNormalIndices() {
             return normalIndices;
+        }
+
+        public boolean hasTexCoords() {
+            return texCoords;
+        }
+
+        public boolean hasNormals() {
+            return normals;
         }
     }
 

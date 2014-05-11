@@ -7,12 +7,12 @@ package kimble.graphic.board;
 
 import kimble.graphic.Model;
 import kimble.graphic.Shader;
-import kimble.graphic.loading.VertexData;
+import kimble.graphic.model.VertexData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kimble.graphic.loading.Mesh;
+import kimble.graphic.model.Mesh;
 import kimble.logic.Game;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
@@ -292,7 +292,7 @@ public class BoardGraphic extends Model {
                 Vector3f tempPosition = goalSquares.get(firstGoalSquareIndex + i * game.getTeam(i).getPieces().size()).getPosition();
                 float boardRadius = boardOuterPadding * (tempPosition.length() + 2.5f * (squareSideLength + goalSquarePadding));
 
-                Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), -1, (float) (boardRadius * (Math.sin(currentAngle))));
+                Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), 0, (float) (boardRadius * (Math.sin(currentAngle))));
 
                 Vector3f right = new Vector3f();
                 Vector3f.cross(tempPosition, new Vector3f(0, 1, 0), right);

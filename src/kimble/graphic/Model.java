@@ -6,7 +6,7 @@
 package kimble.graphic;
 
 import java.nio.FloatBuffer;
-import kimble.graphic.loading.Mesh;
+import kimble.graphic.model.Mesh;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;

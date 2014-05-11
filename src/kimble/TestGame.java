@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import kimble.graphic.board.DieGraphic;
-import kimble.graphic.loading.ModelManager;
+import kimble.graphic.model.ModelManager;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -38,11 +38,30 @@ public class TestGame {
     private static final float TURN_TIME_STEP = 0.1f;
     private static final boolean DEBUG = false;
 
+    private boolean running;
+
     public TestGame() {
 
         setup();
+        start();
 
-        while (!Screen.isCloseRequested()) {
+    }
+
+    public void start() {
+        if (this.running) {
+            return;
+        }
+        this.running = true;
+        loop();
+    }
+
+    public void stop() {
+        this.running = false;
+    }
+
+    public void loop() {
+
+        while (running) {
             Screen.clear();
 
             float dt = 0.016f;
@@ -64,15 +83,15 @@ public class TestGame {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 8;
-        int numberOfPieces = 8;
+        int numberOfTeams = 4;
+        int numberOfPieces = 4;
         int sideLength = 8;
 
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
 
         ModelManager.loadModels();
 
-        board = new BoardGraphic(game, 1, 0.01f, 0.003f, 1.15f, 0.5f);
+        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 0.5f);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
@@ -103,9 +122,13 @@ public class TestGame {
 
     private void update(float dt) {
 
+        if (Screen.isCloseRequested()) {
+            stop();
+        }
+
         cameraPositionAngle += dt * 0.1;
-        camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
-        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+//        camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
+//        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
 
         if (Screen.wasResized()) {
             Screen.updateViewport();
