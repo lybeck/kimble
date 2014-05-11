@@ -27,7 +27,7 @@ public class ModelManager {
 
     private static void load(String key, String filename) {
         OBJLoader.load(filename);
-        OBJModel model = new OBJModel(OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getNormals());
+        OBJModel model = new OBJModel(OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getTexCoords(), OBJLoader.getNormals());
         models.put(key, model);
     }
 

@@ -49,7 +49,7 @@ public class TextureManager {
             textureHeight = decoder.getHeight();
 
             buffer = ByteBuffer.allocateDirect(4 * textureWidth * textureHeight);
-            decoder.decode(buffer, textureWidth * 4, Format.RGBA);
+            decoder.decode(buffer, 4 * textureWidth, Format.RGBA);
             buffer.flip();
 
             in.close();

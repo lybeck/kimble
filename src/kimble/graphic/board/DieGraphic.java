@@ -6,9 +6,11 @@
 package kimble.graphic.board;
 
 import kimble.graphic.Model;
+import kimble.graphic.Shader;
 import kimble.graphic.model.VertexData;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.model.ModelManager;
+import kimble.graphic.model.TextureManager;
 import kimble.logic.Die;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -31,6 +33,12 @@ public class DieGraphic extends Model {
 
 //        this.setMesh(new DieMesh(width, new Vector3f(0.8f, 0.8f, 0.8f)));
         this.setMesh(ModelManager.getModel("game_die"));
+    }
+
+    public void render(Shader shader) {
+        TextureManager.getTexture("Die_tex").bind();
+        super.render(shader, color);
+        TextureManager.getTexture("Die_tex").unbind();
     }
 
     private static class DieMesh extends Mesh {

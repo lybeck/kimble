@@ -10,10 +10,10 @@ import kimble.graphic.Shader;
 import kimble.graphic.model.VertexData;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.model.ModelManager;
+import kimble.graphic.model.TextureManager;
 import kimble.logic.Piece;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *

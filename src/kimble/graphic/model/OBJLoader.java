@@ -112,6 +112,10 @@ public class OBJLoader {
         return vertices;
     }
 
+    public static List<Vector2f> getTexCoords() {
+        return texCoords;
+    }
+
     public static List<Vector3f> getNormals() {
         return normals;
     }
