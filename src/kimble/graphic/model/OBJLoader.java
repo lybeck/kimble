@@ -125,9 +125,9 @@ public class OBJLoader {
         private boolean normals;
         private boolean texCoords;
 
-        private int[] vertexIndices;
-        private int[] texCoordIndices;
-        private int[] normalIndices;
+        private final int[] vertexIndices;
+        private final int[] texCoordIndices;
+        private final int[] normalIndices;
 
         public Face() {
             vertexIndices = new int[3];

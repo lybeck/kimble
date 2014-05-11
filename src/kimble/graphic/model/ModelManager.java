@@ -7,8 +7,6 @@ package kimble.graphic.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import kimble.graphic.board.BoardGraphic;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -35,6 +33,12 @@ public class ModelManager {
 
     public static OBJModel getModel(String name) {
         return models.get(name);
+    }
+
+    public static void cleanUp() {
+        for (String key : models.keySet()) {
+            models.get(key).cleanUp();
+        }
     }
 
 }

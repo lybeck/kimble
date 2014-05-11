@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 import kimble.graphic.board.DieGraphic;
 import kimble.graphic.model.ModelManager;
+import kimble.graphic.model.TextureManager;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -72,12 +73,7 @@ public class TestGame {
             Screen.update(60);
         }
 
-        shader.cleanUp();
-        board.cleanUp();
-        for (PieceGraphic p : pieces) {
-            p.cleanUp();
-        }
-        Screen.cleanUp();
+        cleanUp();
     }
 
     private void setup() {
@@ -90,6 +86,7 @@ public class TestGame {
         this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
 
         ModelManager.loadModels();
+        TextureManager.loadTextures();
 
         board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 0.5f);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
@@ -207,5 +204,19 @@ public class TestGame {
             p.render(shader);
         }
         shader.unbind();
+    }
+
+    private void cleanUp() {
+
+        shader.cleanUp();
+        board.cleanUp();
+        for (PieceGraphic p : pieces) {
+            p.cleanUp();
+        }
+
+        ModelManager.cleanUp();
+        TextureManager.cleanUp();
+
+        Screen.cleanUp();
     }
 }
