@@ -43,7 +43,7 @@ public class Camera {
         this.maxYaw = (float) Math.PI / 2;
         this.minYaw = -(float) Math.PI / 2;
 
-        this.moveSpeed = 20;
+        this.moveSpeed = 1;
 
         this.projectionMatrix = new Matrix4f();
         this.viewMatrix = new Matrix4f();

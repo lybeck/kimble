@@ -3,12 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.graphic.testui;
+package texturetest;
 
-/**
- *
- * @author Christoffer
- */
 public class VertexData {
 
     // Vertex data

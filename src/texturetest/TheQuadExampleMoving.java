@@ -3,12 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.graphic.testui;
+package texturetest;
 
-/**
- *
- * @author Christoffer
- */
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -35,12 +31,26 @@ import org.lwjgl.util.vector.Vector3f;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import kimble.graphic.Camera;
 import kimble.graphic.Screen;
+import kimble.graphic.model.ModelManager;
+import kimble.graphic.testui.Cube;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LESS;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glDepthFunc;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 public class TheQuadExampleMoving {
 
     // Entry point for the application
-
     public static void main(String[] args) {
         Screen.setupNativesLWJGL();
         new TheQuadExampleMoving();
@@ -48,8 +58,8 @@ public class TheQuadExampleMoving {
 
     // Setup variables
     private final String WINDOW_TITLE = "The Quad: Moving";
-    private final int WIDTH = 320;
-    private final int HEIGHT = 200;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
     private final double PI = 3.14159265358979323846;
     // Quad variables
     private int vaoId = 0;
@@ -67,14 +77,15 @@ public class TheQuadExampleMoving {
     private int projectionMatrixLocation = 0;
     private int viewMatrixLocation = 0;
     private int modelMatrixLocation = 0;
-    private Matrix4f projectionMatrix = null;
-    private Matrix4f viewMatrix = null;
+
     private Matrix4f modelMatrix = null;
     private Vector3f modelPos = null;
     private Vector3f modelAngle = null;
     private Vector3f modelScale = null;
-    private Vector3f cameraPos = null;
     private FloatBuffer matrix44Buffer = null;
+
+    private Camera camera;
+    private Cube cube;
 
     public TheQuadExampleMoving() {
         // Initialize OpenGL (Display)
@@ -100,26 +111,11 @@ public class TheQuadExampleMoving {
     }
 
     private void setupMatrices() {
-        // Setup projection matrix
-        projectionMatrix = new Matrix4f();
-        float fieldOfView = 60f;
-        float aspectRatio = (float) WIDTH / (float) HEIGHT;
-        float near_plane = 0.1f;
-        float far_plane = 100f;
 
-        float y_scale = this.coTangent(this.degreesToRadians(fieldOfView / 2f));
-        float x_scale = y_scale / aspectRatio;
-        float frustum_length = far_plane - near_plane;
+        ModelManager.loadModels();
 
-        projectionMatrix.m00 = x_scale;
-        projectionMatrix.m11 = y_scale;
-        projectionMatrix.m22 = -((far_plane + near_plane) / frustum_length);
-        projectionMatrix.m23 = -1;
-        projectionMatrix.m32 = -((2 * near_plane * far_plane) / frustum_length);
-        projectionMatrix.m33 = 0;
-
-        // Setup view matrix
-        viewMatrix = new Matrix4f();
+        camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), 60, 0.1f, 100f);
+        cube = new Cube();
 
         // Setup model matrix
         modelMatrix = new Matrix4f();
@@ -129,8 +125,8 @@ public class TheQuadExampleMoving {
     }
 
     private void setupTextures() {
-        texIds[0] = this.loadPNGTexture("res/textures/Die_tex.png", GL13.GL_TEXTURE0);
-//        texIds[1] = this.loadPNGTexture("assets/images/stGrid2.png", GL13.GL_TEXTURE0);
+        texIds[0] = this.loadPNGTexture("res/textures/temp.png", GL13.GL_TEXTURE0);
+        texIds[1] = this.loadPNGTexture("res/textures/Die_tex.png", GL13.GL_TEXTURE0);
 
         this.exitOnGLError("setupTexture");
     }
@@ -155,6 +151,16 @@ public class TheQuadExampleMoving {
 
         // Setup an XNA like background color
         GL11.glClearColor(0.4f, 0.6f, 0.9f, 0f);
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+//        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Map the internal OpenGL coordinate system to the entire screen
         GL11.glViewport(0, 0, WIDTH, HEIGHT);
@@ -238,7 +244,7 @@ public class TheQuadExampleMoving {
         modelPos = new Vector3f(0, 0, 0);
         modelAngle = new Vector3f(0, 0, 0);
         modelScale = new Vector3f(1, 1, 1);
-        cameraPos = new Vector3f(0, 0, -1);
+//        cameraPos = new Vector3f(0, 0, -1);
 
         this.exitOnGLError("setupQuad");
     }
@@ -323,13 +329,14 @@ public class TheQuadExampleMoving {
             }
         }
 
-		//-- Update matrices
+        //-- Update matrices
         // Reset view and model matrices
-        viewMatrix = new Matrix4f();
+//        viewMatrix = new Matrix4f();
         modelMatrix = new Matrix4f();
 
         // Translate camera
-        Matrix4f.translate(cameraPos, viewMatrix, viewMatrix);
+        camera.update(0.016f);
+//        Matrix4f.translate(cameraPos, viewMatrix, viewMatrix);
 
         // Scale, translate and rotate model
         Matrix4f.scale(modelScale, modelMatrix, modelMatrix);
@@ -344,12 +351,14 @@ public class TheQuadExampleMoving {
         // Upload matrices to the uniform variables
         GL20.glUseProgram(pId);
 
-        projectionMatrix.store(matrix44Buffer);
-        matrix44Buffer.flip();
-        GL20.glUniformMatrix4(projectionMatrixLocation, false, matrix44Buffer);
-        viewMatrix.store(matrix44Buffer);
-        matrix44Buffer.flip();
-        GL20.glUniformMatrix4(viewMatrixLocation, false, matrix44Buffer);
+//        projectionMatrix.store(matrix44Buffer);
+//        matrix44Buffer.flip();
+//        GL20.glUniformMatrix4(projectionMatrixLocation, false, matrix44Buffer);
+//        viewMatrix.store(matrix44Buffer);
+//        matrix44Buffer.flip();
+//        GL20.glUniformMatrix4(viewMatrixLocation, false, matrix44Buffer);
+        GL20.glUniformMatrix4(projectionMatrixLocation, false, Camera.getProjectionMatrixBuffer());
+        GL20.glUniformMatrix4(viewMatrixLocation, false, Camera.getViewMatrixBuffer());
         modelMatrix.store(matrix44Buffer);
         matrix44Buffer.flip();
         GL20.glUniformMatrix4(modelMatrixLocation, false, matrix44Buffer);
@@ -360,13 +369,15 @@ public class TheQuadExampleMoving {
     }
 
     private void renderCycle() {
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         GL20.glUseProgram(pId);
 
         // Bind the texture
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texIds[textureSelector]);
+
+        cube.render();
 
         // Bind to the VAO that has all the information about the vertices
         GL30.glBindVertexArray(vaoId);
@@ -511,9 +522,9 @@ public class TheQuadExampleMoving {
 
         // Setup what to do when the texture has to be scaled
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
-                GL11.GL_LINEAR);
+                GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                GL11.GL_LINEAR_MIPMAP_LINEAR);
+                GL11.GL_NEAREST_MIPMAP_NEAREST);
 
         this.exitOnGLError("loadPNGTexture");
 

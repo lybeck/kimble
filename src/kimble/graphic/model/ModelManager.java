@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class ModelManager {
 
-    private static String[] modelNames = new String[]{"game_piece", "game_board_position", "game_die"};
+    private static String[] modelNames = new String[]{"game_piece", "game_board_position", "game_die", "cube"};
 
     private static final Map<String, OBJModel> models = new HashMap<>();
 

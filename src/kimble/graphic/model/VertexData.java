@@ -5,6 +5,7 @@
  */
 package kimble.graphic.model;
 
+import java.util.Objects;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -15,12 +16,12 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class VertexData {
 
-    private Vector4f position;
+    private Vector3f position;
     private Vector3f normal;
     private Vector4f color;
     private Vector2f texCoords;
 
-    public static final int positionByteCount = 4 * 4;
+    public static final int positionByteCount = 4 * 3;
     public static final int normalByteCount = 4 * 3;
     public static final int colorByteCount = 4 * 4;
     public static final int texCoordsByteCount = 4 * 2;
@@ -30,16 +31,18 @@ public class VertexData {
     public static final int colorByteOffset = normalByteOffset + normalByteCount;
     public static final int texCoordsByteOffset = colorByteOffset + colorByteCount;
 
-    public static final int elementCount = 4 + 3 + 4 + 2;
+    public static final int elementCount = 3 + 3 + 4 + 2;
     public static final int stride = positionByteCount + normalByteCount + colorByteCount + texCoordsByteCount;
 
     public VertexData() {
+        position = null;
+        normal = null;
         color = new Vector4f(1, 1, 1, 1);
-        texCoords = new Vector2f();
+        texCoords = null;
     }
 
     public void setPosition(Vector3f position) {
-        this.position = new Vector4f(position.x, position.y, position.z, 1);
+        this.position = position;
     }
 
     public void setNormal(Vector3f normal) {
@@ -61,7 +64,11 @@ public class VertexData {
     }
 
     public void setTexCoords(Vector2f texCoords) {
-        this.texCoords = texCoords;
+        if (this.texCoords == null) {
+            this.texCoords = texCoords;
+        } else {
+            this.texCoords = new Vector2f(this.texCoords.x + texCoords.x, this.texCoords.y + texCoords.y);
+        }
     }
 
     public float[] getElements() {
@@ -71,7 +78,6 @@ public class VertexData {
         out[i++] = position.x;
         out[i++] = position.y;
         out[i++] = position.z;
-        out[i++] = position.w;
 
         if (normal != null) {
             out[i++] = normal.x;
@@ -88,8 +94,13 @@ public class VertexData {
         out[i++] = color.z;
         out[i++] = color.w;
 
-        out[i++] = texCoords.x;
-        out[i++] = texCoords.y;
+        if (texCoords != null) {
+            out[i++] = texCoords.x;
+            out[i++] = texCoords.y;
+        } else {
+            out[i++] = 1;
+            out[i++] = 0;
+        }
 
         return out;
     }
@@ -108,5 +119,33 @@ public class VertexData {
 
     public Vector2f getTexCoords() {
         return texCoords;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!(obj instanceof VertexData)) {
+            return false;
+        }
+
+        VertexData other = (VertexData) obj;
+
+        boolean samePosition = this.position.x == other.position.x
+                && this.position.y == other.position.y
+                && this.position.z == other.position.z;
+        boolean sameTexCoord = true; //this.texCoords.equals(other.texCoords);
+        boolean sameNormal = true; //this.normal.equals(other.normal);
+
+        return samePosition && sameTexCoord && sameNormal;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.position);
+        hash = 97 * hash + Objects.hashCode(this.normal);
+        hash = 97 * hash + Objects.hashCode(this.color);
+        hash = 97 * hash + Objects.hashCode(this.texCoords);
+        return hash;
     }
 }

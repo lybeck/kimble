@@ -65,6 +65,12 @@ public abstract class Model {
         modelMatrixBuffer.flip();
     }
 
+    public void render() {
+        if (mesh != null) {
+            mesh.render();
+        }
+    }
+
     public void render(Shader shader) {
         this.render(shader, new Vector3f(1, 1, 1));
     }

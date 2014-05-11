@@ -55,15 +55,18 @@ public class OBJLoader {
                     float y = Float.parseFloat(args[2]);
                     float z = Float.parseFloat(args[3]);
                     vertices.add(new Vector3f(x, y, z));
+
+                } else if (line.startsWith("vt ")) {
+                    float s = Float.parseFloat(args[1]);
+                    float t = Float.parseFloat(args[2]);
+                    texCoords.add(new Vector2f(s, t));
+
                 } else if (line.startsWith("vn ")) {
                     float x = Float.parseFloat(args[1]);
                     float y = Float.parseFloat(args[2]);
                     float z = Float.parseFloat(args[3]);
                     normals.add(new Vector3f(x, y, z));
-                } else if (line.startsWith("vt ")) {
-                    float s = Float.parseFloat(args[1]);
-                    float t = Float.parseFloat(args[2]);
-                    texCoords.add(new Vector2f(s, t));
+
                 } else if (line.startsWith("f ")) {
                     faces.add(extractIndices(args[1], args[2], args[3]));
                 } else if (line.startsWith("#")) {
@@ -99,11 +102,13 @@ public class OBJLoader {
             face.setTexCoordIndices(t0, t1, t2);
         }
 
-        int n0 = Integer.parseInt(args0[2]) - 1;
-        int n1 = Integer.parseInt(args1[2]) - 1;
-        int n2 = Integer.parseInt(args2[2]) - 1;
+        if (!(args0[2].length() == 0 || args1[2].length() == 0 || args2[2].length() == 0)) {
+            int n0 = Integer.parseInt(args0[2]) - 1;
+            int n1 = Integer.parseInt(args1[2]) - 1;
+            int n2 = Integer.parseInt(args2[2]) - 1;
 
-        face.setNormalIndices(n0, n1, n2);
+            face.setNormalIndices(n0, n1, n2);
+        }
 
         return face;
     }
@@ -129,46 +134,41 @@ public class OBJLoader {
         private boolean normals;
         private boolean texCoords;
 
-        private final int[] vertexIndices;
-        private final int[] texCoordIndices;
-        private final int[] normalIndices;
+        private final FaceIndex[] indices;
 
         public Face() {
-            vertexIndices = new int[3];
-            texCoordIndices = new int[3];
-            normalIndices = new int[3];
+            indices = new FaceIndex[3];
+            for (int i = 0; i < indices.length; i++) {
+                indices[i] = new FaceIndex();
+            }
         }
 
         public void setVertexIndices(int i0, int i1, int i2) {
-            vertexIndices[0] = i0;
-            vertexIndices[1] = i1;
-            vertexIndices[2] = i2;
+            indices[0].vertexIndex = i0;
+            indices[1].vertexIndex = i1;
+            indices[2].vertexIndex = i2;
         }
 
         public void setTexCoordIndices(int t0, int t1, int t2) {
-            texCoordIndices[0] = t0;
-            texCoordIndices[1] = t1;
-            texCoordIndices[2] = t2;
+            indices[0].texCoordIndex = t0;
+            indices[1].texCoordIndex = t1;
+            indices[2].texCoordIndex = t2;
             texCoords = true;
         }
 
         public void setNormalIndices(int n0, int n1, int n2) {
-            normalIndices[0] = n0;
-            normalIndices[1] = n1;
-            normalIndices[2] = n2;
+            indices[0].normalIndex = n0;
+            indices[1].normalIndex = n1;
+            indices[2].normalIndex = n2;
             normals = true;
         }
 
-        public int[] getVertexIndices() {
-            return vertexIndices;
+        public FaceIndex[] getIndices() {
+            return indices;
         }
 
-        public int[] getTexCoordIndices() {
-            return texCoordIndices;
-        }
-
-        public int[] getNormalIndices() {
-            return normalIndices;
+        public FaceIndex getIndex(int i) {
+            return indices[i];
         }
 
         public boolean hasTexCoords() {
@@ -177,6 +177,33 @@ public class OBJLoader {
 
         public boolean hasNormals() {
             return normals;
+        }
+    }
+
+    public static class FaceIndex {
+
+        public int vertexIndex;
+        public int texCoordIndex;
+        public int normalIndex;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof FaceIndex) {
+                FaceIndex index = (FaceIndex) obj;
+                return vertexIndex == index.vertexIndex
+                        && texCoordIndex == index.texCoordIndex
+                        && normalIndex == index.normalIndex;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 71 * hash + this.vertexIndex;
+            hash = 71 * hash + this.texCoordIndex;
+            hash = 71 * hash + this.normalIndex;
+            return hash;
         }
     }
 
