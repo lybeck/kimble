@@ -199,7 +199,6 @@ public class TestGame {
         shader.bind();
         board.render(shader);
         die.render(shader);
-
         for (PieceGraphic p : pieces) {
             p.render(shader);
         }

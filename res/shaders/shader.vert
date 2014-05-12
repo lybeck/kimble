@@ -17,7 +17,7 @@ out vec2 pass_TextureCoord;
 void main(void) {
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(in_Position, 1);
 	
-	// pass_Color = in_Color * team_Color;
-        pass_Color = in_Color;
+	pass_Color = in_Color * team_Color;
+        // pass_Color = in_Color;
 	pass_TextureCoord = in_TextureCoord;
 }

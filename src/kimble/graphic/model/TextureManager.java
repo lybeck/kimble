@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL11.glGenTextures;
  */
 public class TextureManager {
 
-    private static String[] textureNames = new String[]{"Die_tex"};
+    private static final String[] textureNames = new String[]{"Die_tex"};
 
     private static final Map<String, Texture> textures = new HashMap<>();
 

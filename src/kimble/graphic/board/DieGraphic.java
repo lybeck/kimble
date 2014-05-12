@@ -24,7 +24,7 @@ public class DieGraphic extends Model {
     private final Die die;
     private final float width;
 
-    private Vector3f color = new Vector3f(0.8f, 0.8f, 0.8f);
+    private Vector3f color = new Vector3f(0, 0, 0);
 
     public DieGraphic(Die die, float width) {
 
@@ -35,6 +35,7 @@ public class DieGraphic extends Model {
         this.setMesh(ModelManager.getModel("game_die"));
     }
 
+    @Override
     public void render(Shader shader) {
         TextureManager.getTexture("Die_tex").bind();
         super.render(shader, color);
