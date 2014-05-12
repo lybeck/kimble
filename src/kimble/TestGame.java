@@ -14,7 +14,6 @@ import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
-import kimble.graphic.testui.Cube;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -42,7 +41,7 @@ public class TestGame {
     private Shader shader;
 
     private static final boolean AUTOMATIC_TURNS = true;
-    private static final float TURN_TIME_STEP = 0.1f;
+    private static final float TURN_TIME_STEP = 2f;
     private static final boolean DEBUG = true;
 
     private boolean running;
@@ -62,7 +61,7 @@ public class TestGame {
             setupLogic();
 
             while (!game.isGameOver()) {
-                executeMove();
+                executeMove(game.getNextTurn());
             }
         } else {
             setupLogic();
@@ -110,7 +109,7 @@ public class TestGame {
         dieHolder = new DieHolderGraphic();
         dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
 
-        die = new DieGraphic(game.getDie());
+        die = new DieGraphic();
 
         dieHolderDome = new DieHolderDomeGraphic();
     }
@@ -179,7 +178,9 @@ public class TestGame {
 
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                executeMove();
+                Turn nextTurn = game.getNextTurn();
+                die.setDieRoll(nextTurn.getDieRoll());
+                executeMove(nextTurn);
             } else if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 rotateCamera = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -190,7 +191,9 @@ public class TestGame {
         if (AUTOMATIC_TURNS) {
             timer += dt;
             if (timer >= TURN_TIME_STEP) {
-                executeMove();
+                Turn nextTurn = game.getNextTurn();
+                die.setDieRoll(nextTurn.getDieRoll());
+                executeMove(nextTurn);
                 timer = 0;
             }
         }
@@ -211,13 +214,13 @@ public class TestGame {
 
     int lastKey = -1;
 
-    private void executeMove() {
+    private void executeMove(Turn nextTurn) {
 
         if (game.isGameOver()) {
             return;
         }
 
-        Turn nextTurn = game.getNextTurn();
+//        Turn nextTurn = game.getNextTurn();
         if (DEBUG) {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());
             System.out.println("Rolled: " + nextTurn.getDieRoll());
