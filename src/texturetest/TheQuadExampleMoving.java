@@ -34,8 +34,8 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import kimble.graphic.Camera;
 import kimble.graphic.Model;
 import kimble.graphic.Screen;
-import kimble.graphic.board.DieGraphic;
 import kimble.graphic.model.ModelManager;
+import kimble.graphic.testui.Cube;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
@@ -115,7 +115,7 @@ public class TheQuadExampleMoving {
         ModelManager.loadModels();
 
         camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), 60, 0.1f, 100f);
-        cube = new DieGraphic(null, 10);
+        cube = new Cube();
 
         // Setup model matrix
         modelMatrix = new Matrix4f();
@@ -125,8 +125,8 @@ public class TheQuadExampleMoving {
     }
 
     private void setupTextures() {
-        texIds[0] = this.loadPNGTexture("res/textures/temp.png", GL13.GL_TEXTURE0);
-        texIds[1] = this.loadPNGTexture("res/textures/Die_tex.png", GL13.GL_TEXTURE0);
+        texIds[1] = 0; //this.loadPNGTexture("res/textures/temp.png", GL13.GL_TEXTURE0);
+        texIds[0] = this.loadPNGTexture(TheQuadExampleMoving.class.getResource("/res/textures/Die_tex.png").getFile(), GL13.GL_TEXTURE0);
 
         this.exitOnGLError("setupTexture");
     }
@@ -383,27 +383,26 @@ public class TheQuadExampleMoving {
 
         cube.render();
 
-//        // Bind to the VAO that has all the information about the vertices
-//        GL30.glBindVertexArray(vaoId);
-//        GL20.glEnableVertexAttribArray(0);
-//        GL20.glEnableVertexAttribArray(1);
-//        GL20.glEnableVertexAttribArray(2);
-//        GL20.glEnableVertexAttribArray(3);
-//
-//        // Bind to the index VBO that has all the information about the order of the vertices
-//        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
-//
-//        // Draw the vertices
-//        GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
-//
-//        // Put everything back to default (deselect)
-//        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-//        GL20.glDisableVertexAttribArray(0);
-//        GL20.glDisableVertexAttribArray(1);
-//        GL20.glDisableVertexAttribArray(2);
-//        GL20.glDisableVertexAttribArray(3);
-//        GL30.glBindVertexArray(0);
+        // Bind to the VAO that has all the information about the vertices
+        GL30.glBindVertexArray(vaoId);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+        GL20.glEnableVertexAttribArray(3);
 
+        // Bind to the index VBO that has all the information about the order of the vertices
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
+
+        // Draw the vertices
+        GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
+
+        // Put everything back to default (deselect)
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
+        GL20.glDisableVertexAttribArray(3);
+        GL30.glBindVertexArray(0);
         GL20.glUseProgram(0);
 
         this.exitOnGLError("renderCycle");

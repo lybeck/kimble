@@ -23,6 +23,7 @@ public class ModelManager {
         for (int i = 0; i < modelNames.length; i++) {
             load(modelNames[i], ModelManager.class.getResource(dir + modelNames[i] + ".obj").getFile());
         }
+        System.out.println("Done loading models.");
     }
 
     private static void load(String key, String filename) {

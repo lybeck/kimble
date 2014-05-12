@@ -186,8 +186,16 @@ public class Camera {
         this.position = position;
     }
 
+    public Vector3f getPosition() {
+        return position;
+    }
+
     public void setRotation(Vector3f rotation) {
         this.rotation = rotation;
+    }
+
+    public Vector3f getRotation() {
+        return rotation;
     }
 
     public Matrix4f getProjectionMatrix() {

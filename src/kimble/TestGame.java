@@ -41,6 +41,11 @@ public class TestGame {
 
     private boolean running;
 
+    private float timer = 0;
+    private float cameraPositionAngle = 0;
+    private boolean rotateCamera = false;
+    private Vector3f cameraPos;
+
     public TestGame() {
 
         setup();
@@ -92,6 +97,7 @@ public class TestGame {
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
+        cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
 
         pieces = new ArrayList<>();
         for (int i = 0; i < game.getTeams().size(); i++) {
@@ -114,8 +120,7 @@ public class TestGame {
 //        Mouse.setGrabbed(true);
     }
 
-    private float timer = 0;
-    private float cameraPositionAngle = 0;
+    private boolean cameraInPosition;
 
     private void update(float dt) {
 
@@ -123,9 +128,27 @@ public class TestGame {
             stop();
         }
 
-        cameraPositionAngle += dt * 0.1;
-//        camera.setPosition(new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)));
-//        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+        if (rotateCamera) {
+
+            if (cameraPos.x - camera.getPosition().x < 0.05f && cameraPos.z - camera.getPosition().z < 0.05f) {
+                cameraInPosition = true;
+            }
+
+            cameraPositionAngle += dt * 0.1;
+            cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
+
+//            float pitch = (float) (Math.PI / 3.0);
+//            float yaw = cameraPositionAngle - (float) Math.PI / 2;
+//            float roll = 0;
+//            camera.setRotation(new Vector3f(pitch, yaw, roll));
+
+            if (cameraInPosition) {
+                camera.setPosition(cameraPos);
+                camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+            } else {
+                camera.move((cameraPos.x - camera.getPosition().x) * dt, 0, (cameraPos.z - camera.getPosition().z) * dt);
+            }
+        }
 
         if (Screen.wasResized()) {
             Screen.updateViewport();
@@ -135,6 +158,11 @@ public class TestGame {
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 executeMove();
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+                rotateCamera = true;
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+                rotateCamera = false;
+                cameraInPosition = false;
             }
         }
         if (AUTOMATIC_TURNS) {
@@ -160,9 +188,11 @@ public class TestGame {
     int lastKey = -1;
 
     private void executeMove() {
+
         if (game.isGameOver()) {
             return;
         }
+
         Turn nextTurn = game.getNextTurn();
         if (DEBUG) {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());

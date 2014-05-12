@@ -33,6 +33,7 @@ public class TextureManager {
         for (int i = 0; i < textureNames.length; i++) {
             load(textureNames[i], TextureManager.class.getResource(dir + textureNames[i] + ".png").getFile());
         }
+        System.out.println("Done loading textures.");
     }
 
     private static void load(String key, String filename) {

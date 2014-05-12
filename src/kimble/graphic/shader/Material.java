@@ -29,7 +29,7 @@ public class Material {
     private static int shininessLocation;
 
     public Material() {
-        lightPosition = new Vector4f(0, 20, 0, 1);
+        lightPosition = new Vector4f(10, 20, 0, 1);
         diffuse = new Vector4f(1, 1, 1, 1);
         ambient = new Vector4f(0.1f, 0.1f, 0.1f, 1f);
         specular = new Vector4f(0.5f, 0.5f, 0.5f, 1f);
