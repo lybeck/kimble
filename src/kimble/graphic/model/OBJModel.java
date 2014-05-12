@@ -6,7 +6,9 @@
 package kimble.graphic.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -37,41 +39,54 @@ public class OBJModel extends Mesh {
     public VertexData[] setupVertexData() {
 
         List<VertexData> vertexData = new ArrayList<>();
-        for (int i = 0; i < vertexList.size(); i++) {
-            vertexData.add(new VertexData());
-            vertexData.get(i).setPosition(vertexList.get(i));
-        }
+        List<Integer> indexData = new ArrayList<>();
+//        for (int i = 0; i < vertexList.size(); i++) {
+//            vertexData.add(new VertexData());
+//            vertexData.get(i).setPosition(vertexList.get(i));
+//        }
 
-        indices = new int[faceList.size() * 3];
-        int cur = 0;
+        Map<OBJLoader.FaceIndex, Integer> indexMap = new HashMap<>();
+        int currentVertexIndex = 0;
         for (int i = 0; i < faceList.size(); i++) {
             OBJLoader.Face face = faceList.get(i);
             for (int j = 0; j < face.getIndices().length; j++) {
-                OBJLoader.FaceIndex index = face.getIndex(j);
+                OBJLoader.FaceIndex currentIndex = face.getIndex(j);
 
-                VertexData v = vertexData.get(index.vertexIndex);
-                Vector2f texCoord = null;
-                Vector3f normal = null;
-                if (face.hasNormals()) {
-                    normal = normalList.get(index.normalIndex);
-                }
+                Vector3f currentPosition = vertexList.get(currentIndex.vertexIndex);
+                Vector2f currentTexCoord = null;
+                Vector3f currentNormal = null;
+
                 if (face.hasTexCoords()) {
-                    texCoord = texCoordList.get(index.texCoordIndex);
+                    currentTexCoord = texCoordList.get(currentIndex.texCoordIndex);
+                }
+                if (face.hasNormals()) {
+                    currentNormal = normalList.get(currentIndex.normalIndex);
                 }
 
-                if (v.getTexCoords() == null) {
-                    v.setTexCoords(texCoord);
-                    indices[cur++] = index.vertexIndex;
+                Integer previousVertexIndex = indexMap.get(currentIndex);
+
+                if (previousVertexIndex == null) {
+
+                    indexMap.put(currentIndex, currentVertexIndex);
+
+                    VertexData v = new VertexData();
+                    v.setPosition(currentPosition);
+                    v.setTexCoords(currentTexCoord);
+                    v.setNormal(currentNormal);
+                    vertexData.add(v);
+
+                    indexData.add(currentVertexIndex);
+                    currentVertexIndex++;
+
                 } else {
-                    VertexData v2 = new VertexData();
-                    v2.setPosition(new Vector3f(v.getPosition().x, v.getPosition().y, v.getPosition().z));
-                    v2.setTexCoords(texCoord);
-                    vertexData.add(v2);
-                    indices[cur++] = vertexData.size();
+                    indexData.add(previousVertexIndex);
                 }
-
-                v.setNormal(normal);
             }
+        }
+
+        indices = new int[indexData.size()];
+        for (int i = 0; i < indexData.size(); i++) {
+            indices[i] = indexData.get(i);
         }
         System.out.println("Vertices = " + vertexData.size() + ", indices = " + indices.length);
 
@@ -85,7 +100,6 @@ public class OBJModel extends Mesh {
             System.out.print(indices[i] + ", ");
         }
         System.out.println("");
-
         return vertices;
     }
 

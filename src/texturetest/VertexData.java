@@ -8,8 +8,8 @@ package texturetest;
 public class VertexData {
 
     // Vertex data
-
     private float[] xyzw = new float[]{0f, 0f, 0f, 1f};
+    private float[] norm = new float[]{0f, 0f, 0f};
     private float[] rgba = new float[]{1f, 1f, 1f, 1f};
     private float[] st = new float[]{0f, 0f};
 
@@ -18,29 +18,36 @@ public class VertexData {
 
     // Elements per parameter
     public static final int positionElementCount = 4;
+    public static final int normalElementCount = 3;
     public static final int colorElementCount = 4;
     public static final int textureElementCount = 2;
 
     // Bytes per parameter
-    public static final int positionBytesCount = positionElementCount * elementBytes;
+    public static final int positionByteCount = positionElementCount * elementBytes;
+    public static final int normalByteCount = normalElementCount * elementBytes;
     public static final int colorByteCount = colorElementCount * elementBytes;
     public static final int textureByteCount = textureElementCount * elementBytes;
 
     // Byte offsets per parameter
     public static final int positionByteOffset = 0;
-    public static final int colorByteOffset = positionByteOffset + positionBytesCount;
+    public static final int normalByteOffset = positionByteOffset + positionByteCount;
+    public static final int colorByteOffset = normalByteOffset + normalByteCount;
     public static final int textureByteOffset = colorByteOffset + colorByteCount;
 
     // The amount of elements that a vertex has
-    public static final int elementCount = positionElementCount
+    public static final int elementCount = positionElementCount + normalElementCount
             + colorElementCount + textureElementCount;
     // The size of a vertex in bytes, like in C/C++: sizeof(Vertex)
-    public static final int stride = positionBytesCount + colorByteCount
+    public static final int stride = positionByteCount + normalByteCount + colorByteCount
             + textureByteCount;
 
     // Setters
     public void setXYZ(float x, float y, float z) {
         this.setXYZW(x, y, z, 1f);
+    }
+
+    public void setNorm(float x, float y, float z) {
+        this.norm = new float[]{x, y, z};
     }
 
     public void setRGB(float r, float g, float b) {
@@ -69,6 +76,10 @@ public class VertexData {
         out[i++] = this.xyzw[1];
         out[i++] = this.xyzw[2];
         out[i++] = this.xyzw[3];
+        // Insert Normal elements
+        out[i++] = this.norm[0];
+        out[i++] = this.norm[1];
+        out[i++] = this.norm[2];
         // Insert RGBA elements
         out[i++] = this.rgba[0];
         out[i++] = this.rgba[1];
@@ -87,6 +98,10 @@ public class VertexData {
 
     public float[] getXYZ() {
         return new float[]{this.xyzw[0], this.xyzw[1], this.xyzw[2]};
+    }
+
+    public float[] getNorm() {
+        return new float[]{this.norm[0], this.norm[1], this.norm[2]};
     }
 
     public float[] getRGBA() {

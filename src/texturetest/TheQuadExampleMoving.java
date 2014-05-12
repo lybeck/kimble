@@ -32,9 +32,10 @@ import org.lwjgl.util.vector.Vector3f;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import kimble.graphic.Camera;
+import kimble.graphic.Model;
 import kimble.graphic.Screen;
+import kimble.graphic.board.DieGraphic;
 import kimble.graphic.model.ModelManager;
-import kimble.graphic.testui.Cube;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
@@ -42,7 +43,6 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_LESS;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthFunc;
@@ -85,7 +85,7 @@ public class TheQuadExampleMoving {
     private FloatBuffer matrix44Buffer = null;
 
     private Camera camera;
-    private Cube cube;
+    private Model cube;
 
     public TheQuadExampleMoving() {
         // Initialize OpenGL (Display)
@@ -115,7 +115,7 @@ public class TheQuadExampleMoving {
         ModelManager.loadModels();
 
         camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), 60, 0.1f, 100f);
-        cube = new Cube();
+        cube = new DieGraphic(null, 10);
 
         // Setup model matrix
         modelMatrix = new Matrix4f();
@@ -158,7 +158,6 @@ public class TheQuadExampleMoving {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-//        glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -172,18 +171,22 @@ public class TheQuadExampleMoving {
         // We'll define our quad using 4 vertices of the custom 'TexturedVertex' class
         VertexData v0 = new VertexData();
         v0.setXYZ(-0.5f, 0.5f, 0);
+        v0.setNorm(0, 0, 1);
         v0.setRGB(1, 0, 0);
         v0.setST(0, 0);
         VertexData v1 = new VertexData();
         v1.setXYZ(-0.5f, -0.5f, 0);
+        v0.setNorm(0, 0, 1);
         v1.setRGB(0, 1, 0);
         v1.setST(0, 1);
         VertexData v2 = new VertexData();
         v2.setXYZ(0.5f, -0.5f, 0);
+        v0.setNorm(0, 0, 1);
         v2.setRGB(0, 0, 1);
         v2.setST(1, 1);
         VertexData v3 = new VertexData();
         v3.setXYZ(0.5f, 0.5f, 0);
+        v0.setNorm(0, 0, 1);
         v3.setRGB(1, 1, 1);
         v3.setST(1, 0);
 
@@ -219,14 +222,13 @@ public class TheQuadExampleMoving {
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesFloatBuffer, GL15.GL_STREAM_DRAW);
 
         // Put the position coordinates in attribute list 0
-        GL20.glVertexAttribPointer(0, VertexData.positionElementCount, GL11.GL_FLOAT,
-                false, VertexData.stride, VertexData.positionByteOffset);
-        // Put the color components in attribute list 1
-        GL20.glVertexAttribPointer(1, VertexData.colorElementCount, GL11.GL_FLOAT,
-                false, VertexData.stride, VertexData.colorByteOffset);
-        // Put the texture coordinates in attribute list 2
-        GL20.glVertexAttribPointer(2, VertexData.textureElementCount, GL11.GL_FLOAT,
-                false, VertexData.stride, VertexData.textureByteOffset);
+        GL20.glVertexAttribPointer(0, VertexData.positionElementCount, GL11.GL_FLOAT, false, VertexData.stride, VertexData.positionByteOffset);
+        // Put the normal coordinates in attribute list 1
+        GL20.glVertexAttribPointer(1, VertexData.normalElementCount, GL11.GL_FLOAT, false, VertexData.stride, VertexData.normalByteOffset);
+        // Put the color components in attribute list 2
+        GL20.glVertexAttribPointer(2, VertexData.colorElementCount, GL11.GL_FLOAT, false, VertexData.stride, VertexData.colorByteOffset);
+        // Put the texture coordinates in attribute list 3
+        GL20.glVertexAttribPointer(3, VertexData.textureElementCount, GL11.GL_FLOAT, false, VertexData.stride, VertexData.textureByteOffset);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
@@ -262,10 +264,12 @@ public class TheQuadExampleMoving {
 
         // Position information will be attribute 0
         GL20.glBindAttribLocation(pId, 0, "in_Position");
-        // Color information will be attribute 1
-        GL20.glBindAttribLocation(pId, 1, "in_Color");
-        // Textute information will be attribute 2
-        GL20.glBindAttribLocation(pId, 2, "in_TextureCoord");
+        // Normal information will be attribute 1
+        GL20.glBindAttribLocation(pId, 1, "in_Normal");
+        // Color information will be attribute 2
+        GL20.glBindAttribLocation(pId, 2, "in_Color");
+        // Textute information will be attribute 3
+        GL20.glBindAttribLocation(pId, 3, "in_TextureCoord");
 
         GL20.glLinkProgram(pId);
         GL20.glValidateProgram(pId);
@@ -379,24 +383,26 @@ public class TheQuadExampleMoving {
 
         cube.render();
 
-        // Bind to the VAO that has all the information about the vertices
-        GL30.glBindVertexArray(vaoId);
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-
-        // Bind to the index VBO that has all the information about the order of the vertices
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
-
-        // Draw the vertices
-        GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
-
-        // Put everything back to default (deselect)
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(2);
-        GL30.glBindVertexArray(0);
+//        // Bind to the VAO that has all the information about the vertices
+//        GL30.glBindVertexArray(vaoId);
+//        GL20.glEnableVertexAttribArray(0);
+//        GL20.glEnableVertexAttribArray(1);
+//        GL20.glEnableVertexAttribArray(2);
+//        GL20.glEnableVertexAttribArray(3);
+//
+//        // Bind to the index VBO that has all the information about the order of the vertices
+//        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboiId);
+//
+//        // Draw the vertices
+//        GL11.glDrawElements(GL11.GL_TRIANGLES, indicesCount, GL11.GL_UNSIGNED_BYTE, 0);
+//
+//        // Put everything back to default (deselect)
+//        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+//        GL20.glDisableVertexAttribArray(0);
+//        GL20.glDisableVertexAttribArray(1);
+//        GL20.glDisableVertexAttribArray(2);
+//        GL20.glDisableVertexAttribArray(3);
+//        GL30.glBindVertexArray(0);
 
         GL20.glUseProgram(0);
 
@@ -427,6 +433,8 @@ public class TheQuadExampleMoving {
         // Disable the VBO index from the VAO attributes list
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
+        GL20.glDisableVertexAttribArray(3);
 
         // Delete the vertex VBO
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
