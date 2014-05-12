@@ -25,19 +25,15 @@ public class DieGraphic extends Model {
 
     private Material material;
     private final Die die;
-    private final float width;
-
-    private Vector3f color = new Vector3f(0, 0, 0);
 
     public DieGraphic(Die die, float width) {
 
         this.die = die;
-        this.width = width;
 
         this.material = new Material();
-        this.material.setDiffuse(new Vector4f(color.x, color.y, color.z, 1));
+        this.material.setDiffuse(new Vector4f(0, 0, 0, 1));
 
-//        this.setMesh(new DieMesh(width, new Vector3f(0.8f, 0.8f, 0.8f)));
+        this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel("game_die"));
     }
 

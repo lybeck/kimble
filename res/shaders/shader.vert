@@ -30,12 +30,12 @@ void main(void) {
         mat4 normalMatrix = transpose(inverse(viewMatrix * modelMatrix));
         vec4 normal = normalize(normalMatrix * vec4(in_Normal, 0.0));
         
-        float intensity = max(dot(normal, material.lightPosition), 0.0);
+        float intensity = max(dot(normal, viewMatrix * material.lightPosition), 0.0);
 
         if(intensity > 0.0){
             vec4 pos = viewMatrix * modelMatrix * vec4(in_Position, 1);
             vec4 eye = normalize(-pos);
-            vec4 h = normalize(material.lightPosition + eye);
+            vec4 h = normalize(viewMatrix * material.lightPosition + eye);
 
             float intSpec = max(dot(h, normal), 0.0);
             spec = material.specular * pow(intSpec, material.shininess);

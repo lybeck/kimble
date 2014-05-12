@@ -13,9 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kimble.graphic.model.Mesh;
+import kimble.graphic.shader.Material;
 import kimble.logic.Game;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -23,24 +25,28 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class BoardGraphic extends Model {
 
-    public static final List<Vector3f> teamColors;
+    public static final List<Vector3f> TEAM_COLORS;
 
     static {
-        teamColors = new ArrayList<>();
-        teamColors.add(new Vector3f(.8f, 0, 0));
-        teamColors.add(new Vector3f(0, 0, 0.8f));
-        teamColors.add(new Vector3f(0.8f, 0.8f, 0));
-        teamColors.add(new Vector3f(0, 0.6f, 0f));
-        teamColors.add(new Vector3f(1, 0, 1));
-        teamColors.add(new Vector3f(0, 0.8f, 0.8f));
-        teamColors.add(new Vector3f(1, 0.4f, 0));
-        teamColors.add(new Vector3f(.3f, 0.3f, 0.45f));
+        TEAM_COLORS = new ArrayList<>();
+        TEAM_COLORS.add(new Vector3f(.8f, 0, 0));
+        TEAM_COLORS.add(new Vector3f(0, 0, 0.8f));
+        TEAM_COLORS.add(new Vector3f(0.8f, 0.8f, 0));
+        TEAM_COLORS.add(new Vector3f(0, 0.6f, 0f));
+        TEAM_COLORS.add(new Vector3f(1, 0, 1));
+        TEAM_COLORS.add(new Vector3f(0, 0.8f, 0.8f));
+        TEAM_COLORS.add(new Vector3f(1, 0.4f, 0));
+        TEAM_COLORS.add(new Vector3f(.3f, 0.3f, 0.45f));
     }
+
+    public static final Vector3f REGULAR_SQUARE_COLOR = new Vector3f(0.5f, 0.5f, 0.5f);
 
     private final Game game;
     private Map<Integer, SquareGraphic> squares;
     private Map<Integer, SquareGraphic> goalSquares;
     private Map<Integer, SquareGraphic> homeSquares;
+
+    private Material material;
 
     private float radius;
     private float squareSideLength;
@@ -58,8 +64,8 @@ public class BoardGraphic extends Model {
 
         this.game = game;
 
-        if (game.getTeams().size() > teamColors.size()) {
-            throw new UnsupportedOperationException("Can't have more teams than: " + teamColors.size());
+        if (game.getTeams().size() > TEAM_COLORS.size()) {
+            throw new UnsupportedOperationException("Can't have more teams than: " + TEAM_COLORS.size());
         }
 
         this.squareSideLength = squareSideLength;
@@ -72,6 +78,9 @@ public class BoardGraphic extends Model {
 
         generateBoard();
 
+        this.material = new Material();
+        this.material.setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 1));
+        
 //        this.setMesh(ModelManager.getModel("game_piece_0"));
         this.setMesh(new BoardMesh(game, vertexCount, segmentAngle, goalSquares, firstGoalSquareIndex, goalSquarePadding, squareSideLength, boardOuterPadding));
     }
@@ -110,12 +119,12 @@ public class BoardGraphic extends Model {
 
             for (int teamID = 0; teamID < game.getTeams().size(); teamID++) {
                 if (game.getBoard().getStartSquare(teamID).getID() == squareID) {
-                    squareColor = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                    squareColor = new Vector3f(fade * TEAM_COLORS.get(teamID).x, fade * TEAM_COLORS.get(teamID).y, fade * TEAM_COLORS.get(teamID).z);
                     break;
                 }
             }
             if (squareColor == null) {
-                squareColor = new Vector3f(0.5f, 0.5f, 0.5f);
+                squareColor = REGULAR_SQUARE_COLOR;
             }
 
             SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength, squareColor);
@@ -144,7 +153,7 @@ public class BoardGraphic extends Model {
                 if (firstGoalSquareIndex == 0) {
                     firstGoalSquareIndex = squareID;
                 }
-                Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                Vector3f color = new Vector3f(fade * TEAM_COLORS.get(teamID).x, fade * TEAM_COLORS.get(teamID).y, fade * TEAM_COLORS.get(teamID).z);
                 SquareGraphic squareGraphic = new SquareGraphic(goalPosition, squareSideLength, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 goalSquares.put(squareID, squareGraphic);
@@ -171,7 +180,7 @@ public class BoardGraphic extends Model {
 
             for (int i = 0; i < game.getTeam(teamID).getPieces().size(); i++) {
                 int squareID = game.getTeam(teamID).getPieces().size() * teamID + i;
-                Vector3f color = new Vector3f(fade * teamColors.get(teamID).x, fade * teamColors.get(teamID).y, fade * teamColors.get(teamID).z);
+                Vector3f color = new Vector3f(fade * TEAM_COLORS.get(teamID).x, fade * TEAM_COLORS.get(teamID).y, fade * TEAM_COLORS.get(teamID).z);
                 SquareGraphic squareGraphic = new SquareGraphic(homePosition, squareSideLength, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 homeSquares.put(squareID, squareGraphic);
@@ -197,7 +206,7 @@ public class BoardGraphic extends Model {
 
     @Override
     public void render(Shader shader) {
-        super.render(shader);
+        super.render(shader, material);
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).render(shader);
         }

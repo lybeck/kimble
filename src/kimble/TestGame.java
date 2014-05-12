@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import kimble.graphic.board.DieGraphic;
+import kimble.graphic.board.DieHolderDomeGraphic;
+import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.logic.Constants;
@@ -30,7 +32,9 @@ public class TestGame {
 
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
+    private DieHolderGraphic dieHolder;
     private DieGraphic die;
+    private DieHolderDomeGraphic dieHolderDome;
 
     private Camera camera;
     private Shader shader;
@@ -93,7 +97,7 @@ public class TestGame {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 0.5f);
+        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 1f);
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
@@ -102,10 +106,15 @@ public class TestGame {
         pieces = new ArrayList<>();
         for (int i = 0; i < game.getTeams().size(); i++) {
             for (Piece p : game.getTeam(i).getPieces()) {
-                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.teamColors.get(i), 0.4f, 1f));
+                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.TEAM_COLORS.get(i), 0.4f, 1f));
             }
         }
+        dieHolder = new DieHolderGraphic();
+        dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
+
         die = new DieGraphic(game.getDie(), 1f);
+
+        dieHolderDome = new DieHolderDomeGraphic();
 
         GameStart gameStart = game.startGame();
         System.out.println("Game start:");
@@ -141,7 +150,6 @@ public class TestGame {
 //            float yaw = cameraPositionAngle - (float) Math.PI / 2;
 //            float roll = 0;
 //            camera.setRotation(new Vector3f(pitch, yaw, roll));
-
             if (cameraInPosition) {
                 camera.setPosition(cameraPos);
                 camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
@@ -176,7 +184,9 @@ public class TestGame {
         camera.update(dt);
         board.update(dt);
 
+        dieHolder.update(dt);
         die.update(dt);
+        dieHolderDome.update(dt);
 
         for (PieceGraphic p : pieces) {
             p.update(dt);
@@ -228,7 +238,11 @@ public class TestGame {
 
         shader.bind();
         board.render(shader);
+
+        dieHolder.render(shader);
         die.render(shader);
+        dieHolderDome.render(shader);
+
         for (PieceGraphic p : pieces) {
             p.render(shader);
         }
@@ -239,6 +253,11 @@ public class TestGame {
 
         shader.cleanUp();
         board.cleanUp();
+
+        dieHolder.cleanUp();
+        die.cleanUp();
+        dieHolderDome.cleanUp();
+
         for (PieceGraphic p : pieces) {
             p.cleanUp();
         }
