@@ -54,17 +54,19 @@ public class TestGame2 {
     private Vector3f cameraPos;
 
     public final static int NUMBER_OF_TEAMS = 4;
-    public final static int NUMBER_OF_PIECES = 4;
+    public final static int NUMBER_OF_PIECES = 8;
     public final static int SQUARES_FROM_START_TO_START = 8;
-    
+
     private final int numberOfTeams;
     private final List<IPlayer> players;
+
+    private int winner;
 
     public TestGame2(boolean noGui, List<IPlayer> players) {
 
         this.players = players;
         this.numberOfTeams = players.size();
-        
+
         if (noGui) {
             setupLogic();
 
@@ -92,16 +94,19 @@ public class TestGame2 {
                 throw new UnsupportedOperationException("Human players not yet supported!");
             }
         }
-        
+
         GameStart gameStart = game.startGame();
-        System.out.println("Game start:");
-        System.out.println(gameStart.getRolls());
-        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-        System.out.println(game);
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
+
+        if (DEBUG) {
+            System.out.println("Game start:");
+            System.out.println(gameStart.getRolls());
+            System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
+            System.out.println("--------------------------------------------------");
+            System.out.println("");
+            System.out.println(game);
+            System.out.println("--------------------------------------------------");
+            System.out.println("");
+        }
 
 //        Mouse.setGrabbed(true);
     }
@@ -263,14 +268,21 @@ public class TestGame2 {
         }
         // check if game just ended
         if (game.isGameOver()) {
-            System.out.println("");
-            System.out.println("Game finished!");
-            System.out.println("Finishing order: ");
-            for (Team team : game.getFinishedTeams()) {
-                System.out.println(team.getId());
+            if (DEBUG) {
+                System.out.println("");
+                System.out.println("Game finished!");
+                System.out.println("Finishing order: ");
+                for (Team team : game.getFinishedTeams()) {
+                    System.out.println(team.getId());
+                }
+                System.out.println("");
             }
-            System.out.println("");
+            winner = game.getFinishedTeams().get(0).getId();
         }
+    }
+
+    public int getWinner() {
+        return winner;
     }
 
     private void render() {

@@ -33,6 +33,9 @@ public class TestAILasse extends KimbleAI {
             }
         }
         if (map.isEmpty()) {
+            if (!turn.getMoves().isEmpty()) {
+                return getBestInGoalMove(turn.getMoves());
+            }
             return -1;
         }
         // check goal moves
@@ -86,5 +89,33 @@ public class TestAILasse extends KimbleAI {
             position = position.getNext();
         }
         return dist;
+    }
+
+    private int getBestInGoalMove(List<Move> moves) {
+        Map<Move, Integer> map = new HashMap<>();
+        for (int i = 0; i < moves.size(); i++) {
+            Move move = moves.get(i);
+            Square startPosition = move.getPiece().getPosition();
+            Square endPosition = move.getDestination();
+            if (startPosition.getID() < endPosition.getID()) {
+                map.put(move, i);
+            }
+        }
+        if (map.isEmpty()) {
+            return -1;
+        }
+        int bestId = Integer.MIN_VALUE;
+        Move bestMove = null;
+        for (Move move : map.keySet()) {
+            int id = move.getDestination().getID();
+            if (id > bestId) {
+                bestId = id;
+                bestMove = move;
+            }
+        }
+        if (bestMove == null) {
+            return -1;
+        }
+        return map.get(bestMove);
     }
 }
