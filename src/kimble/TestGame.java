@@ -30,6 +30,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class TestGame {
 
     private Game game;
+    private Turn nextTurn;
 
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
@@ -61,7 +62,7 @@ public class TestGame {
             setupLogic();
 
             while (!game.isGameOver()) {
-                executeMove(game.getNextTurn());
+                executeMove();
             }
         } else {
             setupLogic();
@@ -85,6 +86,8 @@ public class TestGame {
         System.out.println(game);
         System.out.println("--------------------------------------------------");
         System.out.println("");
+        
+        this.nextTurn = game.getNextTurn();
 
 //        Mouse.setGrabbed(true);
     }
@@ -110,6 +113,7 @@ public class TestGame {
         dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
 
         die = new DieGraphic();
+        this.die.setDieRoll(nextTurn.getDieRoll());
 
         dieHolderDome = new DieHolderDomeGraphic();
     }
@@ -178,9 +182,8 @@ public class TestGame {
 
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                Turn nextTurn = game.getNextTurn();
                 die.setDieRoll(nextTurn.getDieRoll());
-                executeMove(nextTurn);
+                executeMove();
             } else if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 rotateCamera = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -191,9 +194,8 @@ public class TestGame {
         if (AUTOMATIC_TURNS) {
             timer += dt;
             if (timer >= TURN_TIME_STEP) {
-                Turn nextTurn = game.getNextTurn();
                 die.setDieRoll(nextTurn.getDieRoll());
-                executeMove(nextTurn);
+                executeMove();
                 timer = 0;
             }
         }
@@ -214,13 +216,12 @@ public class TestGame {
 
     int lastKey = -1;
 
-    private void executeMove(Turn nextTurn) {
+    private void executeMove() {
 
         if (game.isGameOver()) {
             return;
         }
 
-//        Turn nextTurn = game.getNextTurn();
         if (DEBUG) {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());
             System.out.println("Rolled: " + nextTurn.getDieRoll());
@@ -248,6 +249,9 @@ public class TestGame {
                 System.out.println(team.getId());
             }
             System.out.println("");
+        } else {
+            this.nextTurn = game.getNextTurn();
+            this.die.setDieRoll(nextTurn.getDieRoll());
         }
     }
 
