@@ -42,7 +42,6 @@ public class TestGame {
     private Shader shader;
 
     private static final boolean AUTOMATIC_TURNS = true;
-    private static final float TURN_TIME_STEP = 2f;
     private static final boolean DEBUG = true;
 
     private boolean running;
@@ -65,6 +64,12 @@ public class TestGame {
                 executeMove();
             }
         } else {
+
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
+            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
+
             setupLogic();
             setupGraphic();
 
@@ -86,13 +91,14 @@ public class TestGame {
         System.out.println(game);
         System.out.println("--------------------------------------------------");
         System.out.println("");
-        
+
         this.nextTurn = game.getNextTurn();
 
 //        Mouse.setGrabbed(true);
     }
 
     private void setupGraphic() {
+
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
@@ -182,8 +188,7 @@ public class TestGame {
 
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                die.setDieRoll(nextTurn.getDieRoll());
-                executeMove();
+                executeDieRollMove();
             } else if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 rotateCamera = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -191,12 +196,10 @@ public class TestGame {
                 cameraInPosition = false;
             }
         }
-        if (AUTOMATIC_TURNS) {
+        if (AUTOMATIC_TURNS && !game.isGameOver()) {
             timer += dt;
-            if (timer >= TURN_TIME_STEP) {
-                die.setDieRoll(nextTurn.getDieRoll());
-                dieHolderDome.bounce();
-                executeMove();
+            if (timer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+                executeDieRollMove();
                 timer = 0;
             }
         }
@@ -213,8 +216,13 @@ public class TestGame {
         }
     }
 
-    Random random = new Random();
+    private void executeDieRollMove() {
+        die.setDieRoll(nextTurn.getDieRoll());
+        dieHolderDome.bounce();
+        executeMove();
+    }
 
+    Random random = new Random();
     int lastKey = -1;
 
     private void executeMove() {

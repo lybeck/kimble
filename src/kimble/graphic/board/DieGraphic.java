@@ -8,6 +8,7 @@ package kimble.graphic.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import kimble.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.shader.Shader;
 import kimble.graphic.model.ModelManager;
@@ -48,6 +49,8 @@ public class DieGraphic extends Model {
     private float angleY = 0;
     private float angleZ = 0;
 
+    private final float speedUp;
+
     public DieGraphic() {
 
         rotation = ROTATION_TWO;
@@ -56,6 +59,8 @@ public class DieGraphic extends Model {
         this.getMaterial().setTextureModulator(1.0f);
         this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel("cube"));
+
+        speedUp = PlaybackProfile.currentProfile.getTurnTimeSpeedUp();
     }
 
     public void setDieRoll(int dieRoll) {
@@ -76,9 +81,9 @@ public class DieGraphic extends Model {
                 || Math.abs(rotation.y - angleY) >= 0.01
                 || Math.abs(rotation.z - angleZ) >= 0.01) {
 
-            angleX = MathHelper.lerp(angleX, rotation.x, dt * 5);
-            angleY = MathHelper.lerp(angleY, rotation.y, dt * 5);
-            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * 5);
+            angleX = MathHelper.lerp(angleX, rotation.x, dt * 5 * speedUp);
+            angleY = MathHelper.lerp(angleY, rotation.y, dt * 5 * speedUp);
+            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * 5 * speedUp);
 
             this.rotate(angleX, angleY, angleZ);
         }
