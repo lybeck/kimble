@@ -8,6 +8,7 @@ import kimble.graphic.board.PieceGraphic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import kimble.graphic.board.BoardSpecs;
 import kimble.graphic.board.DieGraphic;
 import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
@@ -60,7 +61,7 @@ public class TestGame {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 4;
+        int numberOfTeams = 5;
         int numberOfPieces = 4;
         int sideLength = 8;
 
@@ -69,7 +70,7 @@ public class TestGame {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 1f);
+        board = new BoardGraphic(game, new BoardSpecs(sideLength));
         shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
