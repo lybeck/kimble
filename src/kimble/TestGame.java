@@ -14,7 +14,6 @@ import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
-import kimble.license.License;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -43,7 +42,7 @@ public class TestGame {
 
     private static final boolean AUTOMATIC_TURNS = true;
     private static final float TURN_TIME_STEP = 0.1f;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private boolean running;
 
@@ -52,28 +51,52 @@ public class TestGame {
     private boolean rotateCamera = false;
     private Vector3f cameraPos;
 
-    public TestGame() {
+    public final static int NUMBER_OF_TEAMS = 4;
+    public final static int NUMBER_OF_PIECES = 4;
+    public final static int SQUARES_FROM_START_TO_START = 8;
 
-        setup();
-        start();
+    public TestGame(boolean noGui) {
+
+        if (noGui) {
+            setupLogic();
+
+            while (!game.isGameOver()) {
+                executeMove();
+            }
+        } else {
+            setupLogic();
+            setupGraphic();
+
+            start();
+        }
 
     }
 
-    private void setup() {
-        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
+    private void setupLogic() {
 
-        int numberOfTeams = 4;
-        int numberOfPieces = 4;
-        int sideLength = 8;
+        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_TEAMS, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
 
-        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
+        GameStart gameStart = game.startGame();
+        System.out.println("Game start:");
+        System.out.println(gameStart.getRolls());
+        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+        System.out.println(game);
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
 
+//        Mouse.setGrabbed(true);
+    }
+
+    private void setupGraphic() {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(game, new BoardSpecs(sideLength));
+        board = new BoardGraphic(game, new BoardSpecs(SQUARES_FROM_START_TO_START));
         shader = new Shader("shader.vert", "shader.frag");
 
+        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
         cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
 
@@ -89,18 +112,6 @@ public class TestGame {
         die = new DieGraphic(game.getDie());
 
         dieHolderDome = new DieHolderDomeGraphic();
-
-        GameStart gameStart = game.startGame();
-        System.out.println("Game start:");
-        System.out.println(gameStart.getRolls());
-        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-        System.out.println(game);
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-
-//        Mouse.setGrabbed(true);
     }
 
     public final void start() {
