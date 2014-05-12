@@ -88,18 +88,10 @@ public class OBJModel extends Mesh {
         for (int i = 0; i < indexData.size(); i++) {
             indices[i] = indexData.get(i);
         }
-        System.out.println("Vertices = " + vertexData.size() + ", indices = " + indices.length);
-
         vertices = new VertexData[vertexData.size()];
-        int index = 0;
-        for (VertexData vertex : vertexData) {
-            vertices[index++] = vertex;
-            System.out.println(vertex.getPosition() + ": " + vertex.getTexCoords());
+        for (int i = 0; i < vertexData.size(); i++) {
+            vertices[i] = vertexData.get(i);
         }
-        for (int i = 0; i < indices.length; i++) {
-            System.out.print(indices[i] + ", ");
-        }
-        System.out.println("");
         return vertices;
     }
 

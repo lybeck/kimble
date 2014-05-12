@@ -8,6 +8,8 @@ struct Material {
     vec4 lightPosition;
     vec4 diffuse;
     vec4 ambient;
+    vec4 specular;
+    float shininess;
 };
 
 uniform Material material;
@@ -20,10 +22,9 @@ in vec2 in_TextureCoord;
 out vec4 pass_Color;
 out vec2 pass_TextureCoord;
 
-vec4 lightPosition = vec4(0, 20, 0, 1);
-
 void main(void) {
 	
+        vec4 spec = vec4(0.0);
 
         //Calculate the normal matrix
         mat4 normalMatrix = transpose(inverse(viewMatrix * modelMatrix));
@@ -31,9 +32,17 @@ void main(void) {
         
         float intensity = max(dot(normal, material.lightPosition), 0.0);
 
+        if(intensity > 0.0){
+            vec4 pos = viewMatrix * modelMatrix * vec4(in_Position, 1);
+            vec4 eye = normalize(-pos);
+            vec4 h = normalize(material.lightPosition + eye);
+
+            float intSpec = max(dot(h, normal), 0.0);
+            spec = material.specular * pow(intSpec, material.shininess);
+        }
 
 	pass_TextureCoord = in_TextureCoord;
-        pass_Color = in_Color * max(material.diffuse * intensity, material.ambient);
+        pass_Color = in_Color * max(intensity * material.diffuse + spec, material.ambient);
         // pass_Color = in_Color * team_Color;
        
         gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(in_Position, 1);
