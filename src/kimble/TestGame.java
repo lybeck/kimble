@@ -2,7 +2,7 @@ package kimble;
 
 import kimble.graphic.Camera;
 import kimble.graphic.Screen;
-import kimble.graphic.Shader;
+import kimble.graphic.shader.Shader;
 import kimble.graphic.board.BoardGraphic;
 import kimble.graphic.board.PieceGraphic;
 import java.util.ArrayList;

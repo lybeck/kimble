@@ -5,18 +5,21 @@
  */
 package kimble.graphic;
 
+import kimble.graphic.shader.Shader;
 import java.nio.FloatBuffer;
 import kimble.graphic.model.Mesh;
+import kimble.graphic.shader.Material;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
  * @author Christoffer
  */
 public abstract class Model {
+
+    private Material defaultMaterial;
 
     private Vector3f position;
     private Vector3f rotation;
@@ -38,6 +41,8 @@ public abstract class Model {
 
         this.modelMatrix = new Matrix4f();
         this.modelMatrixBuffer = BufferUtils.createFloatBuffer(16);
+
+        this.defaultMaterial = new Material();
     }
 
     public void move(float dx, float dy, float dz) {
@@ -72,11 +77,11 @@ public abstract class Model {
     }
 
     public void render(Shader shader) {
-        this.render(shader, new Vector3f(1, 1, 1));
+        this.render(shader, defaultMaterial);
     }
 
-    public void render(Shader shader, Vector3f color) {
-        shader.render(getModelMatrixBuffer(), new Vector4f(color.x, color.y, color.z, 1));
+    public void render(Shader shader, Material material) {
+        shader.render(getModelMatrixBuffer(), material);
         if (mesh != null) {
             mesh.render();
         }

@@ -6,14 +6,15 @@
 package kimble.graphic.board;
 
 import kimble.graphic.Model;
-import kimble.graphic.Shader;
+import kimble.graphic.shader.Shader;
 import kimble.graphic.model.VertexData;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.model.ModelManager;
-import kimble.graphic.model.TextureManager;
+import kimble.graphic.shader.Material;
 import kimble.logic.Piece;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -21,7 +22,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class PieceGraphic extends Model {
 
-    private Vector3f color;
+    private Material material;
     private final float width;
     private final float height;
 
@@ -37,7 +38,8 @@ public class PieceGraphic extends Model {
         this.width = width;
         this.height = height;
 
-        this.color = color;
+        this.material = new Material();
+        this.material.setDiffuse(new Vector4f(color.x, color.y, color.z, 1));
         this.setMesh(ModelManager.getModel("game_piece"));
     }
 
@@ -65,15 +67,15 @@ public class PieceGraphic extends Model {
 
     @Override
     public void render(Shader shader) {
-        super.render(shader, color);
+        super.render(shader, material);
     }
 
-    public void setColor(Vector3f color) {
-        this.color = color;
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
-    public Vector3f getColor() {
-        return color;
+    public Material getMaterial() {
+        return material;
     }
 
     public float getWidth() {

@@ -7,11 +7,13 @@ package kimble.graphic.board;
 
 import kimble.graphic.model.VertexData;
 import kimble.graphic.Model;
-import kimble.graphic.Shader;
+import kimble.graphic.shader.Shader;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.model.ModelManager;
+import kimble.graphic.shader.Material;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -19,28 +21,29 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class SquareGraphic extends Model {
 
-    private Vector3f color;
+    private Material material;
 
     public SquareGraphic(Vector3f position, float sideLength, Vector3f color) {
         super(position, new Vector3f(0, 0, 0));
 
-        this.color = color;
+        this.material = new Material();
+        this.material.setDiffuse(new Vector4f(color.x, color.y, color.z, 1));
 
 //        this.setMesh(new SquareMesh(sideLength, color));
         this.setMesh(ModelManager.getModel("game_board_position"));
     }
 
-    public void setColor(Vector3f color) {
-        this.color = color;
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
-    public Vector3f getColor() {
-        return color;
+    public Material getMaterial() {
+        return material;
     }
-    
+
     @Override
-    public void render(Shader shader){
-        super.render(shader, color);
+    public void render(Shader shader) {
+        super.render(shader, material);
     }
 
     private static class SquareMesh extends Mesh {
