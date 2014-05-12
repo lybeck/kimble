@@ -9,8 +9,16 @@ import kimble.graphic.Screen;
 public class Kimble {
 
     public static void main(String[] args) {
-        setupLWJGL();
-        new TestGame();
+        boolean noGui = false;
+        if (args.length > 0) {
+            if (args[0].equalsIgnoreCase("nogui")) {
+                noGui = true;
+            }
+        }
+        if (!noGui) {
+            setupLWJGL();
+        }
+        new TestGame(noGui);
     }
 
     private static void setupLWJGL() {

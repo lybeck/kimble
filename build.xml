@@ -76,9 +76,13 @@
             <fileset dir="lib/natives/"/>
         </copy>
         
+        <!--
+        Moved the res folder into the jar
+        
         <copy todir="${dist.dir}/res/">
             <fileset dir="res"/>
         </copy>
+        -->
         
     </target>
 </project>

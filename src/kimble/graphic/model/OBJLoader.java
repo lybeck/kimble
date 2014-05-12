@@ -5,15 +5,10 @@
  */
 package kimble.graphic.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -35,50 +30,37 @@ public class OBJLoader {
         faces = new ArrayList<>();
     }
 
-    public static void load(String filename) {
+    public static void load(InputStream inputStream) {
         createLists();
 
-        File inputFile = new File(filename);
-        if (!inputFile.exists()) {
-            System.err.println("Couldn't load: " + filename);
-            System.exit(1);
-        }
+        Scanner scanner = new Scanner(inputStream);
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String[] args = line.split(" ");
+            if (line.startsWith("v ")) {
+                float x = Float.parseFloat(args[1]);
+                float y = Float.parseFloat(args[2]);
+                float z = Float.parseFloat(args[3]);
+                vertices.add(new Vector3f(x, y, z));
 
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(inputFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] args = line.split(" ");
-                if (line.startsWith("v ")) {
-                    float x = Float.parseFloat(args[1]);
-                    float y = Float.parseFloat(args[2]);
-                    float z = Float.parseFloat(args[3]);
-                    vertices.add(new Vector3f(x, y, z));
+            } else if (line.startsWith("vt ")) {
+                float s = Float.parseFloat(args[1]);
+                float t = Float.parseFloat(args[2]);
+                texCoords.add(new Vector2f(s, t));
 
-                } else if (line.startsWith("vt ")) {
-                    float s = Float.parseFloat(args[1]);
-                    float t = Float.parseFloat(args[2]);
-                    texCoords.add(new Vector2f(s, t));
+            } else if (line.startsWith("vn ")) {
+                float x = Float.parseFloat(args[1]);
+                float y = Float.parseFloat(args[2]);
+                float z = Float.parseFloat(args[3]);
+                normals.add(new Vector3f(x, y, z));
 
-                } else if (line.startsWith("vn ")) {
-                    float x = Float.parseFloat(args[1]);
-                    float y = Float.parseFloat(args[2]);
-                    float z = Float.parseFloat(args[3]);
-                    normals.add(new Vector3f(x, y, z));
+            } else if (line.startsWith("f ")) {
+                faces.add(extractIndices(args[1], args[2], args[3]));
+            } else if (line.startsWith("#")) {
 
-                } else if (line.startsWith("f ")) {
-                    faces.add(extractIndices(args[1], args[2], args[3]));
-                } else if (line.startsWith("#")) {
-
-                }
             }
-            reader.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(OBJLoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(OBJLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
+        scanner.close();
     }
 
     private static Face extractIndices(String v0, String v1, String v2) {

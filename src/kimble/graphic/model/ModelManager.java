@@ -5,6 +5,7 @@
  */
 package kimble.graphic.model;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,13 +26,13 @@ public class ModelManager {
     public static void loadModels() {
         String dir = "/res/models/";
         for (int i = 0; i < modelNames.length; i++) {
-            load(modelNames[i], ModelManager.class.getResource(dir + modelNames[i] + ".obj").getFile());
+            load(modelNames[i], ModelManager.class.getResourceAsStream(dir + modelNames[i] + ".obj"));
         }
         System.out.println("Done loading models.");
     }
 
-    private static void load(String key, String filename) {
-        OBJLoader.load(filename);
+    private static void load(String key, InputStream inputStream) {
+        OBJLoader.load(inputStream);
         OBJModel model = new OBJModel(OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getTexCoords(), OBJLoader.getNormals());
         models.put(key, model);
     }

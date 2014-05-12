@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,7 @@ public enum License {
     //
     // You access the license text with "License.LICENSE_1.getText();".
     //
-    public static final String LICENSE_DIR = "res/licenses/";
+    public static final String LICENSE_DIR = "/res/licenses/";
     private final String filename;
 
     License(String filename) {
@@ -38,20 +39,14 @@ public enum License {
     }
 
     public StringBuilder getText() {
-        BufferedReader reader;
         StringBuilder s = new StringBuilder();
-        try {
-            reader = new BufferedReader(new FileReader(new File(LICENSE_DIR + filename)));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                s.append(line).append("\n");
-            }
-            reader.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        Scanner scanner = new Scanner(License.class.getResourceAsStream(LICENSE_DIR + filename));
+        String line;
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            s.append(line).append("\n");
         }
+        scanner.close();
         return s;
     }
 }
