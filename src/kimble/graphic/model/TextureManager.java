@@ -31,20 +31,18 @@ public class TextureManager {
     public static void loadTextures() {
         String dir = "/res/textures/";
         for (int i = 0; i < textureNames.length; i++) {
-            load(textureNames[i], TextureManager.class.getResource(dir + textureNames[i] + ".png").getFile());
+            load(textureNames[i], TextureManager.class.getResourceAsStream(dir + textureNames[i] + ".png"));
         }
         System.out.println("Done loading textures.");
     }
 
-    private static void load(String key, String filename) {
+    private static void load(String key, InputStream inputStream) {
 
         ByteBuffer buffer = null;
         int textureWidth = 0;
         int textureHeight = 0;
-        InputStream in = null;
         try {
-            in = new FileInputStream(filename);
-            PNGDecoder decoder = new PNGDecoder(in);
+            PNGDecoder decoder = new PNGDecoder(inputStream);
 
             textureWidth = decoder.getWidth();
             textureHeight = decoder.getHeight();
@@ -52,8 +50,6 @@ public class TextureManager {
             buffer = ByteBuffer.allocateDirect(4 * textureWidth * textureHeight);
             decoder.decode(buffer, 4 * textureWidth, Format.RGBA);
             buffer.flip();
-
-            in.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(TextureManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
