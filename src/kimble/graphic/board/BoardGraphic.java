@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kimble.graphic.board.meshes.BoardMesh;
-import kimble.graphic.shader.Material;
 import kimble.logic.Game;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;

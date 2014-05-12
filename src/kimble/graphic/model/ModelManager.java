@@ -19,7 +19,8 @@ public class ModelManager {
         "game_board_position",
         "game_die",
         "game_board_die_holder",
-        "game_board_die_holder_dome"};
+        "game_board_die_holder_dome",
+        "cube"};
 
     private static final Map<String, OBJModel> models = new HashMap<>();
 
@@ -31,7 +32,7 @@ public class ModelManager {
         System.out.println("Done loading models.");
     }
 
-    private static void load(String key, InputStream inputStream) {
+    public static void load(String key, InputStream inputStream) {
         OBJLoader.load(inputStream);
         OBJModel model = new OBJModel(OBJLoader.getFaces(), OBJLoader.getVertices(), OBJLoader.getTexCoords(), OBJLoader.getNormals());
         models.put(key, model);

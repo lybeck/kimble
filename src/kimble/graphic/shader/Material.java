@@ -5,6 +5,7 @@
  */
 package kimble.graphic.shader;
 
+import static org.lwjgl.opengl.GL20.GL_BOOL;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform4f;
@@ -22,11 +23,15 @@ public class Material {
     private Vector4f specular;
     private float shininess;
 
+    private float textureModulator;
+
     private static int lightPositionLocation;
     private static int diffuseLocation;
     private static int ambientLocation;
     private static int specularLocation;
     private static int shininessLocation;
+
+    private static int textureModulatorLocation;
 
     public Material() {
         lightPosition = new Vector4f(0, 20, 0, 1);
@@ -34,6 +39,7 @@ public class Material {
         ambient = new Vector4f(0.1f, 0.1f, 0.1f, 1f);
         specular = new Vector4f(1, 1, 1, 1);
         shininess = 10f;
+        textureModulator = 0.0f;
     }
 
     public static void fetchUniformLocations(int programID) {
@@ -42,6 +48,8 @@ public class Material {
         ambientLocation = glGetUniformLocation(programID, "material.ambient");
         specularLocation = glGetUniformLocation(programID, "material.specular");
         shininessLocation = glGetUniformLocation(programID, "material.shininess");
+
+        textureModulatorLocation = glGetUniformLocation(programID, "textureModulator");
     }
 
     public void uploadUniforms() {
@@ -50,6 +58,8 @@ public class Material {
         glUniform4f(ambientLocation, ambient.x, ambient.y, ambient.z, ambient.w);
         glUniform4f(specularLocation, specular.x, specular.y, specular.z, specular.w);
         glUniform1f(shininessLocation, shininess);
+
+        glUniform1f(textureModulatorLocation, textureModulator);
     }
 
     public void setLightPosition(Vector4f lightPosition) {
@@ -90,6 +100,14 @@ public class Material {
 
     public void setShininess(float shininess) {
         this.shininess = shininess;
+    }
+
+    public float getTextureModulator() {
+        return textureModulator;
+    }
+
+    public void setTextureModulator(float textureModulator) {
+        this.textureModulator = textureModulator;
     }
 
 }

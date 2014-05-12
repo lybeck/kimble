@@ -20,27 +20,30 @@ import org.lwjgl.util.vector.Vector4f;
 public class DieGraphic extends Model {
 
     private final Die die;
+    private float angle = 0;
 
     public DieGraphic(Die die) {
 
         this.die = die;
 
         this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
+        this.getMaterial().setTextureModulator(1.0f);
         this.setPosition(new Vector3f(0, 0.7f, 0));
-        this.setMesh(ModelManager.getModel("game_die"));
+        this.setMesh(ModelManager.getModel("cube"));
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
-
+        angle += dt;
+        rotate(angle, angle, angle);
     }
 
     @Override
     public void render(Shader shader) {
-        TextureManager.getTexture("Die_tex").bind();
+        TextureManager.getTexture("temp_tex").bind();
         super.render(shader);
-        TextureManager.getTexture("Die_tex").unbind();
+        TextureManager.getTexture("temp_tex").unbind();
     }
 
 }

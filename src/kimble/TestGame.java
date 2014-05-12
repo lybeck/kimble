@@ -14,6 +14,7 @@ import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
+import kimble.graphic.testui.Cube;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
