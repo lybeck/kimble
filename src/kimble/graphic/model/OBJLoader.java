@@ -60,6 +60,7 @@ public class OBJLoader {
 
             }
         }
+        scanner.close();
     }
 
     private static Face extractIndices(String v0, String v1, String v2) {

@@ -5,10 +5,8 @@
  */
 package kimble.graphic.shader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.Scanner;
 import kimble.graphic.Camera;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
@@ -19,6 +17,7 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Shader {
 
+    private final static String SHADER_DIR = "/res/shaders/";
     private final int programID;
 
     private int projectionMatrixLocation;
@@ -26,8 +25,8 @@ public class Shader {
     private int modelMatrixLocation;
 
     public Shader(String vertFile, String fragFile) {
-        int vertexShaderID = load(vertFile, GL_VERTEX_SHADER);
-        int fragmentShaderID = load(fragFile, GL_FRAGMENT_SHADER);
+        int vertexShaderID = load(SHADER_DIR + vertFile, GL_VERTEX_SHADER);
+        int fragmentShaderID = load(SHADER_DIR + fragFile, GL_FRAGMENT_SHADER);
 
         programID = glCreateProgram();
 
@@ -63,25 +62,21 @@ public class Shader {
 
     private int load(String filename, int type) {
         StringBuilder shaderSource = new StringBuilder();
-        int shaderID = 0;
+        int shaderID;
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                shaderSource.append(line).append("\n");
-            }
-            reader.close();
-        } catch (IOException ex) {
-            System.err.println("Couldn't read shader file: " + filename);
-            System.exit(1);
+        Scanner scanner = new Scanner(Shader.class.getResourceAsStream(filename));
+        String line;
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            shaderSource.append(line).append("\n");
         }
+        scanner.close();
 
         shaderID = glCreateShader(type);
         glShaderSource(shaderID, shaderSource);
         glCompileShader(shaderID);
-        //if the compiling was unsuccessful, throw an exception
 
+        //if the compiling was unsuccessful, throw an exception
         if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Couldn't compile shader: " + filename);
             System.exit(1);

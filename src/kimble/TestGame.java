@@ -14,6 +14,7 @@ import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
+import kimble.license.License;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -61,7 +62,7 @@ public class TestGame {
     private void setup() {
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
 
-        int numberOfTeams = 5;
+        int numberOfTeams = 4;
         int numberOfPieces = 4;
         int sideLength = 8;
 
@@ -71,7 +72,7 @@ public class TestGame {
         TextureManager.loadTextures();
 
         board = new BoardGraphic(game, new BoardSpecs(sideLength));
-        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+        shader = new Shader("shader.vert", "shader.frag");
 
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
         cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
