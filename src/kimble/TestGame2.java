@@ -53,24 +53,36 @@ public class TestGame2 {
     private boolean rotateCamera = false;
     private Vector3f cameraPos;
 
+    public final static int NUMBER_OF_TEAMS = 4;
+    public final static int NUMBER_OF_PIECES = 4;
+    public final static int SQUARES_FROM_START_TO_START = 8;
+    
+    private final int numberOfTeams;
     private final List<IPlayer> players;
 
-    public TestGame2(List<IPlayer> players) {
+    public TestGame2(boolean noGui, List<IPlayer> players) {
 
         this.players = players;
-        setup();
-        start();
+        this.numberOfTeams = players.size();
+        
+        if (noGui) {
+            setupLogic();
+
+            while (!game.isGameOver()) {
+                executeMove();
+            }
+        } else {
+            setupLogic();
+            setupGraphic();
+
+            start();
+        }
 
     }
 
-    private void setup() {
-        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
+    private void setupLogic() {
 
-        int numberOfTeams = players.size();
-        int numberOfPieces = 4;
-        int sideLength = 8;
-
-        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
+        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
 
         for (int i = 0; i < numberOfTeams; i++) {
             IPlayer player = players.get(i);
@@ -80,13 +92,28 @@ public class TestGame2 {
                 throw new UnsupportedOperationException("Human players not yet supported!");
             }
         }
+        
+        GameStart gameStart = game.startGame();
+        System.out.println("Game start:");
+        System.out.println(gameStart.getRolls());
+        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+        System.out.println(game);
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
 
+//        Mouse.setGrabbed(true);
+    }
+
+    private void setupGraphic() {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(game, new BoardSpecs(sideLength));
-        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+        board = new BoardGraphic(game, new BoardSpecs(SQUARES_FROM_START_TO_START));
+        shader = new Shader("shader.vert", "shader.frag");
 
+        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
         camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
         cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
 
@@ -102,18 +129,6 @@ public class TestGame2 {
         die = new DieGraphic(game.getDie());
 
         dieHolderDome = new DieHolderDomeGraphic();
-
-        GameStart gameStart = game.startGame();
-        System.out.println("Game start:");
-        System.out.println(gameStart.getRolls());
-        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-        System.out.println(game);
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-
-//        Mouse.setGrabbed(true);
     }
 
     public final void start() {
