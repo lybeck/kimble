@@ -327,12 +327,12 @@ public class BoardGraphic extends Model {
             int index = 0;
             for (byte i = 1; i < vertexCount; i++) {
                 indices[index++] = 0;
-                indices[index++] = i;
                 indices[index++] = i + 1;
+                indices[index++] = i;
             }
             indices[index++] = 0;
-            indices[index++] = vertexCount;
             indices[index++] = 1;
+            indices[index++] = vertexCount;
 
             return indices;
         }
