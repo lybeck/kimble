@@ -19,8 +19,6 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public abstract class Model {
 
-    private Material defaultMaterial;
-
     private Vector3f position;
     private Vector3f rotation;
     private Vector3f scale;
@@ -29,6 +27,7 @@ public abstract class Model {
     private FloatBuffer modelMatrixBuffer;
 
     private Mesh mesh;
+    private Material material;
 
     public Model() {
         this(new Vector3f(), new Vector3f());
@@ -42,7 +41,7 @@ public abstract class Model {
         this.modelMatrix = new Matrix4f();
         this.modelMatrixBuffer = BufferUtils.createFloatBuffer(16);
 
-        this.defaultMaterial = new Material();
+        this.material = new Material();
     }
 
     public void move(float dx, float dy, float dz) {
@@ -70,14 +69,8 @@ public abstract class Model {
         modelMatrixBuffer.flip();
     }
 
-    public void render() {
-        if (mesh != null) {
-            mesh.render();
-        }
-    }
-
     public void render(Shader shader) {
-        this.render(shader, defaultMaterial);
+        this.render(shader, material);
     }
 
     public void render(Shader shader, Material material) {
@@ -127,4 +120,11 @@ public abstract class Model {
         return mesh;
     }
 
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
 }

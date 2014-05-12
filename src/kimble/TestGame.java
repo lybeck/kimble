@@ -57,7 +57,51 @@ public class TestGame {
 
     }
 
-    public void start() {
+    private void setup() {
+        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
+
+        int numberOfTeams = 4;
+        int numberOfPieces = 4;
+        int sideLength = 8;
+
+        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
+
+        ModelManager.loadModels();
+        TextureManager.loadTextures();
+
+        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 1f);
+        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+
+        camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
+        cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
+
+        pieces = new ArrayList<>();
+        for (int i = 0; i < game.getTeams().size(); i++) {
+            for (Piece p : game.getTeam(i).getPieces()) {
+                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.TEAM_COLORS.get(i)));
+            }
+        }
+        dieHolder = new DieHolderGraphic();
+        dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
+
+        die = new DieGraphic(game.getDie());
+
+        dieHolderDome = new DieHolderDomeGraphic();
+
+        GameStart gameStart = game.startGame();
+        System.out.println("Game start:");
+        System.out.println(gameStart.getRolls());
+        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+        System.out.println(game);
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+
+//        Mouse.setGrabbed(true);
+    }
+
+    public final void start() {
         if (this.running) {
             return;
         }
@@ -83,50 +127,6 @@ public class TestGame {
         }
 
         cleanUp();
-    }
-
-    private void setup() {
-        camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
-
-        int numberOfTeams = 4;
-        int numberOfPieces = 4;
-        int sideLength = 8;
-
-        this.game = new Game(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, numberOfTeams, numberOfPieces, sideLength);
-
-        ModelManager.loadModels();
-        TextureManager.loadTextures();
-
-        board = new BoardGraphic(game, 1, 0.1f, 0.03f, 1.15f, 1f);
-        shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
-
-        camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
-        cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(0), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(0));
-
-        pieces = new ArrayList<>();
-        for (int i = 0; i < game.getTeams().size(); i++) {
-            for (Piece p : game.getTeam(i).getPieces()) {
-                pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.TEAM_COLORS.get(i), 0.4f, 1f));
-            }
-        }
-        dieHolder = new DieHolderGraphic();
-        dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
-
-        die = new DieGraphic(game.getDie(), 1f);
-
-        dieHolderDome = new DieHolderDomeGraphic();
-
-        GameStart gameStart = game.startGame();
-        System.out.println("Game start:");
-        System.out.println(gameStart.getRolls());
-        System.out.println("Starting team: " + gameStart.getStartingTeamIndex());
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-        System.out.println(game);
-        System.out.println("--------------------------------------------------");
-        System.out.println("");
-
-//        Mouse.setGrabbed(true);
     }
 
     private boolean cameraInPosition;

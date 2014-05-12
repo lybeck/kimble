@@ -80,8 +80,7 @@ public class BoardGraphic extends Model {
 
         this.material = new Material();
         this.material.setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 1));
-        
-//        this.setMesh(ModelManager.getModel("game_piece_0"));
+
         this.setMesh(new BoardMesh(game, vertexCount, segmentAngle, goalSquares, firstGoalSquareIndex, goalSquarePadding, squareSideLength, boardOuterPadding));
     }
 
@@ -127,7 +126,7 @@ public class BoardGraphic extends Model {
                 squareColor = REGULAR_SQUARE_COLOR;
             }
 
-            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareSideLength, squareColor);
+            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareColor);
             squareGraphic.rotate(0, -currentAngle, 0);
             squares.put(squareID, squareGraphic);
 
@@ -154,7 +153,7 @@ public class BoardGraphic extends Model {
                     firstGoalSquareIndex = squareID;
                 }
                 Vector3f color = new Vector3f(fade * TEAM_COLORS.get(teamID).x, fade * TEAM_COLORS.get(teamID).y, fade * TEAM_COLORS.get(teamID).z);
-                SquareGraphic squareGraphic = new SquareGraphic(goalPosition, squareSideLength, color);
+                SquareGraphic squareGraphic = new SquareGraphic(goalPosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 goalSquares.put(squareID, squareGraphic);
             }
@@ -181,7 +180,7 @@ public class BoardGraphic extends Model {
             for (int i = 0; i < game.getTeam(teamID).getPieces().size(); i++) {
                 int squareID = game.getTeam(teamID).getPieces().size() * teamID + i;
                 Vector3f color = new Vector3f(fade * TEAM_COLORS.get(teamID).x, fade * TEAM_COLORS.get(teamID).y, fade * TEAM_COLORS.get(teamID).z);
-                SquareGraphic squareGraphic = new SquareGraphic(homePosition, squareSideLength, color);
+                SquareGraphic squareGraphic = new SquareGraphic(homePosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 homeSquares.put(squareID, squareGraphic);
 
