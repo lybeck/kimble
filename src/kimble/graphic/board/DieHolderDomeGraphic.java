@@ -7,6 +7,7 @@ package kimble.graphic.board;
 
 import kimble.graphic.Model;
 import kimble.graphic.model.ModelManager;
+import kimble.utils.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -23,5 +24,18 @@ public class DieHolderDomeGraphic extends Model {
         this.setPosition(new Vector3f(0, 0.4f, 0));
         this.setMesh(ModelManager.getModel("game_board_die_holder_dome"));
     }
-    
+
+    public void bounce() {
+        angle = (float) Math.PI;
+    }
+
+    float angle = (float) Math.PI;
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+        angle = MathHelper.lerp(angle, (float) (2 * Math.PI), dt * 20);
+        setPosition(new Vector3f(0, (float) (0.1 * Math.sin(angle)), 0));
+    }
+
 }

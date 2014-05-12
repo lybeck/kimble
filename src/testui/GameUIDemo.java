@@ -27,7 +27,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package kimble.graphic.testui;
+package testui;
 
 import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.FPSCounter;

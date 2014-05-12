@@ -195,6 +195,7 @@ public class TestGame {
             timer += dt;
             if (timer >= TURN_TIME_STEP) {
                 die.setDieRoll(nextTurn.getDieRoll());
+                dieHolderDome.bounce();
                 executeMove();
                 timer = 0;
             }
