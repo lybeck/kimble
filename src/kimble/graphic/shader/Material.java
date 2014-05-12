@@ -5,7 +5,6 @@
  */
 package kimble.graphic.shader;
 
-import static org.lwjgl.opengl.GL20.GL_BOOL;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform4f;
