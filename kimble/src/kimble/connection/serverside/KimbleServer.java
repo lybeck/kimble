@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.connection;
+package kimble.connection.serverside;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -79,6 +79,7 @@ public class KimbleServer extends JFrame implements Runnable {
                     kai.sendMessage("hello: " + i);
                     System.out.println("Client_" + kai.getID() + ": " + kai.receiveMessage());
                 }
+                System.out.println("");
             }
             
             serverStatus.setText("Done!");

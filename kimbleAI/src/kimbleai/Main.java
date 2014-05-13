@@ -1,10 +1,6 @@
 package kimbleai;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 /**
  *
@@ -14,24 +10,14 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
+     * @throws java.lang.InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        Socket socket = new Socket("localhost", 5391);
+//            KimbleServer server = new KimbleServer(5391, 4);
+//            server.setVisible(true);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-
-        while (true) {
-            String msg = reader.readLine();
-            if (msg.equals("end")) {
-                System.out.println("Got end message!");
-                writer.println("Bye server!");
-                break;
-            }
-            System.out.println("sleeping..");
-            Thread.sleep(50);
-            writer.println("Received message: '" + msg + "'");
-        }
+        new RandomAI();
     }
 
 }
