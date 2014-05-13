@@ -7,8 +7,6 @@ package kimble.graphic;
 
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -18,11 +16,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class Camera {
 
-    private float mouseSpeed;
     private float maxYaw;
     private float minYaw;
-
-    private float moveSpeed;
 
     private Matrix4f projectionMatrix;
     private Matrix4f viewMatrix;
@@ -39,11 +34,8 @@ public class Camera {
     private float zFar;
 
     public Camera(Vector3f position, Vector3f rotation, float fov, float zNear, float zFar) {
-        this.mouseSpeed = 0.5f;
         this.maxYaw = (float) Math.PI / 2;
         this.minYaw = -(float) Math.PI / 2;
-
-        this.moveSpeed = 1;
 
         this.projectionMatrix = new Matrix4f();
         this.viewMatrix = new Matrix4f();
@@ -66,7 +58,7 @@ public class Camera {
         updateProjectionMatrixAttributes(fov, zNear, zFar);
     }
 
-    public void updateProjectionMatrixAttributes(float fov, float zNear, float zFar) {
+    public final void updateProjectionMatrixAttributes(float fov, float zNear, float zFar) {
         this.fov = fov;
         this.zNear = zNear;
         this.zFar = zFar;
@@ -91,54 +83,6 @@ public class Camera {
         projectionMatrixBuffer.flip();
     }
 
-    private void input(float dt) {
-        inputMouse(dt);
-        inputKeyboard(dt);
-    }
-
-    private void inputMouse(float dt) {
-        if (Mouse.isButtonDown(0)) {
-            Mouse.setGrabbed(true);
-        } else if (Mouse.isButtonDown(1)) {
-            Mouse.setGrabbed(false);
-        }
-
-        if (Mouse.isGrabbed()) {
-            rotation.y += mouseSpeed * dt * (float) Mouse.getDX();
-            rotation.x -= mouseSpeed * dt * (float) Mouse.getDY();
-
-            rotation.x = Math.min(rotation.x, maxYaw);
-            rotation.x = Math.max(rotation.x, minYaw);
-
-            rotation.y %= 2 * Math.PI;
-            rotation.x %= 2 * Math.PI;
-        }
-    }
-
-    private void inputKeyboard(float dt) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            move(0, 0, -moveSpeed * dt);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            move(0, 0, moveSpeed * dt);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            move(-moveSpeed * dt, 0, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            move(moveSpeed * dt, 0, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            move(0, moveSpeed * dt, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            move(0, -moveSpeed * dt, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-            Mouse.setGrabbed(false);
-        }
-    }
-
     public void move(float dx, float dy, float dz) {
         position.x -= dx * (float) Math.sin(rotation.y - Math.PI / 2) + dz * Math.sin(rotation.y);
         position.y += dy;
@@ -146,8 +90,6 @@ public class Camera {
     }
 
     public void update(float dt) {
-        input(dt);
-
         viewMatrix = new Matrix4f();
 
         Matrix4f.rotate(rotation.x, new Vector3f(1, 0, 0), viewMatrix, viewMatrix);
@@ -159,14 +101,6 @@ public class Camera {
 
         viewMatrix.store(viewMatrixBuffer);
         viewMatrixBuffer.flip();
-    }
-
-    public void setMouseSpeed(float mouseSpeed) {
-        this.mouseSpeed = mouseSpeed;
-    }
-
-    public void setMoveSpeed(float moveSpeed) {
-        this.moveSpeed = moveSpeed;
     }
 
     public void setMaxAndMinYaw(float maxYaw, float minYaw) {

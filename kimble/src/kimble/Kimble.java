@@ -26,8 +26,9 @@ public class Kimble {
         if (!noGui) {
             setupLWJGL();
         }
-        
-        new TestGame(noGui);
+
+//        new TestGame(noGui);
+        runSingleGame(noGui, 4);
 
 //        int numberOfPlayers = 4;
 //        runSingleGame(noGui, numberOfPlayers);
@@ -40,14 +41,15 @@ public class Kimble {
         for (int i = 0; i < numberOfPlayers - 1; i++) {
             players.add(new TestAIRandom());
         }
-        new TestGame2(noGui, players);
+//        new TestGame2(noGui, players);
+        new ServerGame(noGui, players);
 
     }
 
     private static void runMultipleGames(int numberOfPlayers) {
-        
+
         int numberOfGames = 1000;
-        
+
         List<IPlayer> players = new ArrayList<>();
         players.add(new TestAILasse());
         Map<Integer, Integer> winners = new HashMap<>();

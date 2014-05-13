@@ -24,7 +24,8 @@ public class SocketServer {
      */
     public static void main(String[] args) throws IOException {
 
-        String dir = "/home/lasse/NetBeansProjects/SocketClient/dist/";
+//        String dir = "/home/lasse/NetBeansProjects/SocketClient/dist/";
+        String dir = "D:\\Programmering\\Java\\Kimble\\kimble\\test-projects\\SocketClient\\dist\\";
         String filename = "SocketClient.jar";
         int players = 2;
 

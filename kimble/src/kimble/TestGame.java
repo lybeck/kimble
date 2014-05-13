@@ -41,7 +41,7 @@ public class TestGame {
     private Camera camera;
     private Shader shader;
 
-    private static final boolean AUTOMATIC_TURNS = false;
+    private static final boolean AUTOMATIC_TURNS = true;
     private static final boolean DEBUG = true;
 
     private boolean running;
