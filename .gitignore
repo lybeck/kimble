@@ -1,3 +1,8 @@
-/build/
-/dist/
-/nbproject/private/
+kimble/build/
+kimble/dist/
+kimble/nbproject/private/
+
+kimbleAI/build/
+kimbleAI/dist/
+kimbleAI/nbproject/private/
+
