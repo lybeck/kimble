@@ -74,6 +74,12 @@ public class TestGame2 {
                 executeMove();
             }
         } else {
+
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
+            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
+            
             setupLogic();
             setupGraphic();
 
@@ -131,7 +137,7 @@ public class TestGame2 {
         dieHolder = new DieHolderGraphic();
         dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
 
-        die = new DieGraphic(game.getDie());
+        die = new DieGraphic();
 
         dieHolderDome = new DieHolderDomeGraphic();
     }

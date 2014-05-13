@@ -23,18 +23,18 @@ public class Kimble {
                 noGui = true;
             }
         }
-//        new TestGame(noGui);
+        if (!noGui) {
+            setupLWJGL();
+        }
+        
+        new TestGame(noGui);
 
-        int numberOfPlayers = 8;
-
-        runSingleGame(noGui, numberOfPlayers);
+//        int numberOfPlayers = 4;
+//        runSingleGame(noGui, numberOfPlayers);
 //        runMultipleGames(numberOfPlayers);
     }
 
     private static void runSingleGame(boolean noGui, int numberOfPlayers) {
-        if (!noGui) {
-            setupLWJGL();
-        }
         List<IPlayer> players = new ArrayList<>();
         players.add(new TestAILasse());
         for (int i = 0; i < numberOfPlayers - 1; i++) {
