@@ -10,6 +10,7 @@ import java.util.List;
 public class Team {
 
     private final int id;
+    private String name;
     private final List<Piece> pieces;
 
     public Team(int id, int numberOfPieces) {
@@ -30,5 +31,13 @@ public class Team {
 
     public Piece getPiece(int i) {
         return pieces.get(i);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
