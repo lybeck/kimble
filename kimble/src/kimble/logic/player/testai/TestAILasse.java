@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import kimble.logic.Game;
 import kimble.logic.Move;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
@@ -24,7 +25,8 @@ public class TestAILasse extends KimbleAI {
     }
 
     @Override
-    public int selectMove(Turn turn, Board board) {
+    public int selectMove(Turn turn, Game game) {
+        Board board = game.getBoard();
         Map<Move, Integer> map = new HashMap<>();
         for (int i = 0; i < turn.getMoves().size(); ++i) {
             Move move = turn.getMove(i);

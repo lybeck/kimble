@@ -97,7 +97,7 @@ public class KimbleLogic {
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
             if (player.isAIPlayer()) {
-                int selection = ((KimbleAI) player).selectMove(currentTurn, game.getBoard());
+                int selection = ((KimbleAI) player).selectMove(currentTurn, game);
                 if (selection >= 0) {
                     game.executeMove(selection);
                 } else {

@@ -1,6 +1,7 @@
 package kimble.logic.player.testai;
 
 import java.util.Random;
+import kimble.logic.Game;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
@@ -18,7 +19,7 @@ public class TestAIRandom extends KimbleAI {
     }
 
     @Override
-    public int selectMove(Turn turn, Board board) {
+    public int selectMove(Turn turn, Game game) {
         int availableMoves = turn.getMoves().size();
         return random.nextInt(availableMoves);
     }

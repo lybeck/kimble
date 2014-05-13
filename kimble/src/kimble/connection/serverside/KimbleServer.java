@@ -50,7 +50,7 @@ public class KimbleServer implements Runnable {
 //        }
     }
 
-    public void addPlayer(KimbleClientAI client) throws IOException {
+    void addPlayer(KimbleClientAI client) throws IOException {
         Socket socket = serverSocket.accept();
         socket.setSoTimeout(TIME_OUT_MS);
         client.setSocket(socket);

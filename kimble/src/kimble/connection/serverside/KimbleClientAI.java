@@ -5,6 +5,10 @@
  */
 package kimble.connection.serverside;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +19,10 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.connection.clientside.StreamRedirecter;
+import kimble.connection.messages.MoveMessage;
+import kimble.connection.messages.ReceiveMessage;
+import kimble.connection.messages.SendMessage;
+import kimble.logic.Game;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
@@ -40,7 +48,8 @@ public class KimbleClientAI extends KimbleAI {
     }
 
     private void startAI() throws IOException {
-        String dir = "D:\\Programmering\\Java\\Kimble\\kimble\\kimbleAI\\dist\\";
+        String dir = "/home/lasse/NetBeansProjects/kimble/kimbleAI/dist/";
+        System.out.println(new File(dir).getAbsolutePath());
         String name = "KimbleAI.jar";
 
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + name);
@@ -56,8 +65,12 @@ public class KimbleClientAI extends KimbleAI {
         this.writer = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    public String receiveMessage() throws IOException {
-        return reader.readLine();
+    public ReceiveMessage receiveMessage() throws IOException {
+        JsonObject jsonObject = new JsonParser().parse(reader.readLine()).getAsJsonObject();
+        ReceiveMessage receiveMessage = new ReceiveMessage();
+        receiveMessage.setType(jsonObject.get("type").getAsString());
+        receiveMessage.setData(jsonObject.get("data"));
+        return receiveMessage;
     }
 
     public void sendMessage(String message) {
@@ -76,14 +89,26 @@ public class KimbleClientAI extends KimbleAI {
     private final Random random;
 
     @Override
-    public int selectMove(Turn turn, Board board) {
-        System.out.println("KimbleClientAI::selectMove");
-        sendMessage("asdasd");
+    public int selectMove(Turn turn, Game game) {
+
+        send(new MoveMessage(turn, game));
+
         try {
-            System.out.println("receiveMessage() = " + receiveMessage());
+            ReceiveMessage receiveMessage = receiveMessage();
+            String type = receiveMessage.getType();
+            if (type.equals("selectedMove")) {
+                return receiveMessage.getData().getAsInt();
+            } else if (type.equals("ping")) {
+                return -1;
+            }
         } catch (IOException ex) {
             Logger.getLogger(KimbleClientAI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return random.nextInt(turn.getMoves().size());
+
+        throw new RuntimeException("Did not receive proper message..");
+    }
+
+    private void send(SendMessage message) {
+        sendMessage(message.toJson());
     }
 }

@@ -1,5 +1,6 @@
 package kimble.logic.player;
 
+import kimble.logic.Game;
 import kimble.logic.IPlayer;
 import kimble.logic.Team;
 import kimble.logic.Turn;
@@ -13,7 +14,7 @@ public abstract class KimbleAI implements IPlayer {
 
     private Team myTeam;
 
-    public abstract int selectMove(Turn turn, Board board);
+    public abstract int selectMove(Turn turn, Game game);
 
     @Override
     public boolean isAIPlayer() {

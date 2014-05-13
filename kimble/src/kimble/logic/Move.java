@@ -12,7 +12,7 @@ public class Move {
     private final Piece piece;
     private final Square destination;
     private final boolean optional;
-    private final IllegalMoveException illegalMoveException;
+    private final transient IllegalMoveException illegalMoveException;
 
     Move(Game game, Piece piece, int dieRoll) {
         this.piece = piece;

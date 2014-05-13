@@ -257,7 +257,7 @@ public class TestGame2 {
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
             if (player.isAIPlayer()) {
-                int selection = ((KimbleAI) player).selectMove(nextTurn, game.getBoard());
+                int selection = ((KimbleAI) player).selectMove(nextTurn, game);
                 if (selection >= 0) {
                     game.executeMove(selection);
                 } else {
