@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import kimble.connection.clientside.StreamRedirecter;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
@@ -43,6 +46,8 @@ public class KimbleClientAI extends KimbleAI {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + name);
         pb.directory(new File(dir));
         Process p = pb.start();
+        new Thread(new StreamRedirecter(p.getInputStream(), System.out)).start();
+        new Thread(new StreamRedirecter(p.getErrorStream(), System.err)).start();
     }
 
     public void setSocket(Socket socket) throws IOException {
@@ -72,7 +77,13 @@ public class KimbleClientAI extends KimbleAI {
 
     @Override
     public int selectMove(Turn turn, Board board) {
+        System.out.println("KimbleClientAI::selectMove");
+        sendMessage("asdasd");
+        try {
+            System.out.println("receiveMessage() = " + receiveMessage());
+        } catch (IOException ex) {
+            Logger.getLogger(KimbleClientAI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return random.nextInt(turn.getMoves().size());
     }
-
 }
