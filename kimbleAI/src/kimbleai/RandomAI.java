@@ -20,6 +20,7 @@ public class RandomAI extends KimbleClient {
 
     @Override
     public void duringLoop() {
+        System.out.println("test log");
         sendMessage("Recieved: " + readMessage());
     }
 

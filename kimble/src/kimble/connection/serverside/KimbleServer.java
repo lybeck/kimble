@@ -5,9 +5,6 @@
  */
 package kimble.connection.serverside;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,78 +12,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import kimble.ServerGame;
 import kimble.logic.IPlayer;
 
 /**
  *
  * @author Christoffer
  */
-public class KimbleServer extends JFrame implements Runnable {
-    
-    private JLabel serverStatus;
+public class KimbleServer implements Runnable {
 
     public static final int TIME_OUT_MS = 500;
 
     private final int port;
-    private final int numberOfPlayers;
+    private final ServerSocket serverSocket;
     private final List<IPlayer> clients;
 
-    public KimbleServer(int port, int numberOfPlayers) {
+    public KimbleServer(int port) throws IOException {
         this.port = port;
-        this.numberOfPlayers = numberOfPlayers;
-
+        this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
-
-        this.setTitle("Kimble Server");
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.pack();
-        this.setSize(new java.awt.Dimension(200, 200));
-
-        serverStatus = new JLabel("Press Button to start Server!");
-        this.add(serverStatus, BorderLayout.SOUTH);
-        
-        JButton startButton = new JButton("Start");
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                run();
-            }
-        });
-        this.add(startButton, BorderLayout.CENTER);
-        
     }
 
     @Override
     public void run() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(port);
-
-            for (int i = 0; i < numberOfPlayers; i++) {
-                KimbleClientAI client = new KimbleClientAI(i);
-                Socket socket = serverSocket.accept();
-                socket.setSoTimeout(TIME_OUT_MS);
-                client.setSocket(socket);
-                clients.add(client);
-            }
-
-//            ServerGame serverGame = new ServerGame(true, clients);
-            for (int i = 0; i < 10; i++) {
-                for (IPlayer ai : clients) {
-                    KimbleClientAI kai = (KimbleClientAI) ai;
-                    kai.sendMessage("hello: " + i);
-                    System.out.println("Client_" + kai.getID() + ": " + kai.receiveMessage());
-                }
-                System.out.println("");
-            }
-            
-            serverStatus.setText("Done!");
-
-        } catch (IOException ex) {
-            Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        new ServerGame(true, clients);
+//        for (int i = 0; i < 10; i++) {
+//            for (IPlayer ai : clients) {
+//                try {
+//                    KimbleClientAI kai = (KimbleClientAI) ai;
+//                    kai.sendMessage("hello: " + i);
+//                    System.out.println("Client_" + kai.getID() + ": " + kai.receiveMessage());
+//                } catch (IOException ex) {
+//                    Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            System.out.println("");
+//        }
     }
 
+    public void addPlayer(KimbleClientAI client) throws IOException {
+        Socket socket = serverSocket.accept();
+        socket.setSoTimeout(TIME_OUT_MS);
+        client.setSocket(socket);
+        clients.add(client);
+    }
 }

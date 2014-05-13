@@ -12,7 +12,7 @@ package kimble.connection.messages;
 public class Message {
 
     private String type;
-    private byte[] data;
+    private Object data;
 
     public Message(String type) {
         this(type, null);
@@ -31,7 +31,7 @@ public class Message {
         return type;
     }
 
-    public byte[] getData() {
+    public Object getData() {
         return data;
     }
 
