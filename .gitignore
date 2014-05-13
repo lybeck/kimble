@@ -6,3 +6,8 @@ kimbleAI/build/
 kimbleAI/dist/
 kimbleAI/nbproject/private/
 
+/test-projects/SocketClient/build/
+/test-projects/SocketClient/dist/
+/test-projects/SocketClient/nbproject/private/
+/test-projects/SocketServer/build/
+/test-projects/SocketServer/nbproject/private/
