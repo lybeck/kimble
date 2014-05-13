@@ -43,7 +43,6 @@ void main(void) {
 
 	pass_TextureCoord = in_TextureCoord;
         pass_Color = in_Color * max(intensity * material.diffuse + spec, material.ambient);
-        // pass_Color = in_Color * team_Color;
        
         gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(in_Position, 1);
 }

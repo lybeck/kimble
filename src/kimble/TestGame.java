@@ -30,6 +30,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class TestGame {
 
     private Game game;
+    private Turn nextTurn;
 
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
@@ -41,7 +42,6 @@ public class TestGame {
     private Shader shader;
 
     private static final boolean AUTOMATIC_TURNS = true;
-    private static final float TURN_TIME_STEP = 0.1f;
     private static final boolean DEBUG = true;
 
     private boolean running;
@@ -64,6 +64,12 @@ public class TestGame {
                 executeMove();
             }
         } else {
+
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
+            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
+
             setupLogic();
             setupGraphic();
 
@@ -86,10 +92,13 @@ public class TestGame {
         System.out.println("--------------------------------------------------");
         System.out.println("");
 
+        this.nextTurn = game.getNextTurn();
+
 //        Mouse.setGrabbed(true);
     }
 
     private void setupGraphic() {
+
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
@@ -109,7 +118,8 @@ public class TestGame {
         dieHolder = new DieHolderGraphic();
         dieHolder.rotate(0, board.getHomeSquares().get(0).getRotation().y, 0);
 
-        die = new DieGraphic(game.getDie());
+        die = new DieGraphic();
+        this.die.setDieRoll(nextTurn.getDieRoll());
 
         dieHolderDome = new DieHolderDomeGraphic();
     }
@@ -178,7 +188,7 @@ public class TestGame {
 
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                executeMove();
+                executeDieRollMove();
             } else if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 rotateCamera = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -186,10 +196,10 @@ public class TestGame {
                 cameraInPosition = false;
             }
         }
-        if (AUTOMATIC_TURNS) {
+        if (AUTOMATIC_TURNS && !game.isGameOver()) {
             timer += dt;
-            if (timer >= TURN_TIME_STEP) {
-                executeMove();
+            if (timer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+                executeDieRollMove();
                 timer = 0;
             }
         }
@@ -206,8 +216,13 @@ public class TestGame {
         }
     }
 
-    Random random = new Random();
+    private void executeDieRollMove() {
+        die.setDieRoll(nextTurn.getDieRoll());
+        dieHolderDome.bounce();
+        executeMove();
+    }
 
+    Random random = new Random();
     int lastKey = -1;
 
     private void executeMove() {
@@ -216,7 +231,6 @@ public class TestGame {
             return;
         }
 
-        Turn nextTurn = game.getNextTurn();
         if (DEBUG) {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());
             System.out.println("Rolled: " + nextTurn.getDieRoll());
@@ -244,6 +258,9 @@ public class TestGame {
                 System.out.println(team.getId());
             }
             System.out.println("");
+        } else {
+            this.nextTurn = game.getNextTurn();
+            this.die.setDieRoll(nextTurn.getDieRoll());
         }
     }
 
