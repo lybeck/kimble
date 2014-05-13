@@ -229,4 +229,5 @@ public class Game {
     public Die getDie() {
         return die;
     }
+
 }

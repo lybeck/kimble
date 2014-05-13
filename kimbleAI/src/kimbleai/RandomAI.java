@@ -1,24 +1,29 @@
 package kimbleai;
 
+import java.io.IOException;
 import java.util.Random;
-import kimble.logic.Turn;
-import kimble.logic.board.Board;
-import kimble.logic.player.KimbleAI;
+import kimble.connection.clientside.KimbleClient;
 
 /**
  *
  * @author Lasse Lybeck
  */
-public class RandomAI extends KimbleAI {
+public class RandomAI extends KimbleClient {
 
-    private final Random random;
-
-    public RandomAI() {
-        this.random = new Random();
+    public RandomAI() throws IOException {
+        super("localhost", 5391);
     }
 
     @Override
-    public int selectMove(Turn turn, Board board) {
-        return random.nextInt(turn.getMoves().size());
+    public void preLoop() {
+    }
+
+    @Override
+    public void duringLoop() {
+        sendMessage("Recieved: " + readMessage());
+    }
+
+    @Override
+    public void postLoop() {
     }
 }
