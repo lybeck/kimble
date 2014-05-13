@@ -35,6 +35,8 @@ public class PieceGraphic extends Model {
         this.getMaterial().setDiffuse(new Vector4f(color.x, color.y, color.z, 1));
         this.setMesh(ModelManager.getModel("game_piece"));
 
+        this.tempPosition = new Vector3f(getPosition().x, getPosition().y, getPosition().z);
+
         speedUp = PlaybackProfile.currentProfile.getTurnTimeSpeedUp();
     }
 

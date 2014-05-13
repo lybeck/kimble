@@ -43,6 +43,7 @@ public class KimbleGraphic {
 
     private boolean running;
 
+    private boolean executeMove = true;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
     private float cameraPositionAngle = 0;
@@ -104,8 +105,6 @@ public class KimbleGraphic {
 
         cleanUp();
     }
-    
-    private boolean executeMove = true;
 
     private void update(float dt) {
 
@@ -127,20 +126,22 @@ public class KimbleGraphic {
 
             turnTimer += dt;
             if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-                
-                if(executeMove){
+
+                if (executeMove) {
                     logic.executeMove();
                     executeMove = false;
                 }
-                
+
                 nextTurnTimer += dt;
 
                 if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-                    die.setDieRoll(logic.getCurrentTurn().getDieRoll());
-                    dieHolderDome.bounce();
-                    turnTimer = 0;
-                    nextTurnTimer = 0;
-                    executeMove = true;
+                    if (!logic.getGame().isGameOver()) {
+                        die.setDieRoll(logic.getCurrentTurn().getDieRoll());
+                        dieHolderDome.bounce();
+                        turnTimer = 0;
+                        nextTurnTimer = 0;
+                        executeMove = true;
+                    }
                 }
             }
 

@@ -18,7 +18,8 @@ public enum PlaybackProfile {
     NORMAL(2f, 1f),
     MEDIUM(1f, 2f),
     FAST(0.5f, 4f),
-    SUPER_FAST(0.1f, 4f);
+    SUPER_FAST(0.1f, 4f),
+    OUT_OF_CONTROL(0.01f, 4f);
 
     private final float turnTimeStep;
     private final float turnTimeSpeedUp;
