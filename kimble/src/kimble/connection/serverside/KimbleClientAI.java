@@ -120,14 +120,24 @@ public class KimbleClientAI extends KimbleAI {
     @Override
     public int selectMove(Turn turn, Game game) {
 
-        send(new MoveMessage(turn, game));
+        MoveMessage moveMessage = new MoveMessage(turn, game);
+        send(moveMessage);
 
         try {
             ReceiveMessage receiveMessage = receiveMessage();
             String type = receiveMessage.getType();
             if (type.equals("selectedMove")) {
-                return receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
+
+                int selectedMove = receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
+
+                if (KimbleGameStateLogger.isInitialized()) {
+                    KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), moveMessage.getDieRoll());
+                    KimbleGameStateLogger.logMoveMessage(moveMessage, selectedMove);
+                }
+
+                return selectedMove;
             } else if (type.equals("ping")) {
+
                 return -1;
             }
         } catch (IOException ex) {

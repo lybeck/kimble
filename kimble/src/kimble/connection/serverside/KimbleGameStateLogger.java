@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kimble.connection.messages.MoveMessage;
 
 /**
  *
@@ -19,6 +20,8 @@ public class KimbleGameStateLogger {
 
     private static FileWriter writer;
     private static File logFile;
+
+    private static boolean initialized = false;
 
     public static void init() throws IOException {
         File logRoot = new File("logs");
@@ -38,22 +41,41 @@ public class KimbleGameStateLogger {
         logFile = new File(logRoot, "log_" + fileIndex + ".txt");
         writer = new FileWriter(logFile);
 
-        writer.append("TeamID" + "\t" + "DieRoll" + "\t" + "PieceID" + "\t" + "StartSquareID" + "\t" + "DestSquareID\n");
+        writer.append("TAG" + "\t" + "TeamID" + "\t" + "DieRoll" + "\t" + "PieceID" + "\t" + "StartID" + "\t" + "DestID\n");
+
+        initialized = true;
     }
 
-    public static void logSkip(Integer teamId, Integer dieRoll, String tag) {
+    public static boolean isInitialized() {
+        return initialized;
+    }
+
+    public static void logMove(int teamID, int dieRoll) {
+        String s = "[move]" + "\t" + teamID + "\t" + dieRoll + "\t";
         try {
-            String s = "SKIP" + "\t" + teamId + "\t" + dieRoll + "\t" + tag;
-            writer.append(s + "\n");
+            writer.append(s);
         } catch (IOException ex) {
             Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void logMove(Integer teamId, Integer dieRoll, Integer pieceId, Integer startSquareId, Integer destSquareId) {
+    public static void logMoveMessage(MoveMessage message, int selectedMove) {
+        Integer pieceId = message.getPieceID(selectedMove);
+        Integer startSquare = message.getStartSquareID(selectedMove);
+        Integer destSquare = message.getDestSquareID(selectedMove);
+
+        String s = pieceId + "\t" + startSquare + "\t" + destSquare + "\n";
         try {
-            String s = "MOVE" + "\t" + teamId + "\t" + dieRoll + "\t" + pieceId + "\t" + startSquareId + "\t" + destSquareId;
-            writer.append(s + "\n");
+            writer.append(s);
+        } catch (IOException ex) {
+            Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void logSkip(int teamID, int dieRoll, String reason) {
+        String s = "[skip]" + "\t" + teamID + "\t" + dieRoll + "\t\t\t\t" + reason + "\n";
+        try {
+            writer.append(s);
         } catch (IOException ex) {
             Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
         }

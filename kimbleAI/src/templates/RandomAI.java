@@ -39,7 +39,7 @@ public class RandomAI extends KimbleClient {
         // is received.
         // =======================================
         String messageType = getReceiveMessageType();
-        System.out.println("Recieved: " + messageType);
+        System.out.println("Team " + getMyTeamId() + " Recieved: " + messageType);
 
         if (messageType.equals("moves")) {
             List<MoveInfo> moves = getAvailableMoves();

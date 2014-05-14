@@ -19,10 +19,14 @@ public class TestServer {
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;
         try {
+            KimbleGameStateLogger.init();
+
             List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
             kimbleServer = new KimbleServer(port, clientInfo.size(), true);
             new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
             kimbleServer.run();
+
+            KimbleGameStateLogger.close();
         } catch (Exception ex) {
             Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
             if (kimbleServer != null) {

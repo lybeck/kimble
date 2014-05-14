@@ -6,6 +6,7 @@
 package kimble;
 
 import java.util.List;
+import kimble.connection.serverside.KimbleGameStateLogger;
 import kimble.graphic.Screen;
 import kimble.logic.IPlayer;
 
