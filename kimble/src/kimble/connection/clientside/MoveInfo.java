@@ -11,18 +11,43 @@ package kimble.connection.clientside;
  */
 public class MoveInfo {
 
-    public final Integer moveId;
-    public final Integer pieceId;
-    public final Boolean isHome;
-    public final Integer startSquareId;
-    public final Integer destSquareId;
+    private final int moveId;
+    private final int pieceId;
+    private final boolean home;
+    private final boolean optional;
+    private final Integer startSquareId;
+    private final int destinationSquareId;
 
-    public MoveInfo(Integer moveId, Integer pieceId, Boolean isHome, Integer startSquareId, Integer destSquareId) {
+    public MoveInfo(int moveId, int pieceId, boolean isHome, boolean isOptional, Integer startSquareId, int destSquareId) {
         this.moveId = moveId;
         this.pieceId = pieceId;
-        this.isHome = isHome;
+        this.home = isHome;
+        this.optional = isOptional;
         this.startSquareId = startSquareId;
-        this.destSquareId = destSquareId;
+        this.destinationSquareId = destSquareId;
     }
 
+    public int getMoveId() {
+        return moveId;
+    }
+
+    public int getPieceId() {
+        return pieceId;
+    }
+
+    public boolean isHome() {
+        return home;
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public Integer getStartSquareId() {
+        return startSquareId;
+    }
+
+    public int getDestinationSquareId() {
+        return destinationSquareId;
+    }
 }

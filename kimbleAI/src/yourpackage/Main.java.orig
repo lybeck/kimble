@@ -1,5 +1,6 @@
 package yourpackage;
 
+import templates.RandomAI;
 import java.io.IOException;
 import kimble.bot.KimbleBot1;
 import kimble.connection.serverside.KimbleClientLoader;
@@ -27,7 +28,11 @@ public class Main {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
+<<<<<<< HEAD:kimbleAI/src/yourpackage/Main.java
+        new RandomAI(hostAddress, port);
+=======
         new KimbleBot1();
+>>>>>>> bef34beb5b3cef8ebd3bd1eb8a5bea5befe142bc:kimbleAI/src/kimbleai/Main.java
     }
 
     public static void main(String[] args) throws IOException {

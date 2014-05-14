@@ -16,7 +16,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import kimble.connection.messages.MoveSelectedMessage;
 import kimble.connection.messages.PingMessage;
 import kimble.connection.messages.ReceiveMessage;
@@ -34,10 +36,14 @@ public abstract class KimbleClient {
 
     private boolean running;
 
+    private int myTeamId;
     private String receiveMessageType;
     private int dieRoll;
     private List<MoveInfo> availableMoves;
     private List<PieceInfo> pieceInfoList;
+    private List<SquareInfo> squares;
+    private Map<Integer, SquareInfo> startSquares;
+    private Map<Integer, List<SquareInfo>> goalSquares;
 
     public KimbleClient(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
@@ -85,6 +91,10 @@ public abstract class KimbleClient {
             parseDieRoll(dataElement);
             parseAvailableMoves(dataElement);
             parsePieceInfo(dataElement);
+        } else if (message.getType().equals("gameInit")) {
+            parseSquares(dataElement);
+        } else if (message.getType().equals("yourTeamId")) {
+            parseTeamId(dataElement);
         }
     }
 
@@ -99,12 +109,14 @@ public abstract class KimbleClient {
             JsonElement moveIdElement = availableMoveElement.get(i).getAsJsonObject().get("moveId");
             JsonElement pieceIdElement = availableMoveElement.get(i).getAsJsonObject().get("pieceId");
             JsonElement isHomeElement = availableMoveElement.get(i).getAsJsonObject().get("isHome");
+            JsonElement isOptionalElement = availableMoveElement.get(i).getAsJsonObject().get("isOptional");
             JsonElement startSquareIdElement = availableMoveElement.get(i).getAsJsonObject().get("startSquareId");
             JsonElement destSqureIdElement = availableMoveElement.get(i).getAsJsonObject().get("destSquareId");
 
             Integer moveId;
             Integer pieceId;
             Boolean isHome;
+            Boolean isOptional;
             Integer startSquareId;
             Integer destSquareId;
             if (moveIdElement != null) {
@@ -122,6 +134,11 @@ public abstract class KimbleClient {
             } else {
                 isHome = false;
             }
+            if (isOptionalElement != null) {
+                isOptional = isOptionalElement.getAsBoolean();
+            } else {
+                isOptional = false;
+            }
             if (startSquareIdElement != null) {
                 startSquareId = startSquareIdElement.getAsInt();
             } else {
@@ -132,7 +149,7 @@ public abstract class KimbleClient {
             } else {
                 throw new UnsupportedOperationException("Can't send a MoveInfo without 'destSquareId'");
             }
-            MoveInfo moveInfo = new MoveInfo(moveId, pieceId, isHome, startSquareId, destSquareId);
+            MoveInfo moveInfo = new MoveInfo(moveId, pieceId, isHome, isOptional, startSquareId, destSquareId);
             availableMoves.add(moveInfo);
         }
     }
@@ -175,6 +192,52 @@ public abstract class KimbleClient {
         }
     }
 
+    private void parseSquares(JsonElement dataElement) {
+        JsonArray squareElements = dataElement.getAsJsonObject().get("squares").getAsJsonArray();
+        squares = new ArrayList<>();
+        startSquares = new HashMap<>();
+        goalSquares = new HashMap<>();
+        for (JsonElement jsonElement : squareElements) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            int squareId = jsonObject.get("squareId").getAsInt();
+            JsonElement isStartSquareElement = jsonObject.get("isStartSquare");
+            JsonElement isGoalSquareElement = jsonObject.get("isGoalSquare");
+            boolean isStartSquare;
+            boolean isGoalSquare;
+            if (isStartSquareElement != null) {
+                isStartSquare = isStartSquareElement.getAsBoolean();
+            } else {
+                isStartSquare = false;
+            }
+            if (isGoalSquareElement != null) {
+                isGoalSquare = isGoalSquareElement.getAsBoolean();
+            } else {
+                isGoalSquare = false;
+            }
+            if (!isStartSquare && !isGoalSquare) {
+                squares.add(new SquareInfo(squareId));
+            } else {
+                int teamId = jsonObject.get("teamId").getAsInt();
+                SquareInfo squareInfo = new SquareInfo(squareId, isStartSquare, isGoalSquare, teamId);
+                if (!isGoalSquare) {
+                    squares.add(squareInfo);
+                } else {
+                    if (!goalSquares.containsKey(teamId)) {
+                        goalSquares.put(teamId, new ArrayList<>());
+                    }
+                    goalSquares.get(teamId).add(squareInfo);
+                }
+                if (isStartSquare) {
+                    startSquares.put(teamId, squareInfo);
+                }
+            }
+        }
+    }
+
+    private void parseTeamId(JsonElement dataElement) {
+        myTeamId = dataElement.getAsJsonObject().get("teamId").getAsInt();
+    }
+
     /**
      * The message type of the received message.
      *
@@ -211,6 +274,44 @@ public abstract class KimbleClient {
         return pieceInfoList;
     }
 
+    /**
+     * Gives the square info of all the squares on the board, excluding the goal squares.
+     *
+     * @return A list of squares.
+     */
+    public List<SquareInfo> getSquareInfo() {
+        return squares;
+    }
+
+    /**
+     * Gives the start square of the specific team.
+     *
+     * @param teamId Team id.
+     * @return The team's start square.
+     */
+    public SquareInfo getStartSquare(int teamId) {
+        return startSquares.get(teamId);
+    }
+
+    /**
+     * Gives the goal squares of the specific team.
+     *
+     * @param teamId Team id.
+     * @return A list of goal squares.
+     */
+    public List<SquareInfo> getGoalSquares(int teamId) {
+        return goalSquares.get(teamId);
+    }
+
+    /**
+     * Gives the id of the team you are playing with.
+     *
+     * @return Your team id.
+     */
+    public int getMyTeamId() {
+        return myTeamId;
+    }
+
     private void sendMessage(String message) {
         writer.println(message);
     }
@@ -223,10 +324,13 @@ public abstract class KimbleClient {
         sendMessage(new MoveSelectedMessage(move));
     }
 
+    public void sendPing() {
+        sendMessage(new PingMessage());
+    }
+
     public abstract void preLoop();
 
     public abstract void duringLoop();
 
     public abstract void postLoop();
-
 }
