@@ -5,6 +5,7 @@
  */
 package kimble.connection.serverside;
 
+import kimble.connection.logger.KimbleGameStateLogger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -57,10 +58,7 @@ public class KimbleServer implements Runnable {
             serverGame.start();
         } catch (Exception ex) {
             Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            for (IPlayer iPlayer : clients) {
-                KimbleClientAI client = (KimbleClientAI) iPlayer;
-                client.send(new DisconnectMessage());
-            }
+            disconnectClients();
         }
 
         disconnectClients();

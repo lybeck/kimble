@@ -10,7 +10,7 @@ import java.util.Set;
 import static kimble.ServerGame.DEBUG;
 import static kimble.ServerGame.NUMBER_OF_PIECES;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
-import kimble.connection.serverside.KimbleGameStateLogger;
+import kimble.connection.logger.KimbleGameStateLogger;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -58,6 +58,9 @@ public class KimbleLogic {
             IPlayer player = players.get(i);
             if (player.isAIPlayer()) {
                 ((KimbleAI) player).setMyTeam(game.getTeam(i));
+                if (KimbleGameStateLogger.isInitialized()) {
+                    KimbleGameStateLogger.logTeam(i);
+                }
             } else {
                 throw new UnsupportedOperationException("Human players not yet supported!");
             }
@@ -74,6 +77,10 @@ public class KimbleLogic {
             System.out.println(game);
             System.out.println("--------------------------------------------------");
             System.out.println("");
+        }
+
+        if (KimbleGameStateLogger.isInitialized()) {
+            KimbleGameStateLogger.logGameStart(gameStart);
         }
 
         currentTurn = game.getNextTurn();
@@ -97,16 +104,27 @@ public class KimbleLogic {
             if (DEBUG) {
                 System.out.println("No possible moves...");
             }
-            game.executeNoMove("can't");
+
+            if (KimbleGameStateLogger.isInitialized()) {
+                KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "not possible");
+            }
+
+            game.executeNoMove();
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
             if (player.isAIPlayer()) {
 
+                // selectMove logs this output...
                 int selection = ((KimbleAI) player).selectMove(currentTurn, game);
                 if (selection >= 0) {
                     game.executeMove(selection);
                 } else {
-                    game.executeNoMove("chose");
+
+                    if (KimbleGameStateLogger.isInitialized()) {
+                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "chose");
+                    }
+
+                    game.executeNoMove();
                 }
             } else {
                 throw new UnsupportedOperationException("Human players not yet supported!");
@@ -125,10 +143,22 @@ public class KimbleLogic {
                 System.out.println("Finishing order: ");
                 for (Team team : game.getFinishedTeams()) {
                     System.out.println(team.getId());
+
+                    if (KimbleGameStateLogger.isInitialized()) {
+                        KimbleGameStateLogger.logTeamFinnish(team.getId());
+                    }
                 }
                 System.out.println("");
             }
+            
             winner = game.getFinishedTeams().get(0).getId();
+
+            if (KimbleGameStateLogger.isInitialized()) {
+                for (Team team : game.getFinishedTeams()) {
+                    KimbleGameStateLogger.logTeamFinnish(team.getId());
+                }
+                KimbleGameStateLogger.logWinner(winner);
+            }
         } else {
             currentTurn = game.getNextTurn();
         }

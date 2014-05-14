@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import kimble.connection.serverside.KimbleGameStateLogger;
+import kimble.connection.logger.KimbleGameStateLogger;
 import kimble.logic.exception.IllegalMoveException;
 
 /**
@@ -118,11 +118,7 @@ public class Game {
         }
     }
 
-    public void executeNoMove(String reason) {
-        if (KimbleGameStateLogger.isInitialized()) {
-            KimbleGameStateLogger.logSkip(getTeamInTurn().getId(), currentTurn.getDieRoll(), reason);
-        }
-
+    public void executeNoMove() {
         for (Move move : currentTurn.getMoves()) {
             if (!move.isOptional()) {
                 throw new RuntimeException("Must select a move if possible!");

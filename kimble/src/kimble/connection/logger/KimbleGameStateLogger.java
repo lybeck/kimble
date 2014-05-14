@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.connection.serverside;
+package kimble.connection.logger;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kimble.connection.messages.MoveMessage;
+import kimble.logic.GameStart;
 
 /**
  *
@@ -18,8 +18,9 @@ import kimble.connection.messages.MoveMessage;
  */
 public class KimbleGameStateLogger {
 
+    private static LogFile logFile;
     private static FileWriter writer;
-    private static File logFile;
+    private static File outputFile;
 
     private static boolean initialized = false;
 
@@ -38,50 +39,51 @@ public class KimbleGameStateLogger {
             fileIndex = filesInRoot.length + 1;
         }
 
-        logFile = new File(logRoot, "log_" + fileIndex + ".txt");
-        writer = new FileWriter(logFile);
-
-        writer.append("TAG" + "\t" + "TeamID" + "\t" + "DieRoll" + "\t" + "PieceID" + "\t" + "StartID" + "\t" + "DestID\n");
+        outputFile = new File(logRoot, "log_" + fileIndex + ".txt");
+        writer = new FileWriter(outputFile);
 
         initialized = true;
+
+        logFile = new LogFile();
     }
 
     public static boolean isInitialized() {
         return initialized;
     }
 
-    public static void logMove(int teamID, int dieRoll) {
-        String s = "[move]" + "\t" + teamID + "\t" + dieRoll + "\t";
-        try {
-            writer.append(s);
-        } catch (IOException ex) {
-            Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public static void logTeam(Integer teamID) {
+        logFile.addTeam(teamID);
     }
 
-    public static void logMoveMessage(MoveMessage message, int selectedMove) {
+    public static void logGameStart(GameStart gameStart) {
+        logFile.setStartRolls(gameStart.getRolls());
+        logFile.setStartingTeam(gameStart.getStartingTeamIndex());
+    }
+
+    public static void logMove(int teamID, int dieRoll, MoveMessage message, int selectedMove) {
         Integer pieceId = message.getPieceID(selectedMove);
+        Boolean isHome = message.getIsHome(selectedMove);
+        Boolean isOptional = message.getIsOptional(selectedMove);
         Integer startSquare = message.getStartSquareID(selectedMove);
         Integer destSquare = message.getDestSquareID(selectedMove);
 
-        String s = pieceId + "\t" + startSquare + "\t" + destSquare + "\n";
-        try {
-            writer.append(s);
-        } catch (IOException ex) {
-            Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, isHome, isOptional, startSquare, destSquare));
     }
 
     public static void logSkip(int teamID, int dieRoll, String reason) {
-        String s = "[skip]" + "\t" + teamID + "\t" + dieRoll + "\t\t\t\t" + reason + "\n";
-        try {
-            writer.append(s);
-        } catch (IOException ex) {
-            Logger.getLogger(KimbleGameStateLogger.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, reason));
+    }
+
+    public static void logTeamFinnish(int teamID) {
+        logFile.addTeamFinnish(teamID);
+    }
+    
+    public static void logWinner(int teamID){
+        logFile.setWinner(teamID);
     }
 
     public static void close() throws IOException {
+        writer.append(new Gson().toJson(logFile));
         writer.close();
     }
 

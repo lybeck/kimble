@@ -13,7 +13,7 @@ import templates.LoadClients;
  */
 public class Main {
 
-    public static final boolean NO_GUI = true;
+    public static final boolean NO_GUI = false;
     public static final String HOST_ADDRESS = "localhost";
     public static final int PORT = 5391;
 

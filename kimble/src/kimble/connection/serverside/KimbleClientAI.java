@@ -5,6 +5,7 @@
  */
 package kimble.connection.serverside;
 
+import kimble.connection.logger.KimbleGameStateLogger;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -131,8 +132,7 @@ public class KimbleClientAI extends KimbleAI {
                 int selectedMove = receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
 
                 if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), moveMessage.getDieRoll());
-                    KimbleGameStateLogger.logMoveMessage(moveMessage, selectedMove);
+                    KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), moveMessage.getDieRoll(), moveMessage, selectedMove);
                 }
 
                 return selectedMove;
