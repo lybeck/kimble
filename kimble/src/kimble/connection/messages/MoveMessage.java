@@ -39,8 +39,8 @@ public class MoveMessage extends SendMessage {
         MessageData(Turn turn, Game game) {
             dieRoll = turn.getDieRoll();
             availableMoves = new ArrayList<>();
-            for (Move move : turn.getMoves()) {
-                availableMoves.add(new MoveInfo(move));
+            for (int i = 0; i < turn.getMoves().size(); i++) {
+                availableMoves.add(new MoveInfo(i, turn.getMoves().get(i)));
             }
             pieces = new ArrayList<>();
             for (Team team : game.getTeams()) {
@@ -48,6 +48,26 @@ public class MoveMessage extends SendMessage {
                     pieces.add(new PieceInfo(piece));
                 }
             }
+        }
+    }
+
+    private class MoveInfo {
+
+        int moveId;
+        int pieceId;
+        Boolean isHome;
+        Integer startSquareId;
+        int destSquareId;
+
+        MoveInfo(int moveId, Move move) {
+            this.moveId = moveId;
+            this.pieceId = move.getPiece().getId();
+            this.isHome = move.getPiece().getPosition() == null;
+            if (!isHome) {
+                this.isHome = null;
+                this.startSquareId = move.getPiece().getPosition().getID();
+            }
+            this.destSquareId = move.getDestination().getID();
         }
     }
 
@@ -59,31 +79,14 @@ public class MoveMessage extends SendMessage {
         Integer squareId;
 
         PieceInfo(Piece piece) {
-            pieceId = piece.getId();
-            teamId = piece.getTeamId();
-            isHome = piece.getPosition() == null;
+            this.pieceId = piece.getId();
+            this.teamId = piece.getTeamId();
+            this.isHome = piece.getPosition() == null;
             if (!isHome) {
-                isHome = null;
-                squareId = piece.getPosition().getID();
+                this.isHome = null;
+                this.squareId = piece.getPosition().getID();
             }
         }
     }
 
-    private class MoveInfo {
-
-        int pieceId;
-        Boolean startHome;
-        Integer startSquareId;
-        int destSquareId;
-
-        MoveInfo(Move move) {
-            pieceId = move.getPiece().getId();
-            startHome = move.getPiece().getPosition() == null;
-            if (!startHome) {
-                startHome = null;
-                startSquareId = move.getPiece().getPosition().getID();
-            }
-            destSquareId = move.getDestination().getID();
-        }
-    }
 }

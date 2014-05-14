@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.ServerGame;
+import kimble.connection.messages.DisconnectMessage;
 import kimble.logic.IPlayer;
 
 /**
@@ -20,19 +21,19 @@ import kimble.logic.IPlayer;
  * @author Christoffer
  */
 public class KimbleServer implements Runnable {
-
+    
     public static final int TIME_OUT_MS = 500;
-
+    
     private final int port;
     private final ServerSocket serverSocket;
     private final List<IPlayer> clients;
-
+    
     public KimbleServer(int port) throws IOException {
         this.port = port;
         this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
     }
-
+    
     @Override
     public void run() {
         new ServerGame(true, clients);
@@ -48,8 +49,12 @@ public class KimbleServer implements Runnable {
 //            }
 //            System.out.println("");
 //        }
+        for (IPlayer iPlayer : clients) {
+            KimbleClientAI client = (KimbleClientAI) iPlayer;
+            client.send(new DisconnectMessage());
+        }
     }
-
+    
     void addPlayer(KimbleClientAI client) throws IOException {
         Socket socket = serverSocket.accept();
         socket.setSoTimeout(TIME_OUT_MS);
