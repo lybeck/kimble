@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
@@ -55,8 +56,8 @@ public class KimbleClientAI extends KimbleAI {
     
     public void setSocket(Socket socket) throws IOException {
         this.socket = socket;
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.writer = new PrintWriter(socket.getOutputStream(), true);
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+        this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
     }
     
     public void closeSocket() throws IOException {
@@ -64,7 +65,9 @@ public class KimbleClientAI extends KimbleAI {
     }
     
     public ReceiveMessage receiveMessage() throws IOException {
-        JsonObject jsonObject = new JsonParser().parse(reader.readLine()).getAsJsonObject();
+        String line = reader.readLine();
+        System.out.println("line = " + line);
+        JsonObject jsonObject = new JsonParser().parse(line).getAsJsonObject();
         ReceiveMessage receiveMessage = new ReceiveMessage();
         receiveMessage.setType(jsonObject.get("type").getAsString());
         receiveMessage.setData(jsonObject.get("data"));
