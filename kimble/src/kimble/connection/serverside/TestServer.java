@@ -20,7 +20,7 @@ public class TestServer {
         KimbleServer kimbleServer = null;
         try {
             List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
-            kimbleServer = new KimbleServer(port, clientInfo.size(), true);
+            kimbleServer = new KimbleServer(port, clientInfo.size(), false);
             new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
             kimbleServer.run();
         } catch (Exception ex) {
