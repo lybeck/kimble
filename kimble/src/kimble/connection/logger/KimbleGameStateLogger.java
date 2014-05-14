@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Set;
 import kimble.connection.messages.MoveMessage;
 import kimble.logic.GameStart;
 
@@ -53,6 +54,14 @@ public class KimbleGameStateLogger {
 
     public static void logTeam(Integer teamID) {
         logFile.addTeam(teamID);
+    }
+    
+    public static void logStartValues(Set<Integer> startValues){
+        logFile.setStartValues(startValues);
+    }
+    
+    public static void logContinueTurnValues(Set<Integer> continueTurnValues){
+        logFile.setContinueTurnValues(continueTurnValues);
     }
 
     public static void logGameStart(GameStart gameStart) {

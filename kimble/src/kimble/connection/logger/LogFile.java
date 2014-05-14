@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -23,6 +24,8 @@ public class LogFile {
     // - Result
     private final Date date;
     private final List<Integer> teams;
+    private Set<Integer> startValues;
+    private Set<Integer> continueTurnValues;
     private List<Map<Integer, Integer>> startRolls;
     private Integer startingTeam;
     private final List<LogEntry> moves;
@@ -38,6 +41,14 @@ public class LogFile {
 
     public void addTeam(Integer teamID) {
         teams.add(teamID);
+    }
+
+    public void setStartValues(Set<Integer> startValues) {
+        this.startValues = startValues;
+    }
+
+    public void setContinueTurnValues(Set<Integer> continueTurnValues) {
+        this.continueTurnValues = continueTurnValues;
     }
 
     public void setStartRolls(List<Map<Integer, Integer>> startRolls) {

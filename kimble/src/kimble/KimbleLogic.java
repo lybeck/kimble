@@ -80,6 +80,8 @@ public class KimbleLogic {
         }
 
         if (KimbleGameStateLogger.isInitialized()) {
+            KimbleGameStateLogger.logStartValues(startValues);
+            KimbleGameStateLogger.logContinueTurnValues(continueTurnValues);
             KimbleGameStateLogger.logGameStart(gameStart);
         }
 
