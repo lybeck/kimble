@@ -56,6 +56,7 @@ public class MoveMessage extends SendMessage {
         int moveId;
         int pieceId;
         Boolean isHome;
+        Boolean isOptional;
         Integer startSquareId;
         int destSquareId;
 
@@ -63,6 +64,9 @@ public class MoveMessage extends SendMessage {
             this.moveId = moveId;
             this.pieceId = move.getPiece().getId();
             this.isHome = move.getPiece().getPosition() == null;
+            if (move.isOptional()) {
+                this.isOptional = true;
+            }
             if (!isHome) {
                 this.isHome = null;
                 this.startSquareId = move.getPiece().getPosition().getID();
