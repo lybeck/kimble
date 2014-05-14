@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,11 +48,32 @@ public class KimbleClientAI extends KimbleAI {
      *
      * @param dir
      * @param jarName
+     * @throws java.io.UnsupportedEncodingException
      * @throws IOException
      */
-    public void startAI(String dir, String jarName) throws IOException {
+    public void startAI(String dir, String jarName) throws UnsupportedEncodingException, IOException {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, "serverstart");
         pb.directory(new File(dir));
+        startProcess(pb);
+    }
+
+    /**
+     * Start the new processes to access this host and port.
+     *
+     * @param dir
+     * @param jarName
+     * @param hostAddress
+     * @param port
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     */
+    public void startAI(String dir, String jarName, String hostAddress, int port) throws UnsupportedEncodingException, IOException {
+        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, hostAddress, port + "");
+        pb.directory(new File(dir));
+        startProcess(pb);
+    }
+
+    private void startProcess(ProcessBuilder pb) throws UnsupportedEncodingException, IOException {
         Process p = pb.start();
         new Thread(new StreamRedirecter(p.getInputStream(), System.out)).start();
         new Thread(new StreamRedirecter(p.getErrorStream(), System.err)).start();

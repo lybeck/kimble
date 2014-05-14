@@ -21,7 +21,7 @@ public class TestServer {
         try {
             List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
             kimbleServer = new KimbleServer(port, clientInfo.size(), true);
-            new KimbleClientLoader(kimbleServer, clientInfo);
+            new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
             kimbleServer.run();
         } catch (Exception ex) {
             Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
