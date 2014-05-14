@@ -22,4 +22,5 @@ public abstract class SendMessage {
     }
 
     protected abstract String getType();
+
 }

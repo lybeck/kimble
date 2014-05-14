@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static kimble.ServerGame.DEBUG;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 
 /**
@@ -24,7 +25,7 @@ import static org.lwjgl.opengl.GL11.glGenTextures;
 public class TextureManager {
 
     private static final String[] textureNames = new String[]{
-        "Die_tex", 
+        "Die_tex",
         "temp_tex"
     };
 
@@ -35,7 +36,10 @@ public class TextureManager {
         for (int i = 0; i < textureNames.length; i++) {
             load(textureNames[i], TextureManager.class.getResourceAsStream(dir + textureNames[i] + ".png"));
         }
-        System.out.println("Done loading textures.");
+
+        if (DEBUG) {
+            System.out.println("Done loading textures.");
+        }
     }
 
     private static void load(String key, InputStream inputStream) {

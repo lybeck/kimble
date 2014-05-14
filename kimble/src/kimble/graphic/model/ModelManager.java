@@ -8,6 +8,7 @@ package kimble.graphic.model;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import static kimble.ServerGame.DEBUG;
 
 /**
  *
@@ -29,7 +30,10 @@ public class ModelManager {
         for (int i = 0; i < modelNames.length; i++) {
             load(modelNames[i], ModelManager.class.getResourceAsStream(dir + modelNames[i] + ".obj"));
         }
-        System.out.println("Done loading models.");
+        
+        if(DEBUG){
+            System.out.println("Done loading models.");
+        }
     }
 
     public static void load(String key, InputStream inputStream) {

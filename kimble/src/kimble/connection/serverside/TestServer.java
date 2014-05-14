@@ -5,7 +5,10 @@
  */
 package kimble.connection.serverside;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import kimble.connection.serverside.clientloading.LoadClientsInterface;
 
 /**
  *
@@ -13,18 +16,22 @@ import java.io.IOException;
  */
 public class TestServer {
 
-//    private static String dir = "/home/lasse/NetBeansProjects/kimble/kimbleAI/dist/";
-    private static String dir = "D:\\Programmering\\Java\\Kimble\\kimble\\kimbleAI\\dist\\";
-    private static String jarName = "KimbleAI.jar";
-
-    public static void main(String[] args) throws IOException {
-        KimbleServer kimbleServer = new KimbleServer(5391);
-        int numberOfPlayers = 4;
-        for (int i = 0; i < numberOfPlayers; i++) {
-            KimbleClientAI client = new KimbleClientAI(i);
-            client.startAI(dir, jarName);
-            kimbleServer.addPlayer(new KimbleClientAI(i));
+    private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
+        KimbleServer kimbleServer = null;
+        try {
+            List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
+            kimbleServer = new KimbleServer(port, clientInfo.size(), false);
+            new KimbleClientLoader(kimbleServer, clientInfo);
+            kimbleServer.run();
+        } catch (Exception ex) {
+            Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
+            if (kimbleServer != null) {
+                kimbleServer.disconnectClients();
+            }
         }
-        kimbleServer.run();
+    }
+
+    public static void main(String[] args) {
+        startServer(5391, new LoadTournamentClients(4));
     }
 }

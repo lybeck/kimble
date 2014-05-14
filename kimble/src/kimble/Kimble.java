@@ -26,10 +26,9 @@ public class Kimble {
 
 //        new TestGame(noGui);
         runSingleGame(noGui, 4);
-
 //        int numberOfPlayers = 4;
 //        runSingleGame(noGui, numberOfPlayers);
-//        runMultipleGames(numberOfPlayers);
+//        runMultipleGames(noGui, 4);
     }
 
     private static void runSingleGame(boolean noGui, int numberOfPlayers) {
@@ -43,9 +42,9 @@ public class Kimble {
 
     }
 
-    private static void runMultipleGames(int numberOfPlayers) {
+    private static void runMultipleGames(boolean noGui, int numberOfPlayers) {
 
-        int numberOfGames = 1000;
+        int numberOfGames = 2;
 
         List<IPlayer> players = new ArrayList<>();
         players.add(new TestAILasse());
@@ -58,8 +57,8 @@ public class Kimble {
         Timer timer = new Timer();
         timer.tic();
         for (int i = 0; i < numberOfGames; i++) {
-            TestGame2 testGame = new TestGame2(true, players);
-            int winner = testGame.getWinner();
+            ServerGame testGame = new ServerGame(noGui, players);
+            int winner = testGame.getLogic().getWinner();
             winners.put(winner, winners.get(winner) + 1);
         }
         double toc = timer.toc();

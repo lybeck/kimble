@@ -30,8 +30,6 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class KimbleGraphic {
 
-    private static final boolean AUTOMATIC_TURNS = true;
-
     private final KimbleLogic logic;
 
     private BoardGraphic board;
@@ -66,8 +64,6 @@ public class KimbleGraphic {
         shader = new Shader("shader.vert", "shader.frag");
 
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
-//        Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
-//        camera.setPosition(cameraPos);
 
         extraInput = new ExtraInput();
         input = new Input(camera);
@@ -132,29 +128,25 @@ public class KimbleGraphic {
             camera.updateProjectionMatrixAttributes();
         }
 
-        if (AUTOMATIC_TURNS) {
+        turnTimer += dt;
+        if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
-            turnTimer += dt;
-            if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-
-                if (executeMove) {
-                    logic.executeMove();
-                    executeMove = false;
-                }
-
-                nextTurnTimer += dt;
-
-                if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-                    if (!logic.getGame().isGameOver()) {
-                        die.setDieRoll(logic.getCurrentTurn().getDieRoll());
-                        dieHolderDome.bounce();
-                        turnTimer = 0;
-                        nextTurnTimer = 0;
-                        executeMove = true;
-                    }
-                }
+            if (executeMove) {
+                logic.executeMove();
+                executeMove = false;
             }
 
+            nextTurnTimer += dt;
+
+            if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+                if (!logic.getGame().isGameOver()) {
+                    die.setDieRoll(logic.getCurrentTurn().getDieRoll());
+                    dieHolderDome.bounce();
+                    turnTimer = 0;
+                    nextTurnTimer = 0;
+                    executeMove = true;
+                }
+            }
         }
 
         extraInput.update(dt);
