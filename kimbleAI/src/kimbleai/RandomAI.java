@@ -12,13 +12,10 @@ import kimble.connection.clientside.MoveInfo;
  */
 public class RandomAI extends KimbleClient {
 
-    private static final String HOST_ADDRESS = "localhost";
-    private static final int PORT = 5391;
-
     private Random random;
 
-    public RandomAI() throws IOException {
-        super(HOST_ADDRESS, PORT);
+    public RandomAI(String hostAddress, int port) throws IOException {
+        super(hostAddress, port);
         // =======================================
         // DON'T PUT ANYTHING IN THE CONSTRUCTOR
         // THE MAIN LOOP WILL START BEFORE THIS

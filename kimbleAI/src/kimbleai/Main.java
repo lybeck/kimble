@@ -12,17 +12,21 @@ import kimbleai.clientloading.LoadClients;
  */
 public class Main {
 
-    private static void startServer(LoadClientsInterface loadClientsInterface) throws IOException {
-        KimbleServer kimbleServer = new KimbleServer(5391, false);
+    public static final boolean NO_GUI = true;
+    public static final String HOST_ADDRESS = "localhost";
+    public static final int PORT = 5391;
+
+    private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
+        KimbleServer kimbleServer = new KimbleServer(port, NO_GUI);
         new KimbleClientLoader(kimbleServer, loadClientsInterface.loadInfoList());
         kimbleServer.run();
     }
 
-    private static void startClient() throws IOException {
+    private static void startClient(String hostAddress, int port) throws IOException {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
-        new RandomAI();
+        new RandomAI(hostAddress, port);
     }
 
     public static void main(String[] args) throws IOException {
@@ -31,9 +35,13 @@ public class Main {
             // Change the implementation of 'loadClients()' in 
             // 'LoadClients' to load different kinds of AIs.
             //=======================================================
-            startServer(new LoadClients());
+            startServer(PORT, new LoadClients());
         } else {
-            startClient();
+            if (args.length > 2) {
+                startClient(args[0], Integer.parseInt(args[1]));
+            } else {
+                startClient(HOST_ADDRESS, PORT);
+            }
         }
     }
 
