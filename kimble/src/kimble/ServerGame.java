@@ -39,7 +39,7 @@ public class ServerGame {
         } else {
             setupLWJGL();
 
-            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
+            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
 
             graphic = new KimbleGraphic(logic);
             graphic.start();

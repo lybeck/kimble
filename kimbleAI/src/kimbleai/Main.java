@@ -1,6 +1,7 @@
 package kimbleai;
 
 import java.io.IOException;
+import kimble.bot.KimbleBot1;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
@@ -22,7 +23,7 @@ public class Main {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
-        new RandomAI();
+        new KimbleBot1();
     }
 
     public static void main(String[] args) throws IOException {
