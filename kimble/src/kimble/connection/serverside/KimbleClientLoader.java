@@ -14,6 +14,14 @@ import java.util.List;
  */
 public class KimbleClientLoader {
 
+    KimbleClientLoader(KimbleServer server, List<KimbleClientInfo> clientInfo, String hostAddress, int port) throws IOException {
+        for (int i = 0; i < clientInfo.size(); i++) {
+            KimbleClientAI client = new KimbleClientAI(i);
+            client.startAI(clientInfo.get(i).getDirectory(), clientInfo.get(i).getJarName(), hostAddress, port);
+            server.addPlayer(client);
+        }
+    }
+
     public KimbleClientLoader(KimbleServer server, List<KimbleClientInfo> clientInfo) throws IOException {
         for (int i = 0; i < clientInfo.size(); i++) {
             KimbleClientAI client = new KimbleClientAI(i);

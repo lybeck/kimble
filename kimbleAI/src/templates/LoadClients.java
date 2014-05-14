@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package kimbleai.clientloading;
+package templates;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -13,8 +8,8 @@ import kimble.connection.serverside.KimbleClientInfo;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
 
 /**
- *
- * @author Christoffer
+ * This file is a template for how to setup multiple AIs when you run your
+ * project.
  */
 public class LoadClients implements LoadClientsInterface {
 
