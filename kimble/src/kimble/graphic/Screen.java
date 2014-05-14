@@ -112,6 +112,10 @@ public class Screen {
     public static void setupNativesLWJGL() {
         String lwjglPath = "org.lwjgl.librarypath";
         String userDir = System.getProperty("user.dir");
+        
+        
+        File file = new File("");
+        
         String nativePath = "lib/natives";
 
         File nativeFile = new File(new File(userDir, nativePath),
