@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
 import kimble.graphic.Camera;
+import kimble.graphic.ExtraInput;
+import kimble.graphic.Input;
 import kimble.graphic.Screen;
 import kimble.graphic.board.BoardGraphic;
 import kimble.graphic.board.BoardSpecs;
@@ -39,11 +41,13 @@ public class KimbleGraphic {
     private DieHolderDomeGraphic dieHolderDome;
 
     private Camera camera;
+    private Input input;
+    private ExtraInput extraInput;
     private Shader shader;
 
     private boolean running;
 
-    private boolean executeMove = true;
+    private boolean executeMove = false;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
     private float cameraPositionAngle = 0;
@@ -62,7 +66,11 @@ public class KimbleGraphic {
         shader = new Shader("shader.vert", "shader.frag");
 
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
-        camera.setPosition(new Vector3f(0, board.getRadius() * 1.5f, board.getRadius() * 1.2f));
+//        Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
+//        camera.setPosition(cameraPos);
+
+        extraInput = new ExtraInput();
+        input = new Input(camera);
 
         pieces = new ArrayList<>();
         for (int i = 0; i < logic.getGame().getTeams().size(); i++) {
@@ -112,10 +120,12 @@ public class KimbleGraphic {
             stop();
         }
 
-        cameraPositionAngle += dt * 0.1;
-        Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
-        camera.setPosition(cameraPos);
-        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+        if (extraInput.rotateCamera()) {
+            cameraPositionAngle += dt * 0.1;
+            Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
+            camera.setPosition(cameraPos);
+            camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+        }
 
         if (Screen.wasResized()) {
             Screen.updateViewport();
@@ -147,6 +157,8 @@ public class KimbleGraphic {
 
         }
 
+        extraInput.update(dt);
+        input.update(dt);
         camera.update(dt);
 
         board.update(dt);

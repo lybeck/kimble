@@ -34,7 +34,6 @@ public class KimbleLogic {
     private int squaresFromStartToStart;
 
     private Turn currentTurn;
-    private Turn previousTurn;
 
     public KimbleLogic(List<IPlayer> players) {
         this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
@@ -125,7 +124,6 @@ public class KimbleLogic {
             }
             winner = game.getFinishedTeams().get(0).getId();
         } else {
-            previousTurn = currentTurn;
             currentTurn = game.getNextTurn();
         }
     }
@@ -161,9 +159,4 @@ public class KimbleLogic {
     public Turn getCurrentTurn() {
         return currentTurn;
     }
-
-    public Turn getPreviousTrun() {
-        return previousTurn;
-    }
-
 }

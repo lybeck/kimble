@@ -6,6 +6,7 @@
 package kimble;
 
 import java.util.List;
+import kimble.graphic.Screen;
 import kimble.logic.IPlayer;
 
 /**
@@ -14,7 +15,7 @@ import kimble.logic.IPlayer;
  */
 public class ServerGame {
 
-    private KimbleLogic logic;
+    private final KimbleLogic logic;
     private KimbleGraphic graphic;
 
     public static final boolean DEBUG = true;
@@ -32,16 +33,24 @@ public class ServerGame {
                 logic.executeMove();
             }
         } else {
+            setupLWJGL();
 //            PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
-//            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
+            PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
 //            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
-            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
+//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
 //            PlaybackProfile.setCurrentProfile(PlaybackProfile.OUT_OF_CONTROL);
 
             graphic = new KimbleGraphic(logic);
             graphic.start();
         }
 
+    }
+
+    private void setupLWJGL() {
+        Screen.setupNativesLWJGL();
+        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
+        Screen.setupOpenGL();
+        Screen.setResizable(true);
     }
 
 }

@@ -10,8 +10,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kimble.ServerGame;
 import kimble.connection.messages.DisconnectMessage;
 import kimble.logic.IPlayer;
@@ -36,7 +34,7 @@ public class KimbleServer implements Runnable {
     
     @Override
     public void run() {
-        new ServerGame(true, clients);
+        new ServerGame(false, clients);
 //        for (int i = 0; i < 10; i++) {
 //            for (IPlayer ai : clients) {
 //                try {

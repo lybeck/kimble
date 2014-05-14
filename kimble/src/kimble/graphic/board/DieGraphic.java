@@ -49,18 +49,14 @@ public class DieGraphic extends Model {
     private float angleY = 0;
     private float angleZ = 0;
 
-    private final float speedUp;
-
     public DieGraphic() {
 
-        rotation = ROTATION_TWO;
+        rotation = ROTATION_THREE;
 
         this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
         this.getMaterial().setTextureModulator(1.0f);
         this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel("cube"));
-
-        speedUp = PlaybackProfile.currentProfile.getTurnTimeSpeedUp();
     }
 
     public void setDieRoll(int dieRoll) {
@@ -81,9 +77,9 @@ public class DieGraphic extends Model {
                 || Math.abs(rotation.y - angleY) >= 0.01
                 || Math.abs(rotation.z - angleZ) >= 0.01) {
 
-            angleX = MathHelper.lerp(angleX, rotation.x, dt * 5 * speedUp);
-            angleY = MathHelper.lerp(angleY, rotation.y, dt * 5 * speedUp);
-            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * 5 * speedUp);
+            angleX = MathHelper.lerp(angleX, rotation.x, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+            angleY = MathHelper.lerp(angleY, rotation.y, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
 
             this.rotate(angleX, angleY, angleZ);
         }
