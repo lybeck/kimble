@@ -69,7 +69,6 @@ public class KimbleClientAI extends KimbleAI {
 
     public ReceiveMessage receiveMessage() throws IOException {
         String line = reader.readLine();
-        System.out.println("line = " + line);
         JsonObject jsonObject = new JsonParser().parse(line).getAsJsonObject();
         ReceiveMessage receiveMessage = new ReceiveMessage();
         receiveMessage.setType(jsonObject.get("type").getAsString());

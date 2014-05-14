@@ -14,7 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.ServerGame;
 import kimble.connection.messages.DisconnectMessage;
+import kimble.connection.messages.GameInitMessage;
 import kimble.connection.messages.PingMessage;
+import kimble.connection.messages.YourTeamIdMessage;
 import kimble.logic.IPlayer;
 
 /**
@@ -43,23 +45,20 @@ public class KimbleServer implements Runnable {
     public KimbleServer(int port, boolean noGui) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
-
         this.maxPlayers = 4;
-
         this.noGui = noGui;
     }
 
     @Override
     public void run() {
-        for (IPlayer iPlayer : clients) {
-            KimbleClientAI client = (KimbleClientAI) iPlayer;
-
-            // TODO: real start message.
-            client.send(new PingMessage());
-        }
 
         try {
-            new ServerGame(noGui, clients);
+            ServerGame serverGame = new ServerGame(noGui, clients);
+            for (IPlayer iPlayer : clients) {
+                KimbleClientAI client = (KimbleClientAI) iPlayer;
+                client.send(new GameInitMessage(serverGame.getLogic().getGame().getBoard(), maxPlayers));
+            }
+            serverGame.start();
         } catch (Exception ex) {
             Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             for (IPlayer iPlayer : clients) {
@@ -92,5 +91,6 @@ public class KimbleServer implements Runnable {
         socket.setSoTimeout(TIME_OUT_MS);
         client.setSocket(socket);
         clients.add(client);
+        client.send(new YourTeamIdMessage(client.getID()));
     }
 }

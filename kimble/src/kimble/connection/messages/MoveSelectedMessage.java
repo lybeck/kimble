@@ -13,10 +13,10 @@ import kimble.connection.clientside.MoveInfo;
  */
 public class MoveSelectedMessage extends SendMessage {
 
-    int selectedMove;
+    private int selectedMove;
 
     public MoveSelectedMessage(MoveInfo moveInfo) {
-        selectedMove = moveInfo.moveId;
+        selectedMove = moveInfo.getMoveId();
     }
 
     @Override

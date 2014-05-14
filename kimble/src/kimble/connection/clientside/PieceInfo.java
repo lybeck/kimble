@@ -11,16 +11,31 @@ package kimble.connection.clientside;
  */
 public class PieceInfo {
 
-    public final Integer teamId;
-    public final Integer pieceId;
-    public final Boolean isHome;
-    public final Integer squareId;
+    private final int teamId;
+    private final int pieceId;
+    private final boolean home;
+    private final Integer squareId;
 
-    public PieceInfo(Integer teamId, Integer pieceId, Boolean isHome, Integer squareId) {
+    public PieceInfo(int teamId, int pieceId, boolean isHome, Integer squareId) {
         this.teamId = teamId;
         this.pieceId = pieceId;
-        this.isHome = isHome;
+        this.home = isHome;
         this.squareId = squareId;
     }
 
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public int getPieceId() {
+        return pieceId;
+    }
+
+    public boolean isHome() {
+        return home;
+    }
+
+    public Integer getSquareId() {
+        return squareId;
+    }
 }
