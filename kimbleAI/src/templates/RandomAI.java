@@ -1,4 +1,4 @@
-package kimbleai;
+package templates;
 
 import java.io.IOException;
 import java.util.List;

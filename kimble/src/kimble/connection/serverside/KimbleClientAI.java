@@ -52,7 +52,8 @@ public class KimbleClientAI extends KimbleAI {
      * @throws IOException
      */
     public void startAI(String dir, String jarName) throws UnsupportedEncodingException, IOException {
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, "serverstart");
+//        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, "serverstart");
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", dir + jarName, "kimbleai.TournamentMain", "serverstart");
         pb.directory(new File(dir));
         startProcess(pb);
     }
@@ -68,7 +69,8 @@ public class KimbleClientAI extends KimbleAI {
      * @throws IOException
      */
     public void startAI(String dir, String jarName, String hostAddress, int port) throws UnsupportedEncodingException, IOException {
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, hostAddress, port + "");
+//        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, hostAddress, port + "");
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", dir + jarName, "kimbleai.TournamentMain", hostAddress, port + "");
         pb.directory(new File(dir));
         startProcess(pb);
     }

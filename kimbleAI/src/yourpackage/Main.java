@@ -1,10 +1,11 @@
-package kimbleai;
+package yourpackage;
 
+import templates.RandomAI;
 import java.io.IOException;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
-import kimbleai.clientloading.LoadClients;
+import templates.LoadClients;
 
 /**
  *
@@ -22,7 +23,7 @@ public class Main {
         kimbleServer.run();
     }
 
-    private static void startClient(String hostAddress, int port) throws IOException {
+    public static void startClient(String hostAddress, int port) throws IOException {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
@@ -30,18 +31,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
+        for (int i = 0; i < 1; i++) {
+
             //=======================================================
             // Change the implementation of 'loadClients()' in 
             // 'LoadClients' to load different kinds of AIs.
             //=======================================================
             startServer(PORT, new LoadClients());
-        } else {
-            if (args.length > 2) {
-                startClient(args[0], Integer.parseInt(args[1]));
-            } else {
-                startClient(HOST_ADDRESS, PORT);
-            }
         }
     }
 
