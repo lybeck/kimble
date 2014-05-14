@@ -26,6 +26,11 @@ public class Main {
     public static void startClient(String hostAddress, int port) throws IOException {
         //=======================================================
         // Change this to point to your own AI
+        //
+        // We have provided some simple Bots for you to compete
+        // against.
+        //
+        //  * kimble.bot.KImbleBot1
         //=======================================================
         new KimbleBot1(hostAddress, port);
     }
