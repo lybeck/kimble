@@ -34,6 +34,20 @@ public class MoveMessage extends SendMessage {
         return data.availableMoves.get(moveID).pieceId;
     }
 
+    public Boolean getIsHome(int moveID) {
+        if (moveID == -1) {
+            return false;
+        }
+        return data.availableMoves.get(moveID).isHome;
+    }
+
+    public Boolean getIsOptional(int moveID) {
+        if (moveID == -1) {
+            return false;
+        }
+        return data.availableMoves.get(moveID).isOptional;
+    }
+
     public Integer getStartSquareID(int moveID) {
         if (moveID == -1) {
             return null;
