@@ -40,6 +40,7 @@ public abstract class KimbleClient {
 
     public KimbleClient(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
+
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new PrintWriter(socket.getOutputStream(), true);
 
@@ -53,7 +54,6 @@ public abstract class KimbleClient {
         while (running) {
             ReceiveMessage receiveMessage = receiveMessage();
             if (getReceiveMessageType().equals("disconnect")) {
-                System.out.println("Got a disconnect message!");
                 sendMessage(new PingMessage());
                 running = false;
             }

@@ -18,7 +18,7 @@ public class ServerGame {
     private final KimbleLogic logic;
     private KimbleGraphic graphic;
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public final static int NUMBER_OF_TEAMS = 4;
     public final static int NUMBER_OF_PIECES = 4;
@@ -34,11 +34,8 @@ public class ServerGame {
             }
         } else {
             setupLWJGL();
-//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
+
             PlaybackProfile.setCurrentProfile(PlaybackProfile.NORMAL);
-//            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
-//            PlaybackProfile.setCurrentProfile(PlaybackProfile.SUPER_FAST);
-//            PlaybackProfile.setCurrentProfile(PlaybackProfile.OUT_OF_CONTROL);
 
             graphic = new KimbleGraphic(logic);
             graphic.start();
@@ -51,6 +48,10 @@ public class ServerGame {
         Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
         Screen.setupOpenGL();
         Screen.setResizable(true);
+    }
+
+    public KimbleLogic getLogic() {
+        return logic;
     }
 
 }

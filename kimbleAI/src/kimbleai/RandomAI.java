@@ -42,12 +42,14 @@ public class RandomAI extends KimbleClient {
         // This method is run after server message
         // is received.
         // =======================================
-        String message = getReceiveMessageType();
-        System.out.println("Recieved: " + message);
+        String messageType = getReceiveMessageType();
+        System.out.println("Recieved: " + messageType);
 
-        List<MoveInfo> moves = getAvailableMoves();
-        MoveInfo move = moves.get(random.nextInt(moves.size()));
-        sendMove(move);
+        if (messageType.equals("moves")) {
+            List<MoveInfo> moves = getAvailableMoves();
+            MoveInfo move = moves.get(random.nextInt(moves.size()));
+            sendMove(move);
+        }
     }
 
     @Override

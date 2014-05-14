@@ -26,4 +26,5 @@ public class ReceiveMessage {
     public void setData(JsonElement data) {
         this.data = data;
     }
+
 }

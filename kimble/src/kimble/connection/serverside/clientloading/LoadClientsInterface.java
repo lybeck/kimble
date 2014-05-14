@@ -3,17 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.connection.messages;
+package kimble.connection.serverside.clientloading;
+
+import java.util.List;
+import kimble.connection.serverside.KimbleClientInfo;
 
 /**
  *
  * @author Christoffer
  */
-public class PingMessage extends SendMessage {
+public interface LoadClientsInterface {
 
-    @Override
-    protected String getType() {
-        return "ping";
-    }
-
+    public List<KimbleClientInfo> loadInfoList();
 }
