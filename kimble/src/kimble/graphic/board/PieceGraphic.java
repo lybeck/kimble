@@ -24,8 +24,6 @@ public class PieceGraphic extends Model {
 
     private Vector3f tempPosition;
 
-    private final float speedUp;
-
     public PieceGraphic(BoardGraphic board, Piece pieceLogic, Vector3f position, Vector3f color) {
         super(position, new Vector3f(0, 0, 0));
 
@@ -36,8 +34,6 @@ public class PieceGraphic extends Model {
         this.setMesh(ModelManager.getModel("game_piece"));
 
         this.tempPosition = new Vector3f(getPosition().x, getPosition().y, getPosition().z);
-
-        speedUp = PlaybackProfile.currentProfile.getTurnTimeSpeedUp();
     }
 
     float angle = 0;
@@ -63,11 +59,11 @@ public class PieceGraphic extends Model {
             }
 
             if (move(currentSquare.getPosition())) {
-                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10 * speedUp);
+                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
 
-                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10 * speedUp);
+                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
-                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10 * speedUp);
+                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 setPosition(tempPosition);
                 rotate(0, currentSquare.getRotation().y, 0);
             } else {

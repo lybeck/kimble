@@ -31,12 +31,6 @@ public class Input {
     }
 
     public void inputMouse(float dt) {
-        if (Mouse.isButtonDown(0)) {
-            Mouse.setGrabbed(true);
-        } else if (Mouse.isButtonDown(1)) {
-            Mouse.setGrabbed(false);
-        }
-
         if (Mouse.isGrabbed()) {
             camera.getRotation().y += mouseSpeed * dt * (float) Mouse.getDX();
             camera.getRotation().x -= mouseSpeed * dt * (float) Mouse.getDY();

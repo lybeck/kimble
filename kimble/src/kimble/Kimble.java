@@ -23,9 +23,6 @@ public class Kimble {
                 noGui = true;
             }
         }
-        if (!noGui) {
-            setupLWJGL();
-        }
 
 //        new TestGame(noGui);
         runSingleGame(noGui, 4);
