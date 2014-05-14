@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,8 +23,8 @@ public class StreamRedirecter implements Runnable {
     private final BufferedReader bufferedReader;
     private final PrintStream destination;
 
-    public StreamRedirecter(InputStream inputStream, PrintStream destination) {
-        this.bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+    public StreamRedirecter(InputStream inputStream, PrintStream destination) throws UnsupportedEncodingException {
+        this.bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
         this.destination = destination;
     }
 
