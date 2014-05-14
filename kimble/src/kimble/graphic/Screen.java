@@ -96,7 +96,7 @@ public class Screen {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
+
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
@@ -112,10 +112,7 @@ public class Screen {
     public static void setupNativesLWJGL() {
         String lwjglPath = "org.lwjgl.librarypath";
         String userDir = System.getProperty("user.dir");
-        
-        
-        File file = new File("");
-        
+
         String nativePath = "lib/natives";
 
         File nativeFile = new File(new File(userDir, nativePath),

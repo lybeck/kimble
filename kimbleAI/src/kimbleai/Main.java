@@ -4,7 +4,6 @@ import java.io.IOException;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
-import kimble.graphic.Screen;
 import kimbleai.clientloading.LoadClients;
 
 /**
