@@ -121,7 +121,7 @@ public class KimbleLogic {
                 } else {
 
                     if (KimbleGameStateLogger.isInitialized()) {
-                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "chose");
+                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "pass");
                     }
 
                     game.executeNoMove();
