@@ -81,6 +81,9 @@ public class KimbleLogic {
     public void executeMove() {
 
         if (game.isGameOver()) {
+            if (DEBUG) {
+                System.out.println("Game is over!");
+            }
             return;
         }
 

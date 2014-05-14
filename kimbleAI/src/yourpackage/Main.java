@@ -13,7 +13,7 @@ import templates.LoadClients;
  */
 public class Main {
 
-    public static final boolean NO_GUI = true;
+    public static final boolean NO_GUI = false;
     public static final String HOST_ADDRESS = "localhost";
     public static final int PORT = 5391;
 
@@ -27,7 +27,7 @@ public class Main {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
-        new KimbleBot1();
+        new KimbleBot1(hostAddress, port);
     }
 
     public static void main(String[] args) throws IOException {
