@@ -7,8 +7,7 @@ import kimble.connection.clientside.KimbleClient;
 import kimble.connection.clientside.MoveInfo;
 
 /**
- *
- * @author Lasse Lybeck
+ * This file is a template for an AI class.
  */
 public class RandomAI extends KimbleClient {
 
