@@ -13,11 +13,8 @@ import kimble.connection.clientside.PieceInfo;
  */
 public class KimbleBot1 extends KimbleClient {
 
-    private static final String HOST_ADDRESS = "localhost";
-    private static final int PORT = 5391;
-
-    public KimbleBot1() throws IOException {
-        super(HOST_ADDRESS, PORT);
+    public KimbleBot1(String hostAddress, int port) throws IOException {
+        super(hostAddress, port);
     }
 
     @Override
@@ -27,7 +24,7 @@ public class KimbleBot1 extends KimbleClient {
     @Override
     public void duringLoop() {
         String messageType = getReceiveMessageType();
-        System.out.println("Recieved: " + messageType);
+        System.out.println("Team: " + getMyTeamId() + " Recieved: " + messageType);
 
         if (messageType.equals("moves")) {
             MoveInfo bestMove = getBestMove();
@@ -58,9 +55,8 @@ public class KimbleBot1 extends KimbleClient {
     }
 
     private MoveInfo getBestInGoalMove(List<MoveInfo> moves) {
-        
+
 //        System.out.println("Chose best IN GOAL move.");
-        
         List<MoveInfo> possibleMoves = new ArrayList<>();
         for (MoveInfo move : moves) {
             if (move.getDestinationSquareId() > move.getStartSquareId()) {
@@ -121,7 +117,6 @@ public class KimbleBot1 extends KimbleClient {
         }
 
 //        System.out.println("Had to choose the most advanced move.");
-        
         // find most advanced move
         int bestDestId = -1;
         MoveInfo bestMove = null;

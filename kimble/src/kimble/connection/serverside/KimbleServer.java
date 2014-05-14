@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import kimble.ServerGame;
 import kimble.connection.messages.DisconnectMessage;
 import kimble.connection.messages.GameInitMessage;
-import kimble.connection.messages.PingMessage;
 import kimble.connection.messages.YourTeamIdMessage;
 import kimble.logic.IPlayer;
 
@@ -33,20 +32,17 @@ public class KimbleServer implements Runnable {
     private final List<IPlayer> clients;
     private final boolean noGui;
 
+    public KimbleServer(int port, boolean noGui) throws IOException {
+        this(port, 4, noGui);
+    }
+
     KimbleServer(int port, int maxPlayers, boolean noGui) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
-
         this.maxPlayers = maxPlayers;
-
         this.noGui = noGui;
-    }
 
-    public KimbleServer(int port, boolean noGui) throws IOException {
-        this.serverSocket = new ServerSocket(port);
-        this.clients = new ArrayList<>();
-        this.maxPlayers = 4;
-        this.noGui = noGui;
+        KimbleGameStateLogger.init();
     }
 
     @Override
@@ -78,6 +74,7 @@ public class KimbleServer implements Runnable {
 
         try {
             serverSocket.close();
+            KimbleGameStateLogger.close();
         } catch (IOException ex) {
             Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, null, ex);
         }

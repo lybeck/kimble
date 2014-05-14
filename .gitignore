@@ -1,13 +1,18 @@
 kimble/build/
 kimble/dist/
 kimble/nbproject/private/
+kimble/logs/
 
 kimbleAI/build/
 kimbleAI/dist/
 kimbleAI/nbproject/private/
+kimbleAI/logs/
 
-/test-projects/SocketClient/build/
-/test-projects/SocketClient/dist/
-/test-projects/SocketClient/nbproject/private/
-/test-projects/SocketServer/build/
-/test-projects/SocketServer/nbproject/private/
+
+test-projects/SocketClient/build/
+test-projects/SocketClient/dist/
+test-projects/SocketClient/nbproject/private/
+
+test-projects/SocketServer/build/
+test-projects/SocketServer/dist/
+test-projects/SocketServer/nbproject/private/

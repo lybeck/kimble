@@ -7,8 +7,7 @@ import kimble.connection.clientside.KimbleClient;
 import kimble.connection.clientside.MoveInfo;
 
 /**
- *
- * @author Lasse Lybeck
+ * This file is a template for an AI class.
  */
 public class RandomAI extends KimbleClient {
 
@@ -40,7 +39,7 @@ public class RandomAI extends KimbleClient {
         // is received.
         // =======================================
         String messageType = getReceiveMessageType();
-        System.out.println("Recieved: " + messageType);
+        System.out.println("Team " + getMyTeamId() + " Recieved: " + messageType);
 
         if (messageType.equals("moves")) {
             List<MoveInfo> moves = getAvailableMoves();

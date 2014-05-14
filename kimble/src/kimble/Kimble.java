@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kimble.graphic.Screen;
 import kimble.logic.IPlayer;
 import kimble.logic.player.testai.TestAILasse;
 import kimble.logic.player.testai.TestAIRandom;
@@ -38,7 +37,7 @@ public class Kimble {
             players.add(new TestAIRandom());
         }
 //        new TestGame2(noGui, players);
-        new ServerGame(noGui, players);
+        new ServerGame(noGui, players).start();
 
     }
 
@@ -66,12 +65,5 @@ public class Kimble {
         System.out.println("winners = " + winners);
         System.out.println("");
         System.out.println("Time elapsed: " + toc + " seconds.");
-    }
-
-    private static void setupLWJGL() {
-        Screen.setupNativesLWJGL();
-        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
-        Screen.setupOpenGL();
-        Screen.setResizable(true);
     }
 }

@@ -27,7 +27,7 @@ public class Main {
         //=======================================================
         // Change this to point to your own AI
         //=======================================================
-        new KimbleBot1();
+        new KimbleBot1(hostAddress, port);
     }
 
     public static void main(String[] args) throws IOException {

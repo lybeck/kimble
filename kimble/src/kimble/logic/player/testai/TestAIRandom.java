@@ -3,7 +3,6 @@ package kimble.logic.player.testai;
 import java.util.Random;
 import kimble.logic.Game;
 import kimble.logic.Turn;
-import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
 
 /**

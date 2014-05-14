@@ -20,6 +20,35 @@ public class MoveMessage extends SendMessage {
         data = new MessageData(turn, game);
     }
 
+    // =======================================================
+    // Logger methods
+    // -------------------------------------------------------
+    public Integer getDieRoll() {
+        return data.dieRoll;
+    }
+
+    public Integer getPieceID(int moveID) {
+        if (moveID == -1) {
+            return null;
+        }
+        return data.availableMoves.get(moveID).pieceId;
+    }
+
+    public Integer getStartSquareID(int moveID) {
+        if (moveID == -1) {
+            return null;
+        }
+        return data.availableMoves.get(moveID).startSquareId;
+    }
+
+    public Integer getDestSquareID(int moveID) {
+        if (moveID == -1) {
+            return null;
+        }
+        return data.availableMoves.get(moveID).destSquareId;
+    }
+    // ========================================================
+
     @Override
     protected String getType() {
         return "moves";

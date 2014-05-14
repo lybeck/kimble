@@ -10,6 +10,7 @@ import java.util.Set;
 import static kimble.ServerGame.DEBUG;
 import static kimble.ServerGame.NUMBER_OF_PIECES;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
+import kimble.connection.serverside.KimbleGameStateLogger;
 import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
@@ -81,6 +82,9 @@ public class KimbleLogic {
     public void executeMove() {
 
         if (game.isGameOver()) {
+            if (DEBUG) {
+                System.out.println("Game is over!");
+            }
             return;
         }
 
@@ -88,19 +92,21 @@ public class KimbleLogic {
             System.out.println("Team in turn: " + game.getTeamInTurn().getId());
             System.out.println("Rolled: " + currentTurn.getDieRoll());
         }
+
         if (currentTurn.getMoves().isEmpty()) {
             if (DEBUG) {
                 System.out.println("No possible moves...");
             }
-            game.executeNoMove();
+            game.executeNoMove("can't");
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
             if (player.isAIPlayer()) {
+
                 int selection = ((KimbleAI) player).selectMove(currentTurn, game);
                 if (selection >= 0) {
                     game.executeMove(selection);
                 } else {
-                    game.executeNoMove();
+                    game.executeNoMove("chose");
                 }
             } else {
                 throw new UnsupportedOperationException("Human players not yet supported!");
