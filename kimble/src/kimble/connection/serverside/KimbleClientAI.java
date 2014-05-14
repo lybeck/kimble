@@ -9,16 +9,13 @@ import kimble.connection.logger.KimbleGameStateLogger;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.connection.clientside.StreamRedirecter;
 import kimble.connection.messages.MoveMessage;
 import kimble.connection.messages.ReceiveMessage;
 import kimble.connection.messages.SendMessage;
@@ -40,46 +37,6 @@ public class KimbleClientAI extends KimbleAI {
 
     public KimbleClientAI(int id) throws IOException {
         this.id = id;
-    }
-
-    /**
-     * Starts a new process at in the desired directory withe the name specified
-     * with jarName. It also sends a "dummy" argument, to fool the client not to
-     * start a new server.
-     *
-     * @param dir
-     * @param jarName
-     * @throws java.io.UnsupportedEncodingException
-     * @throws IOException
-     */
-    public void startAI(String dir, String jarName) throws UnsupportedEncodingException, IOException {
-//        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, "serverstart");
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", dir + jarName, "kimbleai.TournamentMain", "serverstart");
-        pb.directory(new File(dir));
-        startProcess(pb);
-    }
-
-    /**
-     * Start the new processes to access this host and port.
-     *
-     * @param dir
-     * @param jarName
-     * @param hostAddress
-     * @param port
-     * @throws UnsupportedEncodingException
-     * @throws IOException
-     */
-    public void startAI(String dir, String jarName, String hostAddress, int port) throws UnsupportedEncodingException, IOException {
-//        ProcessBuilder pb = new ProcessBuilder("java", "-jar", dir + jarName, hostAddress, port + "");
-        ProcessBuilder pb = new ProcessBuilder("java", "-cp", dir + jarName, "kimbleai.TournamentMain", hostAddress, port + "");
-        pb.directory(new File(dir));
-        startProcess(pb);
-    }
-
-    private void startProcess(ProcessBuilder pb) throws UnsupportedEncodingException, IOException {
-        Process p = pb.start();
-        new Thread(new StreamRedirecter(p.getInputStream(), System.out)).start();
-        new Thread(new StreamRedirecter(p.getErrorStream(), System.err)).start();
     }
 
     public void setSocket(Socket socket) throws IOException {
