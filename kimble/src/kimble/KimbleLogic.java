@@ -59,7 +59,7 @@ public class KimbleLogic {
             if (player.isAIPlayer()) {
                 ((KimbleAI) player).setMyTeam(game.getTeam(i));
                 if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logTeam(i);
+                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
                 }
             } else {
                 throw new UnsupportedOperationException("Human players not yet supported!");
@@ -152,7 +152,7 @@ public class KimbleLogic {
                 }
                 System.out.println("");
             }
-            
+
             winner = game.getFinishedTeams().get(0).getId();
 
             if (KimbleGameStateLogger.isInitialized()) {

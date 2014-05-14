@@ -4,7 +4,6 @@ import kimble.logic.Game;
 import kimble.logic.IPlayer;
 import kimble.logic.Team;
 import kimble.logic.Turn;
-import kimble.logic.board.Board;
 
 /**
  *
@@ -12,7 +11,12 @@ import kimble.logic.board.Board;
  */
 public abstract class KimbleAI implements IPlayer {
 
+    private final String teamName;
     private Team myTeam;
+
+    public KimbleAI(String teamName) {
+        this.teamName = teamName;
+    }
 
     public abstract int selectMove(Turn turn, Game game);
 
@@ -27,5 +31,9 @@ public abstract class KimbleAI implements IPlayer {
 
     public Team getMyTeam() {
         return myTeam;
+    }
+
+    public final String getTeamName() {
+        return teamName;
     }
 }

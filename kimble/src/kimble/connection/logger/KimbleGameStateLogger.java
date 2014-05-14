@@ -52,8 +52,8 @@ public class KimbleGameStateLogger {
         return initialized;
     }
 
-    public static void logTeam(Integer teamID) {
-        logFile.addTeam(teamID);
+    public static void logTeam(Integer teamID, String teamName) {
+        logFile.addTeam(teamID, teamName);
     }
     
     public static void logStartValues(Set<Integer> startValues){

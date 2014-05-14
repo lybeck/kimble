@@ -23,7 +23,7 @@ public class LogFile {
     // - Moves (entries)
     // - Result
     private final Date date;
-    private final List<Integer> teams;
+    private final List<TeamInfo> teams;
     private Set<Integer> startValues;
     private Set<Integer> continueTurnValues;
     private List<Map<Integer, Integer>> startRolls;
@@ -39,8 +39,8 @@ public class LogFile {
         this.teamFinnishOrder = new ArrayList<>();
     }
 
-    public void addTeam(Integer teamID) {
-        teams.add(teamID);
+    public void addTeam(Integer teamID, String teamName) {
+        teams.add(new TeamInfo(teamID, teamName));
     }
 
     public void setStartValues(Set<Integer> startValues) {
@@ -77,5 +77,16 @@ public class LogFile {
 
     public void setWinner(Integer teamID) {
         this.winner = teamID;
+    }
+
+    private class TeamInfo {
+
+        final Integer teamID;
+        final String teamName;
+
+        public TeamInfo(Integer teamID, String teamName) {
+            this.teamID = teamID;
+            this.teamName = teamName;
+        }
     }
 }

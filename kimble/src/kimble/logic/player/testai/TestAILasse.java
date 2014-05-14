@@ -1,6 +1,5 @@
 package kimble.logic.player.testai;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ public class TestAILasse extends KimbleAI {
     private Random random;
 
     public TestAILasse() {
+        super(TestAILasse.class.getName());
         this.random = new Random();
     }
 
@@ -60,7 +60,8 @@ public class TestAILasse extends KimbleAI {
         }
         // check moves from start square
         for (Move move : map.keySet()) {
-            if (move.getPiece().getPosition() != null && move.getPiece().getPosition().equals(board.getStartSquare(getMyTeam().getId()))) {
+            if (move.getPiece().getPosition() != null
+                    && move.getPiece().getPosition().equals(board.getStartSquare(getMyTeam().getId()))) {
                 return map.get(move);
             }
         }

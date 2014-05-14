@@ -16,7 +16,7 @@ public class KimbleClientLoader {
 
     KimbleClientLoader(KimbleServer server, List<KimbleClientInfo> clientInfo, String hostAddress, int port) throws IOException {
         for (int i = 0; i < clientInfo.size(); i++) {
-            KimbleClientAI client = new KimbleClientAI(i);
+            KimbleClientAI client = new KimbleClientAI(i, clientInfo.get(i).getClientName());
             KimbleClientAIProcessStarter.startAI(client, clientInfo.get(i).getDirectory(), clientInfo.get(i).getJarName(), hostAddress, port);
             server.addPlayer(client);
         }
@@ -24,7 +24,7 @@ public class KimbleClientLoader {
 
     public KimbleClientLoader(KimbleServer server, List<KimbleClientInfo> clientInfo) throws IOException {
         for (int i = 0; i < clientInfo.size(); i++) {
-            KimbleClientAI client = new KimbleClientAI(i);
+            KimbleClientAI client = new KimbleClientAI(i, clientInfo.get(i).getClientName());
             KimbleClientAIProcessStarter.startAI(client, clientInfo.get(i).getDirectory(), clientInfo.get(i).getJarName());
             server.addPlayer(client);
         }

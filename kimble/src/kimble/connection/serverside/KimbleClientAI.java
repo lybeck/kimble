@@ -35,7 +35,8 @@ public class KimbleClientAI extends KimbleAI {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    public KimbleClientAI(int id) throws IOException {
+    public KimbleClientAI(int id, String name) throws IOException {
+        super(name);
         this.id = id;
     }
 
@@ -66,7 +67,7 @@ public class KimbleClientAI extends KimbleAI {
         sendMessage(message.toJson());
     }
 
-    public int getID() {
+    public final int getID() {
         return id;
     }
 
