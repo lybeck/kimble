@@ -5,7 +5,7 @@
  */
 package kimble.graphic;
 
-import kimble.PlaybackProfile;
+import kimble.playback.PlaybackProfile;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 

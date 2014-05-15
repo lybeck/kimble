@@ -5,7 +5,7 @@
  */
 package kimble.graphic.board;
 
-import kimble.PlaybackProfile;
+import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.model.ModelManager;
 import kimble.logic.Piece;

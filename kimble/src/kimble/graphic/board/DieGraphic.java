@@ -8,7 +8,7 @@ package kimble.graphic.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import kimble.PlaybackProfile;
+import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.shader.Shader;
 import kimble.graphic.model.ModelManager;

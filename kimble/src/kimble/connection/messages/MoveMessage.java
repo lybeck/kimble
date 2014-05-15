@@ -2,7 +2,6 @@ package kimble.connection.messages;
 
 import java.util.ArrayList;
 import java.util.List;
-import kimble.logic.Game;
 import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
@@ -16,8 +15,8 @@ public class MoveMessage extends SendMessage {
 
     private final MessageData data;
 
-    public MoveMessage(Turn turn, Game game) {
-        data = new MessageData(turn, game);
+    public MoveMessage(Turn turn, List<Team> teams) {
+        data = new MessageData(turn, teams);
     }
 
     // =======================================================
@@ -79,14 +78,14 @@ public class MoveMessage extends SendMessage {
         List<MoveInfo> availableMoves;
         List<PieceInfo> pieces;
 
-        MessageData(Turn turn, Game game) {
+        MessageData(Turn turn, List<Team> teams) {
             dieRoll = turn.getDieRoll();
             availableMoves = new ArrayList<>();
             for (int i = 0; i < turn.getMoves().size(); i++) {
                 availableMoves.add(new MoveInfo(i, turn.getMoves().get(i)));
             }
             pieces = new ArrayList<>();
-            for (Team team : game.getTeams()) {
+            for (Team team : teams) {
                 for (Piece piece : team.getPieces()) {
                     pieces.add(new PieceInfo(piece));
                 }

@@ -5,6 +5,7 @@
  */
 package kimble;
 
+import kimble.playback.PlaybackProfile;
 import java.util.ArrayList;
 import java.util.List;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
@@ -115,6 +116,10 @@ public class KimbleGraphic {
         if (Screen.isCloseRequested()) {
             stop();
         }
+        
+//        if(logic.getGame().isGameOver()){
+//            stop();
+//        }
 
         if (extraInput.rotateCamera()) {
             cameraPositionAngle += dt * 0.1;

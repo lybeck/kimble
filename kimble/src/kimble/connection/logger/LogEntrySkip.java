@@ -12,11 +12,17 @@ package kimble.connection.logger;
 public class LogEntrySkip extends LogEntry {
 
     private final String reason;
+    private final Boolean optional;
 
-    public LogEntrySkip(Integer teamID, Integer dieRoll, String reason) {
+    public LogEntrySkip(Integer teamID, Integer dieRoll, Boolean optional, String reason) {
         super(teamID, dieRoll);
 
+        this.optional = optional;
         this.reason = reason;
+    }
+
+    public final Boolean isOptional() {
+        return optional;
     }
 
     public final String getReason() {

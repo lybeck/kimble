@@ -5,7 +5,6 @@
  */
 package kimble.connection.serverside;
 
-import kimble.connection.logger.KimbleGameStateLogger;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -14,12 +13,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.connection.messages.MoveMessage;
 import kimble.connection.messages.ReceiveMessage;
 import kimble.connection.messages.SendMessage;
-import kimble.logic.Game;
+import kimble.logic.Team;
 import kimble.logic.Turn;
 import kimble.logic.player.KimbleAI;
 
@@ -77,9 +77,9 @@ public class KimbleClientAI extends KimbleAI {
     }
 
     @Override
-    public int selectMove(Turn turn, Game game) {
+    public int selectMove(Turn turn, List<Team> teams) {
 
-        MoveMessage moveMessage = new MoveMessage(turn, game);
+        MoveMessage moveMessage = new MoveMessage(turn, teams);
         send(moveMessage);
 
         try {
@@ -88,10 +88,6 @@ public class KimbleClientAI extends KimbleAI {
             if (type.equals("selectedMove")) {
 
                 int selectedMove = receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
-
-                if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), moveMessage.getDieRoll(), moveMessage, selectedMove);
-                }
 
                 return selectedMove;
             } else if (type.equals("ping")) {

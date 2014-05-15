@@ -5,6 +5,7 @@
  */
 package kimble;
 
+import kimble.playback.PlaybackProfile;
 import java.util.List;
 import kimble.graphic.Screen;
 import kimble.logic.IPlayer;

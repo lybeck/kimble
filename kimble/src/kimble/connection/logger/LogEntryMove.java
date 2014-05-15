@@ -11,11 +11,15 @@ package kimble.connection.logger;
  */
 public class LogEntryMove extends LogEntry {
 
-    private final Integer pieceID;
-    private final Boolean isHome;
-    private final Boolean isOptional;
-    private final Integer startSquareID;
-    private final Integer destSquareID;
+    private Integer pieceID;
+    private Boolean isHome;
+    private Boolean isOptional;
+    private Integer startSquareID;
+    private Integer destSquareID;
+
+    public LogEntryMove(Integer teamID, Integer dieRoll) {
+        super(teamID, dieRoll);
+    }
 
     public LogEntryMove(Integer teamID, Integer dieRoll, Integer pieceID, Boolean isHome, Boolean isOptional, Integer startSquareID, Integer destSquareID) {
         super(teamID, dieRoll);
@@ -31,20 +35,39 @@ public class LogEntryMove extends LogEntry {
         return pieceID;
     }
 
+    public void setPieceID(Integer pieceID) {
+        this.pieceID = pieceID;
+    }
+
     public Boolean isIsHome() {
         return isHome;
+    }
+
+    public void setIsHome(Boolean isHome) {
+        this.isHome = isHome;
     }
 
     public Boolean isIsOptional() {
         return isOptional;
     }
 
+    public void setIsOptional(Boolean isOptional) {
+        this.isOptional = isOptional;
+    }
+
     public Integer getStartSquareID() {
         return startSquareID;
+    }
+
+    public void setStartSquareID(Integer startSquareID) {
+        this.startSquareID = startSquareID;
     }
 
     public Integer getDestSquareID() {
         return destSquareID;
     }
 
+    public void setDestSquareID(Integer destSquareID) {
+        this.destSquareID = destSquareID;
+    }
 }

@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
-import kimble.connection.messages.MoveMessage;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import kimble.logic.GameStart;
+import kimble.logic.Move;
+import kimble.logic.board.Board;
 
 /**
  *
@@ -52,15 +54,19 @@ public class KimbleGameStateLogger {
         return initialized;
     }
 
+    public static void logBoard(Board board) {
+
+    }
+
     public static void logTeam(Integer teamID, String teamName) {
         logFile.addTeam(teamID, teamName);
     }
-    
-    public static void logStartValues(Set<Integer> startValues){
+
+    public static void logStartValues(Set<Integer> startValues) {
         logFile.setStartValues(startValues);
     }
-    
-    public static void logContinueTurnValues(Set<Integer> continueTurnValues){
+
+    public static void logContinueTurnValues(Set<Integer> continueTurnValues) {
         logFile.setContinueTurnValues(continueTurnValues);
     }
 
@@ -69,25 +75,34 @@ public class KimbleGameStateLogger {
         logFile.setStartingTeam(gameStart.getStartingTeamIndex());
     }
 
-    public static void logMove(int teamID, int dieRoll, MoveMessage message, int selectedMove) {
-        Integer pieceId = message.getPieceID(selectedMove);
-        Boolean isHome = message.getIsHome(selectedMove);
-        Boolean isOptional = message.getIsOptional(selectedMove);
-        Integer startSquare = message.getStartSquareID(selectedMove);
-        Integer destSquare = message.getDestSquareID(selectedMove);
+    public static void logMove(int teamID, int dieRoll, Move move) {
+        Integer pieceId = move.getPiece().getId();
+        Boolean isHome = null;
+        if (move.getPiece().isHome()) {
+            isHome = move.getPiece().isHome();
+        }
+        Boolean isOptional = null;
+        if (move.isOptional()) {
+            isOptional = move.isOptional();
+        }
+        Integer startSquare = null;
+        if (move.getPiece().getPosition() != null) {
+            startSquare = move.getPiece().getPosition().getID();
+        }
+        Integer destSquare = move.getDestination().getID();
 
         logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, isHome, isOptional, startSquare, destSquare));
     }
 
-    public static void logSkip(int teamID, int dieRoll, String reason) {
-        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, reason));
+    public static void logSkip(int teamID, int dieRoll, boolean optional, String reason) {
+        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, optional, reason));
     }
 
     public static void logTeamFinnish(int teamID) {
         logFile.addTeamFinnish(teamID);
     }
-    
-    public static void logWinner(int teamID){
+
+    public static void logWinner(int teamID) {
         logFile.setWinner(teamID);
     }
 

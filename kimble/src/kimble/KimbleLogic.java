@@ -54,18 +54,6 @@ public class KimbleLogic {
 
     private void setup() {
 
-        for (int i = 0; i < players.size(); i++) {
-            IPlayer player = players.get(i);
-            if (player.isAIPlayer()) {
-                ((KimbleAI) player).setMyTeam(game.getTeam(i));
-                if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
-                }
-            } else {
-                throw new UnsupportedOperationException("Human players not yet supported!");
-            }
-        }
-
         GameStart gameStart = game.startGame();
 
         if (DEBUG) {
@@ -79,10 +67,30 @@ public class KimbleLogic {
             System.out.println("");
         }
 
+        // *********************************************************************
         if (KimbleGameStateLogger.isInitialized()) {
+            KimbleGameStateLogger.logBoard(game.getBoard());
             KimbleGameStateLogger.logStartValues(startValues);
             KimbleGameStateLogger.logContinueTurnValues(continueTurnValues);
             KimbleGameStateLogger.logGameStart(gameStart);
+        }
+        // *********************************************************************
+
+        for (int i = 0; i < players.size(); i++) {
+            IPlayer player = players.get(i);
+            if (player.isAIPlayer()) {
+                ((KimbleAI) player).setMyTeam(game.getTeam(i));
+                ((KimbleAI) player).setBoard(game.getBoard());
+
+                // *********************************************************************
+                if (KimbleGameStateLogger.isInitialized()) {
+                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
+                }
+                // *********************************************************************
+
+            } else {
+                throw new UnsupportedOperationException("Human players not yet supported!");
+            }
         }
 
         currentTurn = game.getNextTurn();
@@ -107,25 +115,33 @@ public class KimbleLogic {
                 System.out.println("No possible moves...");
             }
 
+            // *********************************************************************
             if (KimbleGameStateLogger.isInitialized()) {
-                KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "not possible");
+                KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), false, "not possible");
             }
-
+            // *********************************************************************
             game.executeNoMove();
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
             if (player.isAIPlayer()) {
 
                 // selectMove logs this output...
-                int selection = ((KimbleAI) player).selectMove(currentTurn, game);
+                int selection = ((KimbleAI) player).selectMove(currentTurn, game.getTeams());
                 if (selection >= 0) {
+
+                    // *********************************************************************
+                    if (KimbleGameStateLogger.isInitialized()) {
+                        KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), currentTurn.getMove(selection));
+                    }
+                    // *********************************************************************
                     game.executeMove(selection);
                 } else {
 
+                    // *********************************************************************
                     if (KimbleGameStateLogger.isInitialized()) {
-                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), "pass");
+                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), true, "pass");
                     }
-
+                    // *********************************************************************
                     game.executeNoMove();
                 }
             } else {
@@ -145,22 +161,20 @@ public class KimbleLogic {
                 System.out.println("Finishing order: ");
                 for (Team team : game.getFinishedTeams()) {
                     System.out.println(team.getId());
-
-                    if (KimbleGameStateLogger.isInitialized()) {
-                        KimbleGameStateLogger.logTeamFinnish(team.getId());
-                    }
                 }
                 System.out.println("");
             }
 
             winner = game.getFinishedTeams().get(0).getId();
 
+            // *********************************************************************
             if (KimbleGameStateLogger.isInitialized()) {
                 for (Team team : game.getFinishedTeams()) {
                     KimbleGameStateLogger.logTeamFinnish(team.getId());
                 }
                 KimbleGameStateLogger.logWinner(winner);
             }
+            // *********************************************************************
         } else {
             currentTurn = game.getNextTurn();
         }

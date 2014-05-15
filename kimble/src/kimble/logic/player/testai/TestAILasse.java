@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import kimble.logic.Game;
 import kimble.logic.Move;
+import kimble.logic.Team;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
@@ -25,8 +25,7 @@ public class TestAILasse extends KimbleAI {
     }
 
     @Override
-    public int selectMove(Turn turn, Game game) {
-        Board board = game.getBoard();
+    public int selectMove(Turn turn, List<Team> teams) {
         Map<Move, Integer> map = new HashMap<>();
         for (int i = 0; i < turn.getMoves().size(); ++i) {
             Move move = turn.getMove(i);
@@ -54,18 +53,18 @@ public class TestAILasse extends KimbleAI {
         }
         // check start moves
         for (Move move : map.keySet()) {
-            if (move.getDestination().equals(board.getStartSquare(getMyTeam().getId()))) {
+            if (move.getDestination().equals(getBoard().getStartSquare(getMyTeam().getId()))) {
                 return map.get(move);
             }
         }
         // check moves from start square
         for (Move move : map.keySet()) {
             if (move.getPiece().getPosition() != null
-                    && move.getPiece().getPosition().equals(board.getStartSquare(getMyTeam().getId()))) {
+                    && move.getPiece().getPosition().equals(getBoard().getStartSquare(getMyTeam().getId()))) {
                 return map.get(move);
             }
         }
-        return getBestNormalMove(map, board);
+        return getBestNormalMove(map, getBoard());
     }
 
     private int getBestNormalMove(Map<Move, Integer> map, Board board) {
