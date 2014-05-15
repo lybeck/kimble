@@ -34,21 +34,26 @@ public class KimbleServer implements Runnable {
     private final boolean noGui;
 
     public KimbleServer(int port, boolean noGui) throws IOException {
-        this(port, 4, noGui);
+        this(port, 4, false, noGui);
     }
 
-    KimbleServer(int port, int maxPlayers, boolean noGui) throws IOException {
+    public KimbleServer(int port, boolean useLogger, boolean noGui) throws IOException {
+        this(port, 4, useLogger, noGui);
+    }
+
+    KimbleServer(int port, int maxPlayers, boolean useLogger, boolean noGui) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
         this.maxPlayers = maxPlayers;
         this.noGui = noGui;
 
-        KimbleGameStateLogger.init();
+        if (useLogger) {
+            KimbleGameStateLogger.init();
+        }
     }
 
     @Override
     public void run() {
-
         try {
             ServerGame serverGame = new ServerGame(noGui, clients);
             for (IPlayer iPlayer : clients) {
@@ -72,7 +77,9 @@ public class KimbleServer implements Runnable {
 
         try {
             serverSocket.close();
-            KimbleGameStateLogger.close();
+            if (KimbleGameStateLogger.isInitialized()) {
+                KimbleGameStateLogger.close();
+            }
         } catch (IOException ex) {
             Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, null, ex);
         }

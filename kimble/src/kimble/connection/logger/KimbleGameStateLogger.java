@@ -15,7 +15,6 @@ import kimble.logic.GameStart;
 import kimble.logic.Move;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
-import kimble.logic.board.Square;
 
 /**
  *

@@ -16,11 +16,14 @@ import kimble.connection.serverside.clientloading.LoadClientsInterface;
  */
 public class TestServer {
 
+    private static final boolean USE_LOGGER = true;
+    private static final boolean NO_GUI = true;
+
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;
         try {
             List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
-            kimbleServer = new KimbleServer(port, clientInfo.size(), true);
+            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, NO_GUI);
             new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
             kimbleServer.run();
         } catch (Exception ex) {
