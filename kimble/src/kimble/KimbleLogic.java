@@ -54,6 +54,23 @@ public class KimbleLogic {
 
     private void setup() {
 
+        for (int i = 0; i < players.size(); i++) {
+            IPlayer player = players.get(i);
+            if (player.isAIPlayer()) {
+                ((KimbleAI) player).setMyTeam(game.getTeam(i));
+                ((KimbleAI) player).setBoard(game.getBoard());
+
+                // *********************************************************************
+                if (KimbleGameStateLogger.isInitialized()) {
+                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
+                }
+                // *********************************************************************
+
+            } else {
+                throw new UnsupportedOperationException("Human players not yet supported!");
+            }
+        }
+
         GameStart gameStart = game.startGame();
 
         if (DEBUG) {
@@ -75,23 +92,6 @@ public class KimbleLogic {
             KimbleGameStateLogger.logGameStart(gameStart);
         }
         // *********************************************************************
-
-        for (int i = 0; i < players.size(); i++) {
-            IPlayer player = players.get(i);
-            if (player.isAIPlayer()) {
-                ((KimbleAI) player).setMyTeam(game.getTeam(i));
-                ((KimbleAI) player).setBoard(game.getBoard());
-
-                // *********************************************************************
-                if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
-                }
-                // *********************************************************************
-
-            } else {
-                throw new UnsupportedOperationException("Human players not yet supported!");
-            }
-        }
 
         currentTurn = game.getNextTurn();
     }
