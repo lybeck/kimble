@@ -5,14 +5,7 @@
  */
 package kimble.license;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +14,9 @@ import java.util.logging.Logger;
 public enum License {
 
     LWJGL_LICENSE("lwjgl_license.txt"),
-    TWL_LICENSE("twl_license.txt");
+    TWL_LICENSE("twl_license.txt"),
+    XPP3_LICENSE("xpp3_license.txt"),
+    GSON_LICENSE("gson_license.txt");
 
     // Enum instance code below. To add a new license just extend the list above this comment.
     // Save the license file in the res/licenses/ directory
