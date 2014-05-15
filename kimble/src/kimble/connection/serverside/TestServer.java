@@ -17,7 +17,8 @@ import kimble.connection.serverside.clientloading.LoadClientsInterface;
 public class TestServer {
 
     private static final boolean USE_LOGGER = true;
-    private static final boolean NO_GUI = false;
+    private static final boolean NO_GUI = true;
+    private static final int NUMBER_OF_PLAYERS = 4;
 
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;
@@ -35,6 +36,6 @@ public class TestServer {
     }
 
     public static void main(String[] args) {
-        startServer(5391, new LoadTournamentClients(4));
+        startServer(5391, new LoadTournamentClients(NUMBER_OF_PLAYERS));
     }
 }
