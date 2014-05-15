@@ -54,6 +54,12 @@ public class KimbleServer implements Runnable {
 
     @Override
     public void run() {
+
+        if (clients.size() != maxPlayers) {
+            disconnectClientsError("Wrong number of players when started!");
+            throw new UnsupportedOperationException("You'll have to have " + maxPlayers + " players!");
+        }
+
         try {
             ServerGame serverGame = new ServerGame(noGui, clients);
             for (IPlayer iPlayer : clients) {
@@ -61,11 +67,17 @@ public class KimbleServer implements Runnable {
                 client.send(new GameInitMessage(serverGame.getLogic().getGame().getBoard(), maxPlayers));
             }
             serverGame.start();
+
         } catch (Exception ex) {
+            disconnectClientsError("Exception in server.");
             Logger.getLogger(KimbleServer.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            disconnectClients();
         }
 
+        disconnectClients();
+    }
+
+    void disconnectClientsError(String message) {
+        System.err.println(" *** Disconnecting all connected players! " + message);
         disconnectClients();
     }
 
@@ -86,7 +98,8 @@ public class KimbleServer implements Runnable {
     }
 
     void addPlayer(KimbleClientAI client) throws IOException {
-        if (clients.size() == maxPlayers) {
+        if (clients.size() >= maxPlayers) {
+            disconnectClientsError("Adding too many players to the clients.");
             throw new UnsupportedOperationException("You can't load more players than: " + maxPlayers);
         }
         Socket socket = serverSocket.accept();

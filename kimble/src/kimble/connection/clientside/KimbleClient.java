@@ -25,6 +25,8 @@ import kimble.connection.messages.ReceiveMessage;
 import kimble.connection.messages.SendMessage;
 
 /**
+ * An abstract class for implementing a client-side AI. This is the class you want if you are going to run the server
+ * with your own AI.
  *
  * @author Christoffer
  */
@@ -45,6 +47,13 @@ public abstract class KimbleClient {
     private Map<Integer, SquareInfo> startSquares;
     private Map<Integer, List<SquareInfo>> goalSquares;
 
+    /**
+     * Creates a new Client to communicate with the server.
+     *
+     * @param host - The url to the server.
+     * @param port - The port the server is running on.
+     * @throws IOException
+     */
     public KimbleClient(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
@@ -316,21 +325,44 @@ public abstract class KimbleClient {
         writer.println(message);
     }
 
+    /**
+     * This method is used to send answers to the server.
+     *
+     * @param message
+     */
     public void sendMessage(SendMessage message) {
         sendMessage(message.toJson());
     }
 
+    /**
+     * Sends a 'new MoveSelectedMessage(move)' to the server with 'sendMessage(SendMessage message)' method.
+     *
+     * @param move
+     */
     public void sendMove(MoveInfo move) {
         sendMessage(new MoveSelectedMessage(move));
     }
 
+    /**
+     * Sends a 'new PingMessage()' to the server through the 'sendMessage(SendMessage message)' method.
+     */
     public void sendPing() {
         sendMessage(new PingMessage());
     }
 
+    /**
+     * This method is run before the loop. Recommended for initialization stuff. Because the constructor starts the loop
+     * your own constructor (extending this class' constructor) will be run at the end of the loop.
+     */
     public abstract void preLoop();
 
+    /**
+     * This method is run once every loop after the client has received the message from the server.
+     */
     public abstract void duringLoop();
 
+    /**
+     * This method is run when the loop has ended. Suitable for clean up code (.close() on streams etc).
+     */
     public abstract void postLoop();
 }
