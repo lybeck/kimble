@@ -24,7 +24,7 @@ public class KimbleBot1 extends KimbleClient {
     @Override
     public void duringLoop() {
         String messageType = getReceiveMessageType();
-        System.out.println("Team: " + getMyTeamId() + " Recieved: " + messageType);
+        System.out.println("[Team " + getMyTeamId() + "] Received: " + messageType);
 
         if (messageType.equals("moves")) {
             MoveInfo bestMove = getBestMove();
