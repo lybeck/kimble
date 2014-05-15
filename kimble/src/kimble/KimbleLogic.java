@@ -86,7 +86,7 @@ public class KimbleLogic {
 
         // *********************************************************************
         if (KimbleGameStateLogger.isInitialized()) {
-            KimbleGameStateLogger.logBoard(game.getBoard());
+            KimbleGameStateLogger.logBoard(game.getBoard(), game.getTeams());
             KimbleGameStateLogger.logStartValues(startValues);
             KimbleGameStateLogger.logContinueTurnValues(continueTurnValues);
             KimbleGameStateLogger.logGameStart(gameStart);

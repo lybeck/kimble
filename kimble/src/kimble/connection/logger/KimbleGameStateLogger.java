@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import kimble.logic.GameStart;
 import kimble.logic.Move;
+import kimble.logic.Team;
 import kimble.logic.board.Board;
+import kimble.logic.board.Square;
 
 /**
  *
@@ -23,7 +25,6 @@ public class KimbleGameStateLogger {
 
     private static LogFile logFile;
     private static FileWriter writer;
-    private static File outputFile;
 
     private static boolean initialized = false;
 
@@ -42,7 +43,7 @@ public class KimbleGameStateLogger {
             fileIndex = filesInRoot.length + 1;
         }
 
-        outputFile = new File(logRoot, "log_" + fileIndex + ".txt");
+        File outputFile = new File(logRoot, "log_" + fileIndex + ".txt");
         writer = new FileWriter(outputFile);
 
         initialized = true;
@@ -54,8 +55,16 @@ public class KimbleGameStateLogger {
         return initialized;
     }
 
-    public static void logBoard(Board board) {
-
+    public static void logBoard(Board board, List<Team> teams) {
+        for (int i = 0; i < teams.size(); i++) {
+            for (int j = 0; j < board.getGoalSquares(i).size(); j++) {
+                logFile.getBoardInfo().addGoalSquare(i, board.getGoalSquare(i, j).getID());
+            }
+            logFile.getBoardInfo().addStartSquare(i, board.getStartSquare(i).getID());
+        }
+        for (int i = 0; i < board.getSquares().size(); i++) {
+            logFile.getBoardInfo().addSquare(board.getSquare(i).getID());
+        }
     }
 
     public static void logTeam(Integer teamID, String teamName) {
