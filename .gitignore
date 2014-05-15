@@ -8,6 +8,10 @@ kimbleAI/dist/
 kimbleAI/nbproject/private/
 kimbleAI/logs/
 
+rules-and-techspecs/*.aux
+rules-and-techspecs/*.log
+rules-and-techspecs/*.pdf
+rules-and-techspecs/*.synctex.gz
 
 test-projects/SocketClient/build/
 test-projects/SocketClient/dist/
