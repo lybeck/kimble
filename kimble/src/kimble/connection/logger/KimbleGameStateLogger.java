@@ -86,13 +86,13 @@ public class KimbleGameStateLogger {
 
     public static void logMove(int teamID, int dieRoll, Move move) {
         Integer pieceId = move.getPiece().getId();
-        Boolean isHome = null;
+        Boolean home = null;
         if (move.getPiece().isHome()) {
-            isHome = move.getPiece().isHome();
+            home = move.getPiece().isHome();
         }
-        Boolean isOptional = null;
+        Boolean optional = null;
         if (move.isOptional()) {
-            isOptional = move.isOptional();
+            optional = move.isOptional();
         }
         Integer startSquare = null;
         if (move.getPiece().getPosition() != null) {
@@ -100,7 +100,7 @@ public class KimbleGameStateLogger {
         }
         Integer destSquare = move.getDestination().getID();
 
-        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, isHome, isOptional, startSquare, destSquare));
+        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, home, optional, startSquare, destSquare));
     }
 
     public static void logSkip(int teamID, int dieRoll, boolean optional, String reason) {
