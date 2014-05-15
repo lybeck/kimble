@@ -6,7 +6,6 @@
 package kimble.connection.logger;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,33 +22,46 @@ public class LogFile {
     // - Teams
     // - Moves (entries)
     // - Result
-    private final Date date;
-    private final List<TeamInfo> teams;
-    private final BoardInfo board;
+    private Date date;
+    private List<TeamInfo> teams;
+    private BoardInfo board;
     private Set<Integer> startValues;
     private Set<Integer> continueTurnValues;
     private List<Map<Integer, Integer>> startRolls;
     private Integer startingTeam;
-    private final List<LogEntry> moves;
-    private final List<Integer> teamFinnishOrder;
+    private List<LogEntry> moves;
+    private List<Integer> teamFinnishOrder;
     private Integer winner;
 
     public LogFile() {
-        this.date = Calendar.getInstance().getTime();
+    }
+
+    public LogFile(Date date) {
+        this.date = date;
         this.teams = new ArrayList<>();
         this.board = new BoardInfo();
         this.moves = new ArrayList<>();
         this.teamFinnishOrder = new ArrayList<>();
     }
 
+    // ================================================
+    // Add methods
+    // ================================================
     public void addTeam(Integer teamID, String teamName) {
         teams.add(new TeamInfo(teamID, teamName));
     }
 
-    public BoardInfo getBoardInfo() {
-        return board;
+    public void addEntry(LogEntry entry) {
+        moves.add(entry);
     }
 
+    public void addTeamFinnish(Integer teamID) {
+        teamFinnishOrder.add(teamID);
+    }
+
+    // ================================================
+    // Setters
+    // ================================================
     public void setStartValues(Set<Integer> startValues) {
         this.startValues = startValues;
     }
@@ -66,11 +78,42 @@ public class LogFile {
         this.startingTeam = teamID;
     }
 
-    public void addEntry(LogEntry entry) {
-        moves.add(entry);
+    public void setWinner(Integer teamID) {
+        this.winner = teamID;
     }
 
-    public List<LogEntry> getMoves() {
+    // ================================================
+    // Getters
+    // ================================================
+    public Date getDate() {
+        return date;
+    }
+
+    public Set<Integer> getStartValues() {
+        return startValues;
+    }
+
+    public Set<Integer> getContinueTurnValues() {
+        return continueTurnValues;
+    }
+
+    public List<Map<Integer, Integer>> getStartRolls() {
+        return startRolls;
+    }
+
+    public int getStartingTeam() {
+        return startingTeam;
+    }
+
+    public List<TeamInfo> getTeams() {
+        return teams;
+    }
+
+    public BoardInfo getBoard() {
+        return board;
+    }
+
+    public List<LogEntry> getEntries() {
         return moves;
     }
 
@@ -78,18 +121,17 @@ public class LogFile {
         return teamFinnishOrder;
     }
 
-    public void addTeamFinnish(Integer teamID) {
-        teamFinnishOrder.add(teamID);
+    public int getWinner() {
+        return winner;
     }
 
-    public void setWinner(Integer teamID) {
-        this.winner = teamID;
-    }
+    // ================================================
+    // Inner Classes
+    // ================================================
+    public class TeamInfo {
 
-    private class TeamInfo {
-
-        final Integer teamID;
-        final String teamName;
+        public final Integer teamID;
+        public final String teamName;
 
         public TeamInfo(Integer teamID, String teamName) {
             this.teamID = teamID;
@@ -99,14 +141,19 @@ public class LogFile {
 
     public class BoardInfo {
 
-        List<Integer> squares;
-        Map<Integer, Integer> teamToStartSquares;
-        Map<Integer, List<Integer>> teamToGoalSquares;
+        public int sideLength;
+        public List<Integer> squares;
+        public Map<Integer, Integer> teamToStartSquares;
+        public Map<Integer, List<Integer>> teamToGoalSquares;
 
         public BoardInfo() {
             squares = new ArrayList<>();
             teamToStartSquares = new HashMap<>();
             teamToGoalSquares = new HashMap<>();
+        }
+
+        public void setSideLength(int sideLength) {
+            this.sideLength = sideLength;
         }
 
         public void addSquare(Integer squareID) {

@@ -5,12 +5,13 @@
  */
 package kimble.graphic.board.meshes;
 
+import java.util.List;
 import java.util.Map;
 import kimble.graphic.board.BoardSpecs;
 import kimble.graphic.board.SquareGraphic;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.model.VertexData;
-import kimble.logic.Game;
+import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -19,7 +20,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class BoardMesh extends Mesh {
 
-    private final Game game;
+    private final List<Team> teams;
     private int vertexCount;
     private final float segmentAngle;
 
@@ -30,8 +31,8 @@ public class BoardMesh extends Mesh {
     private final float squareSideLength;
     private final float boardOuterPadding;
 
-    public BoardMesh(Game game, int vertexCount, float segmentAngle, Map<Integer, SquareGraphic> goalSquares, int firstGoalSquareIndex, BoardSpecs specs) {
-        this.game = game;
+    public BoardMesh(List<Team> teams, int vertexCount, float segmentAngle, Map<Integer, SquareGraphic> goalSquares, int firstGoalSquareIndex, BoardSpecs specs) {
+        this.teams = teams;
         this.vertexCount = vertexCount;
         this.segmentAngle = segmentAngle;
 
@@ -48,10 +49,10 @@ public class BoardMesh extends Mesh {
     @Override
     public VertexData[] setupVertexData() {
 
-        this.vertexCount = game.getNumberOfTeams() * 2;
+        this.vertexCount = teams.size() * 2;
 
         VertexData[] vertices = new VertexData[vertexCount + 1];
-        float segmentLength = (float) (2 * Math.PI / game.getNumberOfTeams());
+        float segmentLength = (float) (2 * Math.PI / teams.size());
 
         float currentAngle = -0.5f * segmentAngle;
 
@@ -61,16 +62,16 @@ public class BoardMesh extends Mesh {
         vertices[0] = v0;
 
         int index = 1;
-        for (int i = 0; i < game.getNumberOfTeams(); i++) {
+        for (int i = 0; i < teams.size(); i++) {
 
-            Vector3f tempPosition = goalSquares.get(firstGoalSquareIndex + i * game.getTeam(i).getPieces().size()).getPosition();
+            Vector3f tempPosition = goalSquares.get(firstGoalSquareIndex + i * teams.get(i).getPieces().size()).getPosition();
             float boardRadius = boardOuterPadding * (tempPosition.length() + 2.5f * (squareSideLength + goalSquarePadding));
 
             Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), 0, (float) (boardRadius * (Math.sin(currentAngle))));
 
             Vector3f right = new Vector3f();
             Vector3f.cross(tempPosition, new Vector3f(0, 1, 0), right);
-            right.normalise().scale((squareSideLength + goalSquarePadding) * game.getTeam(0).getPieces().size() / 1.5f);
+            right.normalise().scale((squareSideLength + goalSquarePadding) * teams.get(0).getPieces().size() / 1.5f);
 
             Vector3f leftPoint = new Vector3f();
             Vector3f rightPoint = new Vector3f();

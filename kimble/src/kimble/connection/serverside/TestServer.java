@@ -17,7 +17,7 @@ import kimble.connection.serverside.clientloading.LoadClientsInterface;
 public class TestServer {
 
     private static final boolean USE_LOGGER = true;
-    private static final boolean NO_GUI = true;
+    private static final boolean NO_GUI = false;
 
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;

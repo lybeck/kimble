@@ -9,8 +9,10 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import kimble.connection.logger.LogEntry.EntryType;
 import kimble.logic.GameStart;
 import kimble.logic.Move;
 import kimble.logic.Team;
@@ -47,27 +49,28 @@ public class KimbleGameStateLogger {
 
         initialized = true;
 
-        logFile = new LogFile();
+        logFile = new LogFile(Calendar.getInstance().getTime());
     }
 
     public static boolean isInitialized() {
         return initialized;
     }
 
+    public static void logTeam(Integer teamID, String teamName) {
+        logFile.addTeam(teamID, teamName);
+    }
+
     public static void logBoard(Board board, List<Team> teams) {
         for (int i = 0; i < teams.size(); i++) {
             for (int j = 0; j < board.getGoalSquares(i).size(); j++) {
-                logFile.getBoardInfo().addGoalSquare(i, board.getGoalSquare(i, j).getID());
+                logFile.getBoard().addGoalSquare(i, board.getGoalSquare(i, j).getID());
             }
-            logFile.getBoardInfo().addStartSquare(i, board.getStartSquare(i).getID());
+            logFile.getBoard().addStartSquare(i, board.getStartSquare(i).getID());
         }
         for (int i = 0; i < board.getSquares().size(); i++) {
-            logFile.getBoardInfo().addSquare(board.getSquare(i).getID());
+            logFile.getBoard().addSquare(board.getSquare(i).getID());
         }
-    }
-
-    public static void logTeam(Integer teamID, String teamName) {
-        logFile.addTeam(teamID, teamName);
+        logFile.getBoard().sideLength = board.getSideLength();
     }
 
     public static void logStartValues(Set<Integer> startValues) {
@@ -99,11 +102,13 @@ public class KimbleGameStateLogger {
         }
         Integer destSquare = move.getDestination().getID();
 
-        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, home, optional, startSquare, destSquare));
+//        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, home, optional, startSquare, destSquare));
+        logFile.addEntry(new LogEntry(EntryType.MOVE, teamID, dieRoll, pieceId, startSquare, destSquare, home, optional));
     }
 
     public static void logSkip(int teamID, int dieRoll, boolean optional, String reason) {
-        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, optional, reason));
+//        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, optional, reason));
+        logFile.addEntry(new LogEntry(EntryType.SKIP, teamID, dieRoll, null, null, null, null, optional));
     }
 
     public static void logTeamFinnish(int teamID) {

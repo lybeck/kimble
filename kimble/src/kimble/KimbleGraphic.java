@@ -61,7 +61,7 @@ public class KimbleGraphic {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(logic.getGame(), new BoardSpecs(SQUARES_FROM_START_TO_START));
+        board = new BoardGraphic(logic.getGame().getBoard(), logic.getGame().getTeams(), new BoardSpecs(SQUARES_FROM_START_TO_START));
         shader = new Shader("shader.vert", "shader.frag");
 
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
@@ -116,14 +116,14 @@ public class KimbleGraphic {
         if (Screen.isCloseRequested()) {
             stop();
         }
-        
+
 //        if(logic.getGame().isGameOver()){
 //            stop();
 //        }
-
         if (extraInput.rotateCamera()) {
             cameraPositionAngle += dt * 0.1;
-            Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius() * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
+            Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius()
+                    * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
             camera.setPosition(cameraPos);
             camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
         }
