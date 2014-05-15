@@ -60,6 +60,9 @@ public class DieGraphic extends Model {
     }
 
     public void setDieRoll(int dieRoll) {
+        if (dieRoll <= 0) {
+            return;
+        }
         this.rotation = DIE_ROLL_ROTATIONS.get(dieRoll - 1);
 
         float x = (float) (rotation.x + 2 * (random.nextInt(3) + 1) * Math.PI);

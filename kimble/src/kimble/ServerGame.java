@@ -18,7 +18,7 @@ public class ServerGame {
 
     public static final boolean DEBUG = false;
 
-    private final KimbleLogic logic;
+    private final KimbleGameLogic logic;
     private KimbleGraphic graphic;
 
     public final static int NUMBER_OF_TEAMS = 4;
@@ -29,7 +29,7 @@ public class ServerGame {
 
     public ServerGame(boolean noGui, List<IPlayer> players) {
         this.noGui = noGui;
-        this.logic = new KimbleLogic(players);
+        this.logic = new KimbleGameLogic(players);
     }
 
     public void start() {
@@ -38,11 +38,7 @@ public class ServerGame {
                 logic.executeMove();
             }
         } else {
-            setupLWJGL();
-
-            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
-
-            graphic = new KimbleGraphic(logic);
+            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST);
             graphic.start();
         }
     }
@@ -52,14 +48,7 @@ public class ServerGame {
         this.noGui = true;
     }
 
-    private void setupLWJGL() {
-        Screen.setupNativesLWJGL();
-        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
-        Screen.setupOpenGL();
-        Screen.setResizable(true);
-    }
-
-    public KimbleLogic getLogic() {
+    public KimbleGameLogic getLogic() {
         return logic;
     }
 

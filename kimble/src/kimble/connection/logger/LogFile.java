@@ -47,8 +47,8 @@ public class LogFile {
     // ================================================
     // Add methods
     // ================================================
-    public void addTeam(Integer teamID, String teamName) {
-        teams.add(new TeamInfo(teamID, teamName));
+    public void addTeam(Integer teamID, String teamName, Integer numberOfPieces) {
+        teams.add(new TeamInfo(teamID, teamName, numberOfPieces));
     }
 
     public void addEntry(LogEntry entry) {
@@ -132,10 +132,12 @@ public class LogFile {
 
         public final Integer teamID;
         public final String teamName;
+        public final Integer numberOfPieces;
 
-        public TeamInfo(Integer teamID, String teamName) {
+        public TeamInfo(Integer teamID, String teamName, Integer numberOfPieces) {
             this.teamID = teamID;
             this.teamName = teamName;
+            this.numberOfPieces = numberOfPieces;
         }
     }
 

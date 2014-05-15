@@ -56,8 +56,8 @@ public class KimbleGameStateLogger {
         return initialized;
     }
 
-    public static void logTeam(Integer teamID, String teamName) {
-        logFile.addTeam(teamID, teamName);
+    public static void logTeam(Integer teamID, String teamName, Integer numberOfPieces) {
+        logFile.addTeam(teamID, teamName, numberOfPieces);
     }
 
     public static void logBoard(Board board, List<Team> teams) {
@@ -70,7 +70,7 @@ public class KimbleGameStateLogger {
         for (int i = 0; i < board.getSquares().size(); i++) {
             logFile.getBoard().addSquare(board.getSquare(i).getID());
         }
-        logFile.getBoard().sideLength = board.getSideLength();
+        logFile.getBoard().setSideLength(board.getSideLength());
     }
 
     public static void logStartValues(Set<Integer> startValues) {

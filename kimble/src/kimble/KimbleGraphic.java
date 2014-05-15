@@ -31,7 +31,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class KimbleGraphic {
 
-    private final KimbleLogic logic;
+    private final KimbleLogicInterface logic;
 
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
@@ -51,17 +51,28 @@ public class KimbleGraphic {
     private float nextTurnTimer = 0;
     private float cameraPositionAngle = 0;
 
-    public KimbleGraphic(KimbleLogic logic) {
+    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         this.logic = logic;
+
+        PlaybackProfile.setCurrentProfile(profile);
 
         setup();
     }
 
+    private void setupLWJGL() {
+        Screen.setupNativesLWJGL();
+        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
+        Screen.setupOpenGL();
+        Screen.setResizable(true);
+    }
+
     private void setup() {
+        setupLWJGL();
+
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(logic.getGame().getBoard(), logic.getGame().getTeams(), new BoardSpecs(SQUARES_FROM_START_TO_START));
+        board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs(SQUARES_FROM_START_TO_START));
         shader = new Shader("shader.vert", "shader.frag");
 
         camera = new Camera(new Vector3f(20, 70, -20), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
@@ -70,8 +81,8 @@ public class KimbleGraphic {
         input = new Input(camera);
 
         pieces = new ArrayList<>();
-        for (int i = 0; i < logic.getGame().getTeams().size(); i++) {
-            for (Piece p : logic.getGame().getTeam(i).getPieces()) {
+        for (int i = 0; i < logic.getTeams().size(); i++) {
+            for (Piece p : logic.getTeam(i).getPieces()) {
                 pieces.add(new PieceGraphic(board, p, new Vector3f(0, 0, 0), BoardGraphic.TEAM_COLORS.get(i)));
             }
         }
@@ -144,8 +155,8 @@ public class KimbleGraphic {
             nextTurnTimer += dt;
 
             if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-                if (!logic.getGame().isGameOver()) {
-                    die.setDieRoll(logic.getCurrentTurn().getDieRoll());
+                if (!logic.isGameOver()) {
+                    die.setDieRoll(logic.getDieRoll());
                     dieHolderDome.bounce();
                     turnTimer = 0;
                     nextTurnTimer = 0;

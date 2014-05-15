@@ -5,53 +5,133 @@
  */
 package kimble.playback;
 
-import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import kimble.KimbleLogicInterface;
 import kimble.connection.logger.LogEntry;
 import kimble.connection.logger.LogEntry.EntryType;
 import kimble.connection.logger.LogFile;
+import kimble.connection.logger.entries.MoveEntry;
+import kimble.logic.Move;
+import kimble.logic.Piece;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
+import kimble.logic.exception.IllegalMoveException;
 
 /**
  *
  * @author Christoffer
  */
-public class PlaybackLogic {
+public class PlaybackLogic implements KimbleLogicInterface {
+
+    private List<Team> teams;
+    private Board board;
+
+    private final Iterator<LogEntry> logIterator;
+
+    private int dieRoll;
+
+    private Move move;
 
     public PlaybackLogic(LogFile log) {
+        initTeams(log);
+        initBoard(log);
 
+        logIterator = log.getEntries().iterator();
+        getNextMove();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-
-        LogFile log = new Gson().fromJson(new BufferedReader(new FileReader(new File("logs/log_7.txt"))), LogFile.class);
-
-        System.out.println(log);
-
-        List<Team> teams = new ArrayList<>();
+    private void initTeams(LogFile log) {
+        teams = new ArrayList<>();
         for (int i = 0; i < log.getTeams().size(); i++) {
             int teamID = log.getTeams().get(i).teamID;
-            Team team = new Team(teamID, log.getBoard().teamToStartSquares.get(teamID));
+            Team team = new Team(teamID, log.getTeams().get(i).numberOfPieces);
             teams.add(team);
         }
-        
-        Board board = new Board(teams.size(), teams.get(0).getPieces().size(), 8);
+    }
 
-        for (LogEntry entry : log.getEntries()) {
+    private void initBoard(LogFile log) {
+        int numberOfTeams = teams.size();
+        int numberOfPieces = log.getTeams().get(0).numberOfPieces;
+        int sideLength = log.getBoard().sideLength;
+        board = new Board(numberOfTeams, numberOfPieces, sideLength);
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
+    }
+
+    @Override
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    @Override
+    public Team getTeam(int teamID) {
+        return teams.get(teamID);
+    }
+
+    @Override
+    public void executeMove() {
+        try {
+            if (move != null) {
+                move.execute();
+            }
+        } catch (IllegalMoveException ex) {
+            Logger.getLogger(PlaybackLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getNextMove();
+    }
+
+    private void getNextMove() {
+        if (logIterator.hasNext()) {
+            LogEntry entry = logIterator.next();
+
+            dieRoll = entry.dieRoll;
+
             if (entry.type == EntryType.MOVE) {
                 System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll);
+                MoveEntry me = (MoveEntry) entry.getEntry();
+
+                Piece piece = teams.get(me.teamID).getPiece(me.pieceID);
+
+                if (me.destSquareID >= board.getSquares().size()) {
+                    int res = me.destSquareID % board.getGoalSquares(me.teamID).size();
+                    move = new Move(piece, board.getGoalSquare(me.teamID, res), me.optional);
+                } else {
+                    move = new Move(piece, board.getSquare(me.destSquareID), me.optional);
+                }
+
+            } else if (entry.type == EntryType.SKIP) {
+                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll
+                        + " [Can't move]");
+                move = null;
             }
+        } else {
+            dieRoll = 0;
+            move = null;
         }
+    }
 
-        System.out.println(log.getEntries().get(0).type);
+    private boolean gameOver = false;
 
-        new PlaybackLogic(null);
+    @Override
+    public boolean isGameOver() {
+        if (logIterator.hasNext() == false && gameOver == false) {
+            gameOver = true;
+            return false;
+        }
+        return gameOver;
+    }
+
+    @Override
+    public int getDieRoll() {
+        return dieRoll;
     }
 
 }

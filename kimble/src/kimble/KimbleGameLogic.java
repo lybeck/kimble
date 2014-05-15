@@ -17,13 +17,14 @@ import kimble.logic.GameStart;
 import kimble.logic.IPlayer;
 import kimble.logic.Team;
 import kimble.logic.Turn;
+import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
 
 /**
  *
  * @author Christoffer
  */
-public class KimbleLogic {
+public class KimbleGameLogic implements KimbleLogicInterface {
 
     private final Game game;
     private List<IPlayer> players;
@@ -36,11 +37,11 @@ public class KimbleLogic {
 
     private Turn currentTurn;
 
-    public KimbleLogic(List<IPlayer> players) {
+    public KimbleGameLogic(List<IPlayer> players) {
         this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
     }
 
-    public KimbleLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfPieces, int squaresFromStartToStart) {
+    public KimbleGameLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfPieces, int squaresFromStartToStart) {
         this.players = players;
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
@@ -62,7 +63,7 @@ public class KimbleLogic {
 
                 // *********************************************************************
                 if (KimbleGameStateLogger.isInitialized()) {
-                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName());
+                    KimbleGameStateLogger.logTeam(i, ((KimbleAI) player).getTeamName(), getGame().getTeam(i).getPieces().size());
                 }
                 // *********************************************************************
 
@@ -96,6 +97,7 @@ public class KimbleLogic {
         currentTurn = game.getNextTurn();
     }
 
+    @Override
     public void executeMove() {
 
         if (game.isGameOver()) {
@@ -210,5 +212,30 @@ public class KimbleLogic {
 
     public Turn getCurrentTurn() {
         return currentTurn;
+    }
+
+    @Override
+    public boolean isGameOver() {
+        return getGame().isGameOver();
+    }
+
+    @Override
+    public int getDieRoll() {
+        return getCurrentTurn().getDieRoll();
+    }
+
+    @Override
+    public Board getBoard() {
+        return getGame().getBoard();
+    }
+
+    @Override
+    public List<Team> getTeams() {
+        return getGame().getTeams();
+    }
+
+    @Override
+    public Team getTeam(int teamID) {
+        return getGame().getTeam(teamID);
     }
 }

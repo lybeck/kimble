@@ -84,7 +84,7 @@ public class Game {
         int roll = die.roll();
         List<Move> moves = new ArrayList<>();
         for (Piece piece : team.getPieces()) {
-            Move move = new Move(this, piece, roll);
+            Move move = new Move(getStartValues(), getBoard(), piece, roll);
             if (move.isValidMove()) {
                 moves.add(move);
             }

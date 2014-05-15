@@ -1,5 +1,7 @@
 package kimble.logic;
 
+import java.util.Set;
+import kimble.logic.board.Board;
 import kimble.logic.board.Square;
 import kimble.logic.exception.IllegalMoveException;
 
@@ -14,7 +16,7 @@ public class Move {
     private final boolean optional;
     private final transient IllegalMoveException illegalMoveException;
 
-    Move(Game game, Piece piece, int dieRoll) {
+    Move(Set<Integer> startValues, Board board, Piece piece, int dieRoll) {
         this.piece = piece;
         if (piece.getPosition() != null) {
             this.optional = piece.getPosition().isGoalSquare();
@@ -24,10 +26,10 @@ public class Move {
         IllegalMoveException exc = null;
         Square dest = null;
         if (piece.isHome()) {
-            if (!game.getStartValues().contains(dieRoll)) {
+            if (!startValues.contains(dieRoll)) {
                 exc = new IllegalMoveException("Cannot start with a " + dieRoll + ".");
             } else {
-                dest = game.getBoard().getStartSquare(piece.getTeamId());
+                dest = board.getStartSquare(piece.getTeamId());
             }
         } else {
 
@@ -47,8 +49,8 @@ public class Move {
                     movingBack = true;
                     next = dest.getPrev();
                 }
-                if (!movingBack && next.equals(game.getBoard().getStartSquare(piece.getTeamId()))) {
-                    next = game.getBoard().getGoalSquare(piece.getTeamId(), 0);
+                if (!movingBack && next.equals(board.getStartSquare(piece.getTeamId()))) {
+                    next = board.getGoalSquare(piece.getTeamId(), 0);
                 }
                 dest = next;
             }
@@ -67,7 +69,14 @@ public class Move {
         this.illegalMoveException = exc;
     }
 
-    void execute() throws IllegalMoveException {
+    public Move(Piece piece, Square destSquare, boolean optional) {
+        this.piece = piece;
+        this.destination = destSquare;
+        this.optional = optional;
+        this.illegalMoveException = null;
+    }
+
+    public void execute() throws IllegalMoveException {
         if (illegalMoveException != null) {
             throw illegalMoveException;
         }

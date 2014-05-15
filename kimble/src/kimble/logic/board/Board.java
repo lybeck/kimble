@@ -16,14 +16,12 @@ public class Board {
     private final int numberOfPieces;
 
     private final List<Square> squares;
-//    private final List<Square> goalSquares;
     private final Map<Integer, List<Square>> goalSquares;
 
     public Board(int numberOfTeams, int numberOfPieces, int sideLength) {
         this.numberOfTeams = numberOfTeams;
         this.numberOfPieces = numberOfPieces;
         this.squares = new ArrayList<>();
-//        this.goalSquares = new ArrayList<>();
         this.goalSquares = new HashMap<>();
         this.sideLength = sideLength;
         initBoard();
@@ -101,8 +99,8 @@ public class Board {
 
     @Deprecated
     /**
-     * This method isn't working properly anymore! Moved the list structure to a
-     * Map structure for easier accessing the goal squares...
+     * This method isn't working properly anymore! Moved the list structure to a Map structure for easier accessing the
+     * goal squares...
      *
      * @param teamId
      * @return
