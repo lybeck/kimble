@@ -25,15 +25,22 @@ public class Screen {
 
     public static void setupDisplay(String title, int width, int height) {
         try {
-            PixelFormat pixelFormat = new PixelFormat();
-            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
-                    .withForwardCompatible(true)
-                    .withProfileCore(true);
+//            PixelFormat pixelFormat = new PixelFormat();
+//            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
+//                    .withForwardCompatible(false)
+//                    .withDebug(false)
+//                    .withProfileCompatibility(false)
+//                    .withProfileCore(false);
+////                    .withForwardCompatible(true)
+////                    .withProfileCore(true);
+//
+//            Display.setDisplayMode(new DisplayMode(width, height));
+//            Display.setTitle(title);
+//            Display.create(pixelFormat, contextAtrributes);
 
             Display.setDisplayMode(new DisplayMode(width, height));
             Display.setTitle(title);
-            Display.create(pixelFormat, contextAtrributes);
-
+            Display.create();
         } catch (LWJGLException ex) {
             Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
@@ -73,7 +80,7 @@ public class Screen {
     }
 
     public static float getAspectRatio() {
-        return (float) Display.getWidth() / Display.getHeight();
+        return (float) Display.getWidth() / (float) Display.getHeight();
     }
 
     public static void cleanUp() {
@@ -81,11 +88,8 @@ public class Screen {
     }
 
     public static void setupOpenGL() {
-
         glClearColor(0.4f, 0.6f, 0.9f, 0f);
 
-//        glEnable(GL_TEXTURE_2D);
-//        glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
@@ -104,10 +108,17 @@ public class Screen {
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
+    public static int getWidth() {
+        return Display.getWidth();
+    }
+
+    public static int getHeight() {
+        return Display.getHeight();
+    }
+
     /**
-     * Loads the natives for LWJGL, from the natives folder inside the lib
-     * directory. By using this method you don't have to explicitly have to
-     * choose natives (because they are different for different platforms).
+     * Loads the natives for LWJGL, from the natives folder inside the lib directory. By using this method you don't
+     * have to explicitly have to choose natives (because they are different for different platforms).
      */
     public static void setupNativesLWJGL() {
         String lwjglPath = "org.lwjgl.librarypath";

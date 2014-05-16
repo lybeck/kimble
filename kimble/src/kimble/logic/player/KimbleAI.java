@@ -37,6 +37,7 @@ public abstract class KimbleAI implements IPlayer {
 
     public void setMyTeam(Team myTeam) {
         this.myTeam = myTeam;
+        this.myTeam.setName(teamName);
     }
 
     public Team getMyTeam() {

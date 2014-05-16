@@ -6,6 +6,7 @@
 package kimble;
 
 import java.util.List;
+import java.util.Map;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
 
@@ -17,7 +18,9 @@ public interface KimbleLogicInterface {
 
     public Board getBoard();
 
-//    public int getStartingTeamIndex();
+    public List<Map<Integer, Integer>> getStartingDieRolls();
+
+    public Team getStartingTeam();
 
     public List<Team> getTeams();
 
@@ -26,6 +29,8 @@ public interface KimbleLogicInterface {
     public void executeMove();
 
     public boolean isGameOver();
+
+    public Team getNextTeamInTurn();
 
     public int getDieRoll();
 }

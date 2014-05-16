@@ -15,7 +15,7 @@ public class TestAIRandom extends KimbleAI {
     private final Random random;
 
     public TestAIRandom() {
-        super(TestAIRandom.class.getName());
+        super("TestAIRandom");
         this.random = new Random();
     }
 

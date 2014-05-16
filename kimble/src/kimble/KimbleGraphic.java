@@ -19,10 +19,12 @@ import kimble.graphic.board.DieGraphic;
 import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.board.PieceGraphic;
+import kimble.graphic.hud.HUD;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Piece;
+import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -33,6 +35,7 @@ public class KimbleGraphic {
 
     private final KimbleLogicInterface logic;
 
+    private HUD hud;
     private BoardGraphic board;
     private List<PieceGraphic> pieces;
     private DieHolderGraphic dieHolder;
@@ -68,6 +71,7 @@ public class KimbleGraphic {
 
     private void setup() {
         setupLWJGL();
+        setupHUD();
 
         ModelManager.loadModels();
         TextureManager.loadTextures();
@@ -92,6 +96,14 @@ public class KimbleGraphic {
         die = new DieGraphic();
 
         dieHolderDome = new DieHolderDomeGraphic();
+
+        hud.getDieRollsLabel().setText("[teamID]=[die roll] " + logic.getStartingDieRolls().toString());
+        hud.getStartGameLabel().setText(logic.getStartingTeam().getName() + " [ID = " + logic.getStartingTeam().getId()
+                + "] starts the game.");
+    }
+
+    private void setupHUD() {
+        hud = new HUD();
     }
 
     public final void start() {
@@ -141,6 +153,7 @@ public class KimbleGraphic {
 
         if (Screen.wasResized()) {
             Screen.updateViewport();
+            hud.setViewport(0, 0, Screen.getWidth(), Screen.getHeight());
             camera.updateProjectionMatrixAttributes();
         }
 
@@ -156,6 +169,10 @@ public class KimbleGraphic {
 
             if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
                 if (!logic.isGameOver()) {
+
+                    Team nextTeam = logic.getNextTeamInTurn();
+                    hud.appendTurnInfo(nextTeam.getName(), nextTeam.getId(), logic.getDieRoll());
+
                     die.setDieRoll(logic.getDieRoll());
                     dieHolderDome.bounce();
                     turnTimer = 0;
@@ -177,10 +194,16 @@ public class KimbleGraphic {
         for (PieceGraphic p : pieces) {
             p.update(dt);
         }
+
+        updateHud(dt);
+    }
+
+    private void updateHud(float dt) {
+
+        hud.update(dt);
     }
 
     private void render() {
-
         shader.bind();
         board.render(shader);
 
@@ -192,6 +215,8 @@ public class KimbleGraphic {
             p.render(shader);
         }
         shader.unbind();
+
+        hud.render();
     }
 
     private void cleanUp() {

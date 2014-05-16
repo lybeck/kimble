@@ -20,7 +20,7 @@ public class TestAILasse extends KimbleAI {
     private Random random;
 
     public TestAILasse() {
-        super(TestAILasse.class.getName());
+        super("TestAILasse");
         this.random = new Random();
     }
 

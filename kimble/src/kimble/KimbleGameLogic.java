@@ -6,6 +6,7 @@
 package kimble;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import static kimble.ServerGame.DEBUG;
 import static kimble.ServerGame.NUMBER_OF_PIECES;
@@ -36,6 +37,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private int squaresFromStartToStart;
 
     private Turn currentTurn;
+    private int startingTeamIndex;
+    private List<Map<Integer, Integer>> startingDieRolls;
 
     public KimbleGameLogic(List<IPlayer> players) {
         this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
@@ -73,6 +76,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         }
 
         GameStart gameStart = game.startGame();
+        startingTeamIndex = gameStart.getStartingTeamIndex();
+        startingDieRolls = gameStart.getRolls();
 
         if (DEBUG) {
             System.out.println("Game start:");
@@ -95,6 +100,16 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         // *********************************************************************
 
         currentTurn = game.getNextTurn();
+    }
+
+    @Override
+    public List<Map<Integer, Integer>> getStartingDieRolls() {
+        return startingDieRolls;
+    }
+
+    @Override
+    public Team getStartingTeam() {
+        return getGame().getTeam(startingTeamIndex);
     }
 
     @Override
@@ -217,6 +232,11 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     @Override
     public boolean isGameOver() {
         return getGame().isGameOver();
+    }
+
+    @Override
+    public Team getNextTeamInTurn() {
+        return getGame().getTeamInTurn();
     }
 
     @Override

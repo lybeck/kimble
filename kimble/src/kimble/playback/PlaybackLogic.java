@@ -67,6 +67,16 @@ public class PlaybackLogic implements KimbleLogicInterface {
     }
 
     @Override
+    public List<Map<Integer, Integer>> getStartingDieRolls() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Team getStartingTeam() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
     public List<Team> getTeams() {
         return teams;
     }
@@ -88,11 +98,14 @@ public class PlaybackLogic implements KimbleLogicInterface {
         getNextMove();
     }
 
+    private Team nextTeam;
+
     private void getNextMove() {
         if (logIterator.hasNext()) {
             LogEntry entry = logIterator.next();
 
             dieRoll = entry.dieRoll;
+            nextTeam = teams.get(entry.teamID);
 
             if (entry.type == EntryType.MOVE) {
                 System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll);
@@ -132,6 +145,11 @@ public class PlaybackLogic implements KimbleLogicInterface {
     @Override
     public int getDieRoll() {
         return dieRoll;
+    }
+
+    @Override
+    public Team getNextTeamInTurn() {
+        return nextTeam;
     }
 
 }
