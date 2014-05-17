@@ -28,6 +28,9 @@ import kimble.graphic.shader.Shader;
 import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
+import org.lwjgl.LWJGLUtil;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -38,7 +41,7 @@ public class KimbleGraphic {
 
     private final KimbleLogicInterface logic;
 
-    private final boolean useHud;
+    private boolean useHud;
     private HUD hud;
     private Team nextTeam;
     private Move selectedMove;
@@ -79,7 +82,25 @@ public class KimbleGraphic {
 
     private void setupLWJGL() {
         Screen.setupNativesLWJGL();
-        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
+
+        if (!LWJGLUtil.isMacOSXEqualsOrBetterThan(3, 2)) {
+            System.err.println("You need an OpenGL version of 3.2 or higher to run this application!");
+            System.exit(1);
+        }
+
+        if (LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX) {
+            System.out.println("Using MacOSx - no support for the HUD.");
+            useHud = false;
+            Screen.setupDisplayMacOsx("Kimble - beta 0.1", 800, 600);
+        } else {
+            Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
+        }
+
+        System.out.println("OS name " + System.getProperty("os.name"));
+        System.out.println("OS version " + System.getProperty("os.version"));
+        System.out.println("LWJGL version " + org.lwjgl.Sys.getVersion());
+        System.out.println("OpenGL version " + glGetString(GL_VERSION));
+
         Screen.setupOpenGL();
         Screen.setResizable(true);
     }
@@ -230,6 +251,7 @@ public class KimbleGraphic {
 
                 die.setDieRoll(logic.getDieRoll());
                 dieHolderDome.bounce();
+
                 turnTimer = 0;
                 nextTurnTimer = 0;
                 executeMove = true;

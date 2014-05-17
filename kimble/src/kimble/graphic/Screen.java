@@ -25,25 +25,26 @@ public class Screen {
 
     public static void setupDisplay(String title, int width, int height) {
         try {
-//            PixelFormat pixelFormat = new PixelFormat();
-//            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
-//                    .withForwardCompatible(false)
-//                    .withDebug(false)
-//                    .withProfileCompatibility(false)
-//                    .withProfileCore(false);
-////                    .withForwardCompatible(true)
-////                    .withProfileCore(true);
-//
-//            Display.setDisplayMode(new DisplayMode(width, height));
-//            Display.setTitle(title);
-//            Display.create(pixelFormat, contextAtrributes);
-
             Display.setDisplayMode(new DisplayMode(width, height));
             Display.setTitle(title);
             Display.create();
         } catch (LWJGLException ex) {
             Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
+        }
+    }
+
+    public static void setupDisplayMacOsx(String title, int width, int height) {
+        try {
+            PixelFormat pixelFormat = new PixelFormat();
+            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
+                    .withProfileCore(true);
+
+            Display.setDisplayMode(new DisplayMode(width, height));
+            Display.setTitle(title);
+            Display.create(pixelFormat, contextAtrributes);
+        } catch (LWJGLException ex) {
+            Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
