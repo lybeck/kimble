@@ -206,7 +206,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             currentTurn = game.getNextTurn();
         }
     }
-
+    
+    @Override
     public int getWinner() {
         return winner;
     }
@@ -278,4 +279,10 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     public Move getSelectedMove() {
         return selectedMove;
     }
+
+    @Override
+    public List<Team> getFinnishedTeams() {
+        return getGame().getFinishedTeams();
+    }
+
 }

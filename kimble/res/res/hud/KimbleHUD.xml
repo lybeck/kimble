@@ -14,6 +14,10 @@
             <alias ref="box bg" tint="#C60B0B"/>
             <alias ref="box" tint="#8B8B8B"/>
         </composed>
+        <composed name="panel-transparent-grey" tint="#64C7E1E7">
+            <alias ref="box bg" tint="#000000"/>
+            <alias ref="box" tint="#8B8B8B"/>
+        </composed>
         <select name="button.background">
             <alias ref="panel-blue" if="pressed" inset="2,2,-2,-2"/>
             <alias ref="panel-red" if="hover"/>
@@ -118,10 +122,11 @@
         <param name="scrollbarsAlwaysVisible"><bool>false</bool></param>
         <param name="autoScrollArea"><int>5</int></param>
         <param name="autoScrollSpeed"><int>10</int></param>
-        <param name="minWidth"><int>400</int></param>
+        <param name="minWidth"><int>450</int></param>
         <param name="minHeight"><int>400</int></param>
         <param name="maxWidth"><int>350</int></param>
         <param name="maxHeight"><int>400</int></param>
+        <param name="background"><image>panel-transparent-grey</image></param>
     </theme>
     <theme name="togglebutton" ref="button"/>
 

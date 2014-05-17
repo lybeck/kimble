@@ -38,4 +38,8 @@ public interface KimbleLogicInterface {
     public String getMoveMessage();
 
     public Move getSelectedMove();
+    
+    public int getWinner();
+    
+    public List<Team> getFinnishedTeams();
 }

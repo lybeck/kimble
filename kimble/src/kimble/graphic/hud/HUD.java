@@ -6,7 +6,6 @@
 package kimble.graphic.hud;
 
 import de.matthiasmann.twl.GUI;
-import de.matthiasmann.twl.Label;
 import de.matthiasmann.twl.ScrollPane;
 import de.matthiasmann.twl.TextArea;
 import de.matthiasmann.twl.ToggleButton;

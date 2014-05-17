@@ -31,6 +31,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
     private List<Team> teams;
     private Board board;
+    private List<Team> teamsFinnished;
+    private int winner;
 
     private final Iterator<LogEntry> logIterator;
 
@@ -42,6 +44,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
     public PlaybackLogic(LogFile log) {
         initTeams(log);
         initBoard(log);
+        initTeamsFinnished(log);
 
         logIterator = log.getEntries().iterator();
         getNextMove();
@@ -61,6 +64,15 @@ public class PlaybackLogic implements KimbleLogicInterface {
         int numberOfPieces = log.getTeams().get(0).numberOfPieces;
         int sideLength = log.getBoard().sideLength;
         board = new Board(numberOfTeams, numberOfPieces, sideLength);
+    }
+
+    private void initTeamsFinnished(LogFile log) {
+        teamsFinnished = new ArrayList<>();
+        for (int i = 0; i < log.getTeamFinnishOrder().size(); i++) {
+            int teamID = log.getTeamFinnishOrder().get(i);
+            teamsFinnished.add(getTeam(teamID));
+        }
+        winner = log.getWinner();
     }
 
     @Override
@@ -167,6 +179,16 @@ public class PlaybackLogic implements KimbleLogicInterface {
     @Override
     public Move getSelectedMove() {
         return move;
+    }
+
+    @Override
+    public int getWinner() {
+        return winner;
+    }
+
+    @Override
+    public List<Team> getFinnishedTeams() {
+        return teamsFinnished;
     }
 
 }

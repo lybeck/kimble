@@ -62,6 +62,7 @@ public class KimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
     private float cameraPositionAngle = 0;
+    private boolean endMessageShown = false;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         this.logic = logic;
@@ -114,8 +115,6 @@ public class KimbleGraphic {
         hud.appendLine("===============================");
         hud.appendLine("Rolling for starting order");
         hud.appendLine("===============================\n");
-
-        hud.validateLayout();
 
         started = false;
     }
@@ -251,6 +250,30 @@ public class KimbleGraphic {
                 turnTimer = 0;
                 nextTurnTimer = 0;
                 executeMove = true;
+            } else {
+                if (!endMessageShown) {
+                    sb = new StringBuilder();
+                    sb.append("\n")
+                            .append("===============================")
+                            .append("\n")
+                            .append("Finnishing order: ");
+
+                    int size = logic.getFinnishedTeams().size();
+                    for (int i = 0; i < size; i++) {
+                        sb.append("[").append(logic.getFinnishedTeams().get(i).getId()).append("]");
+                        if (i < size - 1) {
+                            sb.append(", ");
+                        }
+                    }
+
+                    sb.append("\n")
+                            .append("Winner: ")
+                            .append("[").append(logic.getWinner()).append("]")
+                            .append("\n")
+                            .append("===============================");
+                    hud.appendLine(sb);
+                    endMessageShown = true;
+                }
             }
         }
     }
