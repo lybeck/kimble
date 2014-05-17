@@ -89,7 +89,8 @@ public class HUD extends Widget {
     protected void layout() {
 
         scrollPane.adjustSize();
-        scrollPane.setSize(scrollPane.getWidth(), renderer.getHeight() - 100);
+//        scrollPane.setSize(scrollPane.getWidth(), renderer.getHeight() - 100);
+        scrollPane.setSize(renderer.getWidth() - 40, renderer.getHeight() - 100);
         scrollPane.setPosition(20, 20);
 
         toggleInfoButton.adjustSize();
@@ -129,6 +130,10 @@ public class HUD extends Widget {
 
     public void render() {
         gui.update();
+    }
+
+    public void cleanUp() {
+        gui.destroy();
     }
 
 }

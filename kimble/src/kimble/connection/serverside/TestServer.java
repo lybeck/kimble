@@ -17,7 +17,8 @@ import kimble.connection.serverside.clientloading.LoadClientsInterface;
 public class TestServer {
 
     private static final boolean USE_LOGGER = true;
-    private static final boolean NO_GUI = false;
+    private static final boolean USE_GUI = true;
+    private static final boolean USE_HUD = false;
 
     private static final int NUMBER_OF_PLAYERS = 4;
 
@@ -25,7 +26,7 @@ public class TestServer {
         KimbleServer kimbleServer = null;
         try {
             List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
-            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, NO_GUI);
+            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI, USE_HUD);
             new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
             kimbleServer.run();
         } catch (Exception ex) {

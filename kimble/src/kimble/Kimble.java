@@ -13,30 +13,30 @@ import kimble.logic.player.testai.TestAIRandom;
 public class Kimble {
 
     public static void main(String[] args) {
-        boolean noGui = false;
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("nogui")) {
-                noGui = true;
+        boolean useGui = true;
+        boolean useHud = true;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("nogui")) {
+                useGui = false;
+            }
+            if (args[i].equalsIgnoreCase("nohud")) {
+                useHud = false;
             }
         }
-
-        runSingleGame(noGui, 4);
+        runSingleGame(useGui, useHud, 4);
     }
 
-    private static void runSingleGame(boolean noGui, int numberOfPlayers) {
+    private static void runSingleGame(boolean useGui, boolean useHud, int numberOfPlayers) {
         List<IPlayer> players = new ArrayList<>();
-//        for (int i = 0; i < numberOfPlayers; i++) {
-//            players.add(new TestAIRandom());
-//        }
-//        new ServerGame(noGui, players).start();
 
         players.add(new TestAILasse());
-        for (int i = 0; i < numberOfPlayers-1; i++) {
+        for (int i = 0; i < numberOfPlayers - 1; i++) {
             players.add(new TestAIRandom());
         }
-        new ServerGame(noGui, players).start();
+
+        new ServerGame(useGui, useHud, players).start();
     }
-//
+
 //    private static void runMultipleGames(boolean noGui, int numberOfPlayers) {
 //
 //        int numberOfGames = 2;

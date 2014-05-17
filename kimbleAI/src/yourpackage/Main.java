@@ -27,11 +27,18 @@ public class Main {
     public static final boolean USE_LOGGER = false;
 
     /**
-     * NO_GUI = false, runs the project with the OpenGL gui at ~60 fps.
+     * USE_GUI = true, runs the project with the OpenGL gui at ~60 fps.
      * <p>
-     * NO_GUI = true, runs the project as fast as possible without gui.
+     * USE_GUI = false, runs the project as fast as possible without gui.
      */
-    public static final boolean NO_GUI = false;
+    public static final boolean USE_GUI = true;
+
+    /**
+     * USE_HUD = true, gives a info text area on top of the screen.
+     * <p>
+     * USE_HUD = false, doesn't initialize the HUD
+     */
+    public static final boolean USE_HUD = false;
 
     /**
      * The following parameters defines where the server is running. You are
@@ -59,7 +66,7 @@ public class Main {
      * @throws IOException
      */
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
-        KimbleServer kimbleServer = new KimbleServer(port, USE_LOGGER, NO_GUI);
+        KimbleServer kimbleServer = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
         new KimbleClientLoader(kimbleServer, loadClientsInterface.loadInfoList());
         kimbleServer.run();
     }

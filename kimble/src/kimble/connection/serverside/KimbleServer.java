@@ -31,21 +31,23 @@ public class KimbleServer implements Runnable {
 
     private final ServerSocket serverSocket;
     private final List<IPlayer> clients;
-    private final boolean noGui;
+    private final boolean useGui;
+    private final boolean useHud;
 
-    public KimbleServer(int port, boolean noGui) throws IOException {
-        this(port, 4, false, noGui);
+    public KimbleServer(int port, boolean useGui, boolean useHud) throws IOException {
+        this(port, 4, false, useGui, useHud);
     }
 
-    public KimbleServer(int port, boolean useLogger, boolean noGui) throws IOException {
-        this(port, 4, useLogger, noGui);
+    public KimbleServer(int port, boolean useLogger, boolean useGui, boolean useHud) throws IOException {
+        this(port, 4, useLogger, useGui, useHud);
     }
 
-    KimbleServer(int port, int maxPlayers, boolean useLogger, boolean noGui) throws IOException {
+    KimbleServer(int port, int maxPlayers, boolean useLogger, boolean useGui, boolean useHud) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.clients = new ArrayList<>();
         this.maxPlayers = maxPlayers;
-        this.noGui = noGui;
+        this.useGui = useGui;
+        this.useHud = useHud;
 
         if (useLogger) {
             KimbleGameStateLogger.init();
@@ -61,7 +63,7 @@ public class KimbleServer implements Runnable {
         }
 
         try {
-            ServerGame serverGame = new ServerGame(noGui, clients);
+            ServerGame serverGame = new ServerGame(useGui, useHud, clients);
             for (IPlayer iPlayer : clients) {
                 KimbleClientAI client = (KimbleClientAI) iPlayer;
                 client.send(new GameInitMessage(serverGame.getLogic().getGame().getBoard(), maxPlayers));
