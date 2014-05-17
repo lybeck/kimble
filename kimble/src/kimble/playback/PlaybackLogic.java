@@ -16,6 +16,7 @@ import kimble.connection.logger.LogEntry;
 import kimble.connection.logger.LogEntry.EntryType;
 import kimble.connection.logger.LogFile;
 import kimble.connection.logger.entries.MoveEntry;
+import kimble.connection.logger.entries.SkipEntry;
 import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
@@ -35,6 +36,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
     private int dieRoll;
 
+    private String moveMessage;
     private Move move;
 
     public PlaybackLogic(LogFile log) {
@@ -123,6 +125,11 @@ public class PlaybackLogic implements KimbleLogicInterface {
             } else if (entry.type == EntryType.SKIP) {
                 System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll
                         + " [Can't move]");
+                if (((SkipEntry) entry.getEntry()).optional) {
+                    moveMessage = "pass";
+                } else {
+                    moveMessage = "can't move";
+                }
                 move = null;
             }
         } else {
@@ -150,6 +157,16 @@ public class PlaybackLogic implements KimbleLogicInterface {
     @Override
     public Team getNextTeamInTurn() {
         return nextTeam;
+    }
+
+    @Override
+    public String getMoveMessage() {
+        return moveMessage;
+    }
+
+    @Override
+    public Move getSelectedMove() {
+        return move;
     }
 
 }

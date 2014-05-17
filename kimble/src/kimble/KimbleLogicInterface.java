@@ -7,6 +7,7 @@ package kimble;
 
 import java.util.List;
 import java.util.Map;
+import kimble.logic.Move;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
 
@@ -33,4 +34,8 @@ public interface KimbleLogicInterface {
     public Team getNextTeamInTurn();
 
     public int getDieRoll();
+    
+    public String getMoveMessage();
+
+    public Move getSelectedMove();
 }

@@ -7,7 +7,9 @@ package kimble;
 
 import kimble.playback.PlaybackProfile;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
 import kimble.graphic.Camera;
 import kimble.graphic.ExtraInput;
@@ -23,6 +25,7 @@ import kimble.graphic.hud.HUD;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
+import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector3f;
@@ -48,6 +51,12 @@ public class KimbleGraphic {
     private Shader shader;
 
     private boolean running;
+    private boolean started;
+
+    private List<Map<Integer, Integer>> startingDieRolls;
+    private Iterator<Map<Integer, Integer>> startingRollsIterator;
+    private Map<Integer, Integer> startingRollMap;
+    private Iterator<Integer> startingRollMapKeyIterator;
 
     private boolean executeMove = false;
     private float turnTimer = 0;
@@ -97,9 +106,18 @@ public class KimbleGraphic {
 
         dieHolderDome = new DieHolderDomeGraphic();
 
-        hud.getDieRollsLabel().setText("[teamID]=[die roll] " + logic.getStartingDieRolls().toString());
-        hud.getStartGameLabel().setText(logic.getStartingTeam().getName() + " [ID = " + logic.getStartingTeam().getId()
-                + "] starts the game.");
+        startingDieRolls = logic.getStartingDieRolls();
+        startingRollsIterator = startingDieRolls.iterator();
+        startingRollMap = startingRollsIterator.next();
+        startingRollMapKeyIterator = startingRollMap.keySet().iterator();
+
+        hud.appendLine("===============================");
+        hud.appendLine("Rolling for starting order");
+        hud.appendLine("===============================\n");
+
+        hud.validateLayout();
+
+        started = false;
     }
 
     private void setupHUD() {
@@ -159,26 +177,10 @@ public class KimbleGraphic {
 
         turnTimer += dt;
         if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-
-            if (executeMove) {
-                logic.executeMove();
-                executeMove = false;
-            }
-
-            nextTurnTimer += dt;
-
-            if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-                if (!logic.isGameOver()) {
-
-                    Team nextTeam = logic.getNextTeamInTurn();
-                    hud.appendTurnInfo(nextTeam.getName(), nextTeam.getId(), logic.getDieRoll());
-
-                    die.setDieRoll(logic.getDieRoll());
-                    dieHolderDome.bounce();
-                    turnTimer = 0;
-                    nextTurnTimer = 0;
-                    executeMove = true;
-                }
+            if (started) {
+                updateExecuteMove(dt);
+            } else {
+                updateStartingDieRoll(dt);
             }
         }
 
@@ -195,12 +197,91 @@ public class KimbleGraphic {
             p.update(dt);
         }
 
-        updateHud(dt);
+        hud.update(dt);
     }
 
-    private void updateHud(float dt) {
+    private Team nextTeam;
+    private Move selectedMove;
 
-        hud.update(dt);
+    private void updateExecuteMove(float dt) {
+        StringBuilder sb;
+
+        if (executeMove) {
+            logic.executeMove();
+            executeMove = false;
+
+            selectedMove = logic.getSelectedMove();
+
+            // append the move info based on the move selection.
+            sb = new StringBuilder();
+            if (selectedMove == null) {
+                sb.append(": ")
+                        .append(logic.getMoveMessage());
+            } else {
+                sb.append(": Piece [")
+                        .append(selectedMove.getPiece().getId())
+                        .append("] from [")
+                        .append(selectedMove.getOldPositionID())
+                        .append("] to [")
+                        .append(selectedMove.getDestination().getID())
+                        .append("]");
+            }
+            sb.append(" (")
+                    .append(nextTeam.getName())
+                    .append(")\n");
+            hud.appendLine(sb);
+        }
+
+        nextTurnTimer += dt;
+        if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+
+            if (!logic.isGameOver()) {
+                nextTeam = logic.getNextTeamInTurn();
+
+                // Append a new die roll to the info-stream in gui
+                sb = new StringBuilder();
+                sb.append("[ID = ")
+                        .append(nextTeam.getId())
+                        .append("] rolled ")
+                        .append(logic.getDieRoll());
+                hud.appendLine(sb);
+
+                die.setDieRoll(logic.getDieRoll());
+                dieHolderDome.bounce();
+                turnTimer = 0;
+                nextTurnTimer = 0;
+                executeMove = true;
+            }
+        }
+    }
+
+    private void updateStartingDieRoll(float dt) {
+        nextTurnTimer += dt;
+        if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+            nextTurnTimer = 0;
+
+            if (startingRollMapKeyIterator.hasNext()) {
+                int teamID = startingRollMapKeyIterator.next();
+                int dieRoll = startingRollMap.get(teamID);
+
+                hud.appendLine(new StringBuilder().append("[ID = ").append(teamID).append("] rolled ").append(dieRoll).append(" (").append(logic.getTeam(teamID).getName()).append(")\n"));
+
+                die.setDieRoll(dieRoll);
+                dieHolderDome.bounce();
+            } else {
+                if (startingRollsIterator.hasNext()) {
+                    startingRollMap = startingRollsIterator.next();
+                    startingRollMapKeyIterator = startingRollMap.keySet().iterator();
+                    hud.appendLine("");
+                } else {
+                    Team startingTeam = logic.getStartingTeam();
+                    hud.appendLine(new StringBuilder().append("\n[ID = ").append(startingTeam.getId()).append("] starts the game (").append(startingTeam.getName()).append("\n"));
+                    hud.appendLine("===============================");
+                    hud.appendLine("");
+                    started = true;
+                }
+            }
+        }
     }
 
     private void render() {

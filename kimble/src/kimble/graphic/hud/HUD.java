@@ -31,10 +31,6 @@ public class HUD extends Widget {
     private ThemeManager themeManager;
     private GUI gui;
 
-    private Label dieRollsLabel;
-    private Label startGameLabel;
-    private Label nextTeamInTurnLabel;
-
     private SimpleTextAreaModel model;
     private TextArea textArea;
     private ScrollPane scrollPane;
@@ -61,14 +57,6 @@ public class HUD extends Widget {
     }
 
     private void setup() {
-        dieRollsLabel = new Label("default value startDieRolls");
-        addLabel(dieRollsLabel);
-
-        startGameLabel = new Label("default value startTeam");
-        addLabel(startGameLabel);
-
-        nextTeamInTurnLabel = new Label("default value nextTeamInTurn");
-        addLabel(nextTeamInTurnLabel);
 
         sb = new StringBuilder();
         model = new SimpleTextAreaModel();
@@ -86,7 +74,7 @@ public class HUD extends Widget {
             @Override
             public void run() {
                 showInfo = ((ToggleButtonModel) toggleInfoButton.getModel()).isSelected();
-                if(showInfo){
+                if (showInfo) {
                     toggleInfoButton.setText("Hide Turn Info");
                 } else {
                     toggleInfoButton.setText("Show Turn Info");
@@ -98,25 +86,12 @@ public class HUD extends Widget {
         this.add(toggleInfoButton);
     }
 
-    private void addLabel(Label label) {
-        label.setTheme("label");
-        this.add(label);
-    }
-
     @Override
     protected void layout() {
-        dieRollsLabel.adjustSize();
-        dieRollsLabel.setPosition(20, 20);
-
-        startGameLabel.adjustSize();
-        startGameLabel.setPosition(20, 40);
-
-        nextTeamInTurnLabel.adjustSize();
-        nextTeamInTurnLabel.setPosition(20, 60);
 
         scrollPane.adjustSize();
-        scrollPane.setPosition(20, 80);
-        // scrollPane.setPosition(Display.getWidth() - scrollPane.getWidth() - 20, 20);
+        scrollPane.setSize(scrollPane.getWidth(), renderer.getHeight() - 100);
+        scrollPane.setPosition(20, 20);
 
         toggleInfoButton.adjustSize();
         toggleInfoButton.setPosition(20, Display.getHeight() - toggleInfoButton.getHeight() - 20);
@@ -129,10 +104,23 @@ public class HUD extends Widget {
     public void update(float dt) {
     }
 
-    public void appendTurnInfo(String teamName, int teamID, int dieRoll) {
-        sb.append("[ID = ").append(teamID).append("] roll = ").append(dieRoll).append(" (").append(teamName).append(")").append("\n");
-        model.setText(sb.toString());
+    /**
+     * Remember the 'newline' feed character!
+     *
+     * @param sb
+     */
+    public void appendLine(StringBuilder sb) {
+        this.sb.append(sb);
+        updateInfoTextArea();
+    }
 
+    public void appendLine(String line) {
+        sb.append(line).append("\n");
+        updateInfoTextArea();
+    }
+
+    private void updateInfoTextArea() {
+        model.setText(sb.toString());
         boolean isAtEnd = scrollPane.getMaxScrollPosY() == scrollPane.getScrollPositionY();
         if (isAtEnd) {
             scrollPane.validateLayout();
@@ -142,18 +130,6 @@ public class HUD extends Widget {
 
     public void render() {
         gui.update();
-    }
-
-    public Label getDieRollsLabel() {
-        return dieRollsLabel;
-    }
-
-    public Label getStartGameLabel() {
-        return startGameLabel;
-    }
-
-    public Label getNextTeamInTurnLabel() {
-        return nextTeamInTurnLabel;
     }
 
 }

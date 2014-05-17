@@ -118,7 +118,7 @@
         <param name="scrollbarsAlwaysVisible"><bool>false</bool></param>
         <param name="autoScrollArea"><int>5</int></param>
         <param name="autoScrollSpeed"><int>10</int></param>
-        <param name="minWidth"><int>350</int></param>
+        <param name="minWidth"><int>400</int></param>
         <param name="minHeight"><int>400</int></param>
         <param name="maxWidth"><int>350</int></param>
         <param name="maxHeight"><int>400</int></param>

@@ -7,7 +7,6 @@ package kimble;
 
 import kimble.playback.PlaybackProfile;
 import java.util.List;
-import kimble.graphic.Screen;
 import kimble.logic.IPlayer;
 
 /**
@@ -38,7 +37,7 @@ public class ServerGame {
                 logic.executeMove();
             }
         } else {
-            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST);
+            graphic = new KimbleGraphic(logic, PlaybackProfile.SLOW);
             graphic.start();
         }
     }

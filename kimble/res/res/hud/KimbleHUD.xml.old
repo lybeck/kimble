@@ -123,6 +123,7 @@
         <param name="maxWidth"><int>350</int></param>
         <param name="maxHeight"><int>400</int></param>
     </theme>
+    <theme name="togglebutton" ref="button"/>
 
     <theme name="hud" ref="-defaults">
         <theme name="label" ref="label">
@@ -135,6 +136,6 @@
             </theme>
         </theme>
         <theme name="button" ref="button"/>
-        <theme name="togglebutton" ref="button"/>
+        <theme name="togglebutton" ref="togglebutton"/>
     </theme>
 </themes>

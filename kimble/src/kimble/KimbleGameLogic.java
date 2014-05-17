@@ -16,6 +16,7 @@ import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
 import kimble.logic.IPlayer;
+import kimble.logic.Move;
 import kimble.logic.Team;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
@@ -39,6 +40,9 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private Turn currentTurn;
     private int startingTeamIndex;
     private List<Map<Integer, Integer>> startingDieRolls;
+
+    private String moveMessage;
+    private Move selectedMove;
 
     public KimbleGameLogic(List<IPlayer> players) {
         this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
@@ -137,6 +141,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                 KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), false, "not possible");
             }
             // *********************************************************************
+            moveMessage = "not possible";
+            selectedMove = null;
             game.executeNoMove();
         } else {
             IPlayer player = players.get(game.getTeamInTurn().getId());
@@ -151,6 +157,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                         KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), currentTurn.getMove(selection));
                     }
                     // *********************************************************************
+                    moveMessage = "moving";
+                    selectedMove = currentTurn.getMove(selection);
                     game.executeMove(selection);
                 } else {
 
@@ -159,6 +167,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                         KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), true, "pass");
                     }
                     // *********************************************************************
+                    moveMessage = "pass";
+                    selectedMove = null;
                     game.executeNoMove();
                 }
             } else {
@@ -257,5 +267,15 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     @Override
     public Team getTeam(int teamID) {
         return getGame().getTeam(teamID);
+    }
+
+    @Override
+    public String getMoveMessage() {
+        return moveMessage;
+    }
+
+    @Override
+    public Move getSelectedMove() {
+        return selectedMove;
     }
 }

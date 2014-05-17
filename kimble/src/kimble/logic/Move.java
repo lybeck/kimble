@@ -12,6 +12,7 @@ import kimble.logic.exception.IllegalMoveException;
 public class Move {
 
     private final Piece piece;
+    private final int oldPositionID;
     private final Square destination;
     private final boolean optional;
     private final transient IllegalMoveException illegalMoveException;
@@ -20,8 +21,10 @@ public class Move {
         this.piece = piece;
         if (piece.getPosition() != null) {
             this.optional = piece.getPosition().isGoalSquare();
+            this.oldPositionID = piece.getPosition().getID();
         } else {
             this.optional = false;
+            this.oldPositionID = -1;
         }
         IllegalMoveException exc = null;
         Square dest = null;
@@ -74,6 +77,7 @@ public class Move {
         this.destination = destSquare;
         this.optional = optional;
         this.illegalMoveException = null;
+        this.oldPositionID = piece.getPosition().getID();
     }
 
     public void execute() throws IllegalMoveException {
@@ -93,6 +97,10 @@ public class Move {
 
     public Piece getPiece() {
         return piece;
+    }
+
+    public int getOldPositionID() {
+        return oldPositionID;
     }
 
     public Square getDestination() {
