@@ -77,7 +77,11 @@ public class Move {
         this.destination = destSquare;
         this.optional = optional;
         this.illegalMoveException = null;
-        this.oldPositionID = piece.getPosition().getID();
+        if (piece.getPosition() != null) {
+            this.oldPositionID = piece.getPosition().getID();
+        } else {
+            this.oldPositionID = -1;
+        }
     }
 
     public void execute() throws IllegalMoveException {

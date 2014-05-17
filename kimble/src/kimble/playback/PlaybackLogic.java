@@ -29,6 +29,8 @@ import kimble.logic.exception.IllegalMoveException;
  */
 public class PlaybackLogic implements KimbleLogicInterface {
 
+    private List<Map<Integer, Integer>> startingDieRolls;
+    private int startingTeam;
     private List<Team> teams;
     private Board board;
     private List<Team> teamsFinnished;
@@ -43,6 +45,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
     public PlaybackLogic(LogFile log) {
         initTeams(log);
+        initStartingDieRolls(log);
         initBoard(log);
         initTeamsFinnished(log);
 
@@ -50,11 +53,17 @@ public class PlaybackLogic implements KimbleLogicInterface {
         getNextMove();
     }
 
+    private void initStartingDieRolls(LogFile log) {
+        startingDieRolls = log.getStartRolls();
+        startingTeam = log.getStartingTeam();
+    }
+
     private void initTeams(LogFile log) {
         teams = new ArrayList<>();
         for (int i = 0; i < log.getTeams().size(); i++) {
             int teamID = log.getTeams().get(i).teamID;
             Team team = new Team(teamID, log.getTeams().get(i).numberOfPieces);
+            team.setName(log.getTeams().get(i).teamName);
             teams.add(team);
         }
     }
@@ -82,12 +91,12 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
     @Override
     public List<Map<Integer, Integer>> getStartingDieRolls() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return startingDieRolls;
     }
 
     @Override
     public Team getStartingTeam() {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        return getTeam(startingTeam);
     }
 
     @Override

@@ -287,7 +287,11 @@ public class KimbleGraphic {
                 int teamID = startingRollMapKeyIterator.next();
                 int dieRoll = startingRollMap.get(teamID);
 
-                hud.appendLine(new StringBuilder().append("[ID = ").append(teamID).append("] rolled ").append(dieRoll).append(" (").append(logic.getTeam(teamID).getName()).append(")\n"));
+                hud.appendLine(new StringBuilder().append("[ID = ")
+                        .append(teamID).append("] rolled ")
+                        .append(dieRoll).append(" (")
+                        .append(logic.getTeam(teamID).getName())
+                        .append(")\n"));
 
                 die.setDieRoll(dieRoll);
                 dieHolderDome.bounce();
@@ -298,7 +302,11 @@ public class KimbleGraphic {
                     hud.appendLine("");
                 } else {
                     Team startingTeam = logic.getStartingTeam();
-                    hud.appendLine(new StringBuilder().append("\n[ID = ").append(startingTeam.getId()).append("] starts the game (").append(startingTeam.getName()).append("\n"));
+                    hud.appendLine(new StringBuilder().append("\n[ID = ")
+                            .append(startingTeam.getId())
+                            .append("] starts the game (")
+                            .append(startingTeam.getName())
+                            .append(")\n"));
                     hud.appendLine("===============================");
                     hud.appendLine("");
                     started = true;
