@@ -1,5 +1,7 @@
 package kimble;
 
+import kimble.logic.KimbleLogicInterface;
+import kimble.graphic.AbstractGraphic;
 import kimble.playback.PlaybackProfile;
 import java.util.ArrayList;
 import java.util.Iterator;
