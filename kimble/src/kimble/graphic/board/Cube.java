@@ -5,6 +5,7 @@
  */
 package kimble.graphic.board;
 
+import kimble.graphic.camera.Camera;
 import kimble.graphic.Model;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
@@ -34,9 +35,9 @@ public class Cube extends Model {
     }
 
     @Override
-    public void render(Shader shader) {
+    public void render(Shader shader, Camera camera) {
         TextureManager.getTexture("temp_tex").bind();
-        super.render(shader);
+        super.render(shader,camera);
         TextureManager.getTexture("temp_tex").unbind();
     }
 }

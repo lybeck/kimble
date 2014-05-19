@@ -73,9 +73,9 @@ public class TextureManager {
         return textures.get(key);
     }
 
-    public static void cleanUp() {
+    public static void dispose() {
         for (String key : textures.keySet()) {
-            textures.get(key).cleanUp();
+            textures.get(key).dispose();
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 package kimble.graphic;
 
+import kimble.graphic.camera.Camera3D;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -12,14 +13,14 @@ import org.lwjgl.input.Mouse;
  *
  * @author Christoffer
  */
-public class Input {
+public class Input3D {
 
-    private Camera camera;
+    private Camera3D camera;
 
     private float mouseSpeed;
     private float moveSpeed;
 
-    public Input(Camera camera) {
+    public Input3D(Camera3D camera) {
         this.camera = camera;
         this.mouseSpeed = 0.5f;
         this.moveSpeed = 1;
@@ -67,11 +68,11 @@ public class Input {
         }
     }
 
-    public void setCamera(Camera camera) {
+    public void setCamera(Camera3D camera) {
         this.camera = camera;
     }
 
-    public Camera getCamera() {
+    public Camera3D getCamera() {
         return camera;
     }
 

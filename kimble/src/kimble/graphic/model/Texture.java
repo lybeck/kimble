@@ -82,7 +82,7 @@ public class Texture {
         return height;
     }
 
-    public void cleanUp() {
+    public void dispose() {
         unbind();
         glDeleteTextures(id);
     }

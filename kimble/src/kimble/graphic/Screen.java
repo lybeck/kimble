@@ -84,7 +84,7 @@ public class Screen {
         return (float) Display.getWidth() / (float) Display.getHeight();
     }
 
-    public static void cleanUp() {
+    public static void dispose() {
         Display.destroy();
     }
 
@@ -97,12 +97,21 @@ public class Screen {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        glEnable(GL_TEXTURE_2D);
-
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
+    }
+
+    public static void setupRendering3D() {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+//        glDepthMask(true);
+    }
+
+    public static void setupRendering2D() {
+        glDisable(GL_DEPTH_TEST);
+//        glDepthMask(false);
     }
 
     public static void updateViewport() {

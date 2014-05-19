@@ -132,7 +132,7 @@ public class HUD extends Widget {
         gui.update();
     }
 
-    public void cleanUp() {
+    public void dispose() {
         gui.destroy();
     }
 

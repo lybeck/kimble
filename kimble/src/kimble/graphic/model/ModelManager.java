@@ -46,9 +46,9 @@ public class ModelManager {
         return models.get(name);
     }
 
-    public static void cleanUp() {
+    public static void dispose() {
         for (String key : models.keySet()) {
-            models.get(key).cleanUp();
+            models.get(key).dispose();
         }
     }
 

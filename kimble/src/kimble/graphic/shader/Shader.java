@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.shader;
 
 import java.nio.FloatBuffer;
 import java.util.Scanner;
-import kimble.graphic.Camera;
+import kimble.graphic.camera.Camera;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -18,6 +13,8 @@ import static org.lwjgl.opengl.GL20.*;
 public class Shader {
 
     private final static String SHADER_DIR = "/res/shaders/";
+    private final int vertexShaderID;
+    private final int fragmentShaderID;
     private final int programID;
 
     private int projectionMatrixLocation;
@@ -25,16 +22,13 @@ public class Shader {
     private int modelMatrixLocation;
 
     public Shader(String vertFile, String fragFile) {
-        int vertexShaderID = load(SHADER_DIR + vertFile, GL_VERTEX_SHADER);
-        int fragmentShaderID = load(SHADER_DIR + fragFile, GL_FRAGMENT_SHADER);
+        vertexShaderID = load(SHADER_DIR + vertFile, GL_VERTEX_SHADER);
+        fragmentShaderID = load(SHADER_DIR + fragFile, GL_FRAGMENT_SHADER);
 
         programID = glCreateProgram();
 
         glAttachShader(programID, vertexShaderID);
         glAttachShader(programID, fragmentShaderID);
-
-        glDeleteShader(vertexShaderID);
-        glDeleteShader(fragmentShaderID);
 
         glBindAttribLocation(programID, 0, "in_Position");
         glBindAttribLocation(programID, 1, "in_Normal");
@@ -79,6 +73,8 @@ public class Shader {
         //if the compiling was unsuccessful, throw an exception
         if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Couldn't compile shader: " + filename);
+            String infoLog = glGetShaderInfoLog(shaderID, 1024);
+            System.err.println(infoLog);
             System.exit(1);
         }
 
@@ -89,9 +85,9 @@ public class Shader {
         glUseProgram(programID);
     }
 
-    public void render(FloatBuffer modelMatrixBuffer, Material material) {
-        glUniformMatrix4(getProjectionMatrixLocation(), false, Camera.getProjectionMatrixBuffer());
-        glUniformMatrix4(getViewMatrixLocation(), false, Camera.getViewMatrixBuffer());
+    public void render(Camera camera, FloatBuffer modelMatrixBuffer, Material material) {
+        glUniformMatrix4(getProjectionMatrixLocation(), false, camera.getProjectionMatrixBuffer());
+        glUniformMatrix4(getViewMatrixLocation(), false, camera.getViewMatrixBuffer());
         glUniformMatrix4(getModelMatrixLocation(), false, modelMatrixBuffer);
 
         material.uploadUniforms();
@@ -101,8 +97,14 @@ public class Shader {
         glUseProgram(0);
     }
 
-    public void cleanUp() {
+    public void dispose() {
         glUseProgram(0);
+
+        glDetachShader(programID, vertexShaderID);
+        glDetachShader(programID, fragmentShaderID);
+
+        glDeleteShader(vertexShaderID);
+        glDeleteShader(fragmentShaderID);
         glDeleteProgram(programID);
     }
 

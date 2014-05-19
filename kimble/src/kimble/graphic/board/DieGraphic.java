@@ -8,6 +8,7 @@ package kimble.graphic.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import kimble.graphic.camera.Camera;
 import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.shader.Shader;
@@ -89,9 +90,9 @@ public class DieGraphic extends Model {
     }
 
     @Override
-    public void render(Shader shader) {
+    public void render(Shader shader, Camera camera) {
         TextureManager.getTexture("temp_tex").bind();
-        super.render(shader);
+        super.render(shader,camera);
         TextureManager.getTexture("temp_tex").unbind();
     }
 

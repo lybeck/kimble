@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import kimble.graphic.camera.Camera;
 import kimble.graphic.board.meshes.BoardMesh;
-import kimble.logic.Game;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
@@ -207,30 +207,30 @@ public class BoardGraphic extends Model {
     }
 
     @Override
-    public void render(Shader shader) {
-        super.render(shader);
+    public void render(Shader shader, Camera camera) {
+        super.render(shader, camera);
         for (int squareIndex : squares.keySet()) {
-            squares.get(squareIndex).render(shader);
+            squares.get(squareIndex).render(shader, camera);
         }
         for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).render(shader);
+            goalSquares.get(squareIndex).render(shader, camera);
         }
         for (int squareIndex : homeSquares.keySet()) {
-            homeSquares.get(squareIndex).render(shader);
+            homeSquares.get(squareIndex).render(shader, camera);
         }
     }
 
     @Override
-    public void cleanUp() {
-        super.cleanUp();
+    public void dispose() {
+        super.dispose();
         for (int squareIndex : squares.keySet()) {
-            squares.get(squareIndex).cleanUp();
+            squares.get(squareIndex).dispose();
         }
         for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).cleanUp();
+            goalSquares.get(squareIndex).dispose();
         }
         for (int squareIndex : homeSquares.keySet()) {
-            homeSquares.get(squareIndex).cleanUp();
+            homeSquares.get(squareIndex).dispose();
         }
     }
 

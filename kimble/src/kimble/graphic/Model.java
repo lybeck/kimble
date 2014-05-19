@@ -5,6 +5,7 @@
  */
 package kimble.graphic;
 
+import kimble.graphic.camera.Camera;
 import kimble.graphic.shader.Shader;
 import java.nio.FloatBuffer;
 import kimble.graphic.model.Mesh;
@@ -69,20 +70,20 @@ public abstract class Model {
         modelMatrixBuffer.flip();
     }
 
-    public void render(Shader shader) {
-        this.render(shader, material);
+    public void render(Shader shader, Camera camera) {
+        this.render(shader, camera, material);
     }
 
-    public void render(Shader shader, Material material) {
-        shader.render(getModelMatrixBuffer(), material);
+    public void render(Shader shader, Camera camera, Material material) {
+        shader.render(camera, getModelMatrixBuffer(), material);
         if (mesh != null) {
             mesh.render();
         }
     }
 
-    public void cleanUp() {
+    public void dispose() {
         if (mesh != null) {
-            mesh.cleanUp();
+            mesh.dispose();
         }
     }
 

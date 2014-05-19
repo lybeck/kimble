@@ -105,7 +105,7 @@ public abstract class Mesh {
         glBindVertexArray(0);
     }
 
-    public void cleanUp() {
+    public void dispose() {
         glBindVertexArray(vertexArrayObjectID);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
