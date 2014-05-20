@@ -42,7 +42,7 @@ public class TextureManager {
         }
     }
 
-    private static void load(String key, InputStream inputStream) {
+    public static void load(String key, InputStream inputStream) {
 
         ByteBuffer buffer = null;
         int textureWidth = 0;

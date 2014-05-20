@@ -92,7 +92,7 @@ public class DieGraphic extends Model {
     @Override
     public void render(Shader shader, Camera camera) {
         TextureManager.getTexture("temp_tex").bind();
-        super.render(shader,camera);
+        super.render(shader, camera);
         TextureManager.getTexture("temp_tex").unbind();
     }
 

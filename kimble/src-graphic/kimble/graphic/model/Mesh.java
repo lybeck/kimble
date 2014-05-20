@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.model;
 
 import java.nio.FloatBuffer;
@@ -121,4 +116,21 @@ public abstract class Mesh {
         glBindVertexArray(0);
         glDeleteVertexArrays(vertexArrayObjectID);
     }
+
+    public int getIndexBufferID() {
+        return indexBufferID;
+    }
+
+    public int getVertexArrayObjectID() {
+        return vertexArrayObjectID;
+    }
+
+    public int getVertexBufferID() {
+        return vertexBufferID;
+    }
+
+    public int getIndexCount() {
+        return indexCount;
+    }
+
 }

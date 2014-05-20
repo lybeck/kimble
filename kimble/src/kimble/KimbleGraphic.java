@@ -19,6 +19,7 @@ import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.HUD;
+import kimble.graphic.hud.Hud2D;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
@@ -35,6 +36,7 @@ public class KimbleGraphic extends AbstractGraphic {
 
     private final KimbleLogicInterface logic;
 
+    private Hud2D hud2d;
     private HUD hud;
     private Team nextTeam;
     private Move selectedMove;
@@ -112,6 +114,8 @@ public class KimbleGraphic extends AbstractGraphic {
             hud.appendLine("===============================\n");
             started = false;
         }
+
+        hud2d = new Hud2D();
     }
 
     @Override
@@ -165,6 +169,8 @@ public class KimbleGraphic extends AbstractGraphic {
         if (useHud) {
             hud.update(dt);
         }
+
+        hud2d.update(dt);
     }
 
     private void updateExecuteMove(float dt) {
@@ -263,6 +269,8 @@ public class KimbleGraphic extends AbstractGraphic {
         if (useHud) {
             hud.render();
         }
+
+        hud2d.render(shader);
     }
 
     @Override

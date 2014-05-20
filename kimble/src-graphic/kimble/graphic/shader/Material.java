@@ -105,6 +105,13 @@ public class Material {
         return textureModulator;
     }
 
+    /**
+     * Used to mix the color and the texture inside the shader.
+     * <p>
+     * Defaults to zero
+     *
+     * @param textureModulator
+     */
     public void setTextureModulator(float textureModulator) {
         this.textureModulator = textureModulator;
     }

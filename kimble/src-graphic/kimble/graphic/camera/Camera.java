@@ -40,6 +40,8 @@ public abstract class Camera {
 
         this.projectionMatrixBuffer = BufferUtils.createFloatBuffer(16);
         this.viewMatrixBuffer = BufferUtils.createFloatBuffer(16);
+
+        setupProjectionMatrix();
     }
 
     public abstract void setupProjectionMatrix();
