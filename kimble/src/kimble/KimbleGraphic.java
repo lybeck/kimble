@@ -141,6 +141,7 @@ public class KimbleGraphic extends AbstractGraphic {
                 hud.setViewport(0, 0, Screen.getWidth(), Screen.getHeight());
             }
             camera.setupProjectionMatrix();
+            hud2d.updateViewport();
 //            camera.updateProjectionMatrixAttributes();
         }
 
