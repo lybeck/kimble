@@ -11,12 +11,10 @@ public class Glyph extends Model {
 
     private final float width;
     private final float height;
-    private final float offsetY;
 
-    public Glyph(float textureX, float textureY, float textureWidth, float textureHeight, float width, float height, float offsetY, Vector4f color) {
+    public Glyph(float textureX, float textureY, float textureWidth, float textureHeight, float width, float height, Vector4f color) {
         this.width = width;
         this.height = height;
-        this.offsetY = offsetY;
         this.getMaterial().setDiffuse(new Vector4f(1, 1, 1, 1));
         this.getMaterial().setTextureModulator(1.0f);
         this.getMaterial().setAmbient(new Vector4f(1, 1, 1, 1));
@@ -30,10 +28,6 @@ public class Glyph extends Model {
 
     public float getHeight() {
         return height;
-    }
-
-    public float getOffsetY() {
-        return offsetY;
     }
 
 }

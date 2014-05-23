@@ -114,7 +114,7 @@ public class Shader {
 
     public int getProjectionMatrixLocation() {
         return projectionMatrixLocation;
-    }
+}
 
     public int getViewMatrixLocation() {
         return viewMatrixLocation;

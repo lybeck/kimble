@@ -6,7 +6,6 @@
 package kimble.graphic;
 
 import kimble.graphic.camera.Camera2D;
-import kimble.graphic.camera.Camera3D;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 

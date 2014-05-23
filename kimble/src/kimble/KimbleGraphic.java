@@ -271,7 +271,7 @@ public class KimbleGraphic extends AbstractGraphic {
             hud.render();
         }
 
-        hud2d.render(shader);
+        hud2d.render(shader, camera);
     }
 
     @Override
