@@ -42,6 +42,17 @@ public class BitmapFont {
         return glyphs;
     }
 
+    public int calculateWidth(String line) {
+        float totalWidth = 0;
+
+        for (int i = 0; i < line.length(); i++) {
+            totalWidth += glyphs.get(line.charAt(i)).getWidth();
+        }
+        totalWidth += glyphs.get(' ').getWidth();
+
+        return (int) Math.round(totalWidth);
+    }
+
     public int getVerticalSpacing() {
         return verticalSpacing;
     }

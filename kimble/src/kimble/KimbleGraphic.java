@@ -237,16 +237,24 @@ public class KimbleGraphic extends AbstractGraphic {
                         hud.appendLine("");
                     }
                 } else {
-                    if (useHud) {
-                        Team startingTeam = logic.getStartingTeam();
-                        hud.appendLine(new StringBuilder().append("\n[ID = ")
-                                .append(startingTeam.getId())
-                                .append("] starts the game (")
-                                .append(startingTeam.getName())
-                                .append(")\n"));
-                        hud.appendLine("===============================");
-                        hud.appendLine("");
-                    }
+
+                    Team startingTeam = logic.getStartingTeam();
+                    hud2d.setStartingPlayer(new StringBuilder().append("\n[ID = ")
+                            .append(startingTeam.getId())
+                            .append("] starts the game (")
+                            .append(startingTeam.getName()).append(")").toString());
+
+//                    if (useHud) {
+//
+//                        Team startingTeam = logic.getStartingTeam();
+//                        hud.appendLine(new StringBuilder().append("\n[ID = ")
+//                                .append(startingTeam.getId())
+//                                .append("] starts the game (")
+//                                .append(startingTeam.getName())
+//                                .append(")\n"));
+//                        hud.appendLine("===============================");
+//                        hud.appendLine("");
+//                    }
                     started = true;
                 }
             }
@@ -271,7 +279,7 @@ public class KimbleGraphic extends AbstractGraphic {
             hud.render();
         }
 
-        hud2d.render(shader, camera);
+        hud2d.render(shader);
     }
 
     @Override
