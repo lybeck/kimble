@@ -54,4 +54,10 @@ public class Camera2D extends Camera {
         projectionMatrix.store(projectionMatrixBuffer);
         projectionMatrixBuffer.flip();
     }
+
+    public void move(float dx, float dy, float dz) {
+        position.x -= dx * (float) Math.sin(rotation.y - Math.PI / 2) + dz * Math.sin(rotation.y);
+        position.y += dy;
+        position.z += dx * (float) Math.cos(rotation.y - Math.PI / 2) + dz * Math.cos(rotation.y);
+    }
 }

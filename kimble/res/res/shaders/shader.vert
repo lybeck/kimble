@@ -41,7 +41,7 @@ void main(void) {
             spec = material.specular * pow(intSpec, material.shininess);
         }
 
-	pass_TextureCoord = in_TextureCoord;
+        pass_TextureCoord = in_TextureCoord;
         pass_Color = in_Color * max(intensity * material.diffuse + spec, material.ambient);
        
         gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(in_Position, 1);

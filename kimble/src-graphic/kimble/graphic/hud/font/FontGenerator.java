@@ -8,12 +8,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import kimble.graphic.model.TextureManager;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -21,7 +21,7 @@ import kimble.graphic.model.TextureManager;
  */
 public class FontGenerator {
 
-    public static BitmapFont create(String key, Font font, Color color) throws IOException {
+    public static BitmapFont create(String key, Font font, Vector4f color) throws IOException {
         Map<Character, Glyph> glyphs = new HashMap<>();
 
         int imageSize = 512;
@@ -29,7 +29,7 @@ public class FontGenerator {
         Graphics2D g = (Graphics2D) outputImage.getGraphics();
 
         g.setBackground(new Color(0, 0, 0, 0));
-        g.setColor(color);
+        g.setColor(new Color(color.x, color.y, color.z, color.w));
 
         double height = font.getStringBounds("", g.getFontRenderContext()).getHeight();
 
@@ -51,7 +51,6 @@ public class FontGenerator {
 //            g.setColor(Color.GREEN);
 //            g.draw(bounds);
 //            g.setColor(Color.BLACK);
-
             if (i == ' ') {
                 bounds.setRect(bounds.getX(), bounds.getY(), bounds.getWidth() + font.getSize() / 3, bounds.getHeight());
             }
@@ -63,7 +62,8 @@ public class FontGenerator {
                     (float) bounds.getHeight() / imageSize,
                     (float) bounds.getWidth(),
                     (float) bounds.getHeight(),
-                    (float) offsetY));
+                    (float) offsetY,
+                    color));
 
             x = (float) (bounds.getX() + bounds.getWidth()) + 2;
         }
@@ -75,7 +75,7 @@ public class FontGenerator {
 
         TextureManager.load(key, inputStream);
 
-        ImageIO.write(outputImage, "png", new File("test_font.png"));
+//        ImageIO.write(outputImage, "png", new File("test_font.png"));
         BitmapFont bitmapFont = new BitmapFont(glyphs, (float) height, key);
         return bitmapFont;
     }
