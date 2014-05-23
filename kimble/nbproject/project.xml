@@ -6,6 +6,10 @@
             <name>Kimble</name>
             <source-roots>
                 <root id="src.dir"/>
+                <root id="src.src-graphic.dir" name="Source Packages Graphics"/>
+                <root id="src.src-logic.dir" name="Source Packages Logic"/>
+                <root id="src.src-server.dir" name="Source Packages Server"/>
+                <root id="src.src-tournament.dir" name="Source Packages Tournament"/>
                 <root id="src.res.dir" name="Resources"/>
             </source-roots>
             <test-roots>

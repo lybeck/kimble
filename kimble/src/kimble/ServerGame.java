@@ -5,8 +5,8 @@
  */
 package kimble;
 
+import kimble.playback.PlaybackProfile;
 import java.util.List;
-import kimble.graphic.Screen;
 import kimble.logic.IPlayer;
 
 /**
@@ -17,48 +17,38 @@ public class ServerGame {
 
     public static final boolean DEBUG = false;
 
-    private final KimbleLogic logic;
+    private final KimbleGameLogic logic;
     private KimbleGraphic graphic;
 
     public final static int NUMBER_OF_TEAMS = 4;
     public final static int NUMBER_OF_PIECES = 4;
     public final static int SQUARES_FROM_START_TO_START = 8;
 
-    private final boolean noGui;
+    private final boolean useGui;
+    private final boolean useHud;
 
-    public ServerGame(boolean noGui, List<IPlayer> players) {
-        this.noGui = noGui;
-        this.logic = new KimbleLogic(players);
+    public ServerGame(List<IPlayer> players) {
+        this(true, true, players);
+    }
+
+    public ServerGame(boolean useGui, boolean useHud, List<IPlayer> players) {
+        this.useGui = useGui;
+        this.useHud = useHud;
+        this.logic = new KimbleGameLogic(players);
     }
 
     public void start() {
-        if (noGui) {
+        if (useGui) {
+            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST, useHud);
+            graphic.start();
+        } else {
             while (!logic.getGame().isGameOver()) {
                 logic.executeMove();
             }
-        } else {
-            setupLWJGL();
-
-            PlaybackProfile.setCurrentProfile(PlaybackProfile.FAST);
-
-            graphic = new KimbleGraphic(logic);
-            graphic.start();
         }
     }
 
-    public ServerGame() {
-        this.logic = null;
-        this.noGui = true;
-    }
-
-    private void setupLWJGL() {
-        Screen.setupNativesLWJGL();
-        Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
-        Screen.setupOpenGL();
-        Screen.setResizable(true);
-    }
-
-    public KimbleLogic getLogic() {
+    public KimbleGameLogic getLogic() {
         return logic;
     }
 

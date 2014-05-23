@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE themes PUBLIC "-//www.matthiasmann.de//TWL-Theme//EN" "http://hg.l33tlabs.org/twl/raw-file/tip/src/de/matthiasmann/twl/theme/theme.dtd">
 <themes>
+
+
+    <images file="widgets.png">
+        <area name="box" xywh="1,1,42,34" splitx="L13,R13" splity="T5,B5" nocenter="true"/>
+        <area name="box bg" xywh="44,3,38,30" splitx="L9,R9" splity="T9,B9" border="2"/>
+        <composed name="panel-blue">
+            <alias ref="box bg" tint="#0900D2"/>
+            <alias ref="box" tint="#8B8B8B"/>
+        </composed>
+        <composed name="panel-red">
+            <alias ref="box bg" tint="#C60B0B"/>
+            <alias ref="box" tint="#8B8B8B"/>
+        </composed>
+        <composed name="panel-transparent-grey" tint="#64C7E1E7">
+            <alias ref="box bg" tint="#000000"/>
+            <alias ref="box" tint="#8B8B8B"/>
+        </composed>
+        <select name="button.background">
+            <alias ref="panel-blue" if="pressed" inset="2,2,-2,-2"/>
+            <alias ref="panel-red" if="hover"/>
+            <alias ref="panel-blue"/>
+        </select>
+        <select name="hscrollbar.button" sizeOverwriteH="22" sizeOverwriteV="15">
+            <alias ref="panel-red" if="hover"/>
+            <alias ref="panel-blue"/>
+        </select>
+        <select name="vscrollbar.button" sizeOverwriteH="22" sizeOverwriteV="15">
+            <alias ref="panel-red" if="hover"/>
+            <alias ref="panel-blue"/>
+        </select>
+    </images>
     <fontDef name="normal" filename="font.fnt" color="white" default="true">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
         <fontParam if="textSelection" color="blue"/>
     </fontDef>
+    <fontDef name="black" filename="font.fnt" color="#000000"/>
 
     <inputMapDef name="-defaultInputMap">
         <action name="selectAll">ctrl A</action>
@@ -32,5 +64,83 @@
     </theme>
 
     <theme name="label" ref="-defaults" allowWildcard="true">
+    </theme>
+	
+	<theme name="tooltipwindow" ref="-defaults">
+		<param name="fadeInTime"><int>0</int></param>
+	</theme>
+    <theme name="button" ref="-defaults">
+        <param name="background"><image>button.background</image></param>
+        <param name="border"><border>10,0</border></param>
+    </theme>
+
+    <theme name="hscrollbar" ref="-defaults">
+        <theme name="leftbutton" ref="button">
+            <param name="background"><image>hscrollbar.button</image></param>
+        </theme>
+        <theme name="rightbutton" ref="-defaults">
+            <param name="background"><image>hscrollbar.button</image></param>
+        </theme>
+        <theme name="thumb" ref="-defaults">
+            <param name="background"><image>hscrollbar.button</image></param>
+        </theme>
+        <param name="scaleThumb"><bool>false</bool></param>
+        <param name="background"><image>box</image></param>
+    </theme>
+
+    <theme name="vscrollbar" ref="-defaults">
+        <theme name="upbutton" ref="button">
+            <param name="background"><image>vscrollbar.button</image></param>
+        </theme>
+        <theme name="downbutton" ref="-defaults">
+            <param name="background"><image>vscrollbar.button</image></param>
+        </theme>
+        <theme name="thumb" ref="-defaults">
+            <param name="background"><image>vscrollbar.button</image></param>
+        </theme>
+        <param name="scaleThumb"><bool>false</bool></param>
+        <param name="background"><image>box</image></param>
+    </theme>
+    <theme name="textarea" ref="-defaults">
+        
+        <param name="fonts">
+            <map>
+                <param name="default"><font>normal</font></param>
+            </map>
+        </param>
+        <param name="images">
+            <map>
+            </map>
+        </param>
+    </theme>
+    <theme name="scrollpane" ref="-defaults">
+        <theme name="hscrollbar" ref="hscrollbar"/>
+        <theme name="vscrollbar" ref="vscrollbar"/>
+        <theme name="dragButton" ref="button"/>
+    
+        <param name="hasDragButton"><bool>true</bool></param>
+        <param name="scrollbarsAlwaysVisible"><bool>false</bool></param>
+        <param name="autoScrollArea"><int>5</int></param>
+        <param name="autoScrollSpeed"><int>10</int></param>
+        <param name="minWidth"><int>450</int></param>
+        <param name="minHeight"><int>400</int></param>
+        <param name="maxWidth"><int>350</int></param>
+        <param name="maxHeight"><int>400</int></param>
+        <param name="background"><image>panel-transparent-grey</image></param>
+    </theme>
+    <theme name="togglebutton" ref="button"/>
+
+    <theme name="hud" ref="-defaults">
+        <theme name="label" ref="label">
+        </theme>
+        <theme name="scrollpane" ref="scrollpane">
+            <theme name="label" ref="label">
+                <param name="font"><font>black</font></param>
+            </theme>
+            <theme name="textarea" ref="textarea">
+            </theme>
+        </theme>
+        <theme name="button" ref="button"/>
+        <theme name="togglebutton" ref="togglebutton"/>
     </theme>
 </themes>
