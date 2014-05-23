@@ -56,10 +56,10 @@ public class FontGenerator {
             }
 
             glyphs.put((char) i, new Glyph(
-                    (float) bounds.getX() / imageSize,
-                    (float) bounds.getY() / imageSize,
-                    (float) bounds.getWidth() / imageSize,
-                    (float) bounds.getHeight() / imageSize,
+                    (float) (bounds.getX() / imageSize),
+                    (float) (bounds.getY() / imageSize),
+                    (float) (bounds.getWidth() / imageSize),
+                    (float) (bounds.getHeight() / imageSize),
                     (float) bounds.getWidth(),
                     (float) bounds.getHeight(),
                     (float) offsetY,

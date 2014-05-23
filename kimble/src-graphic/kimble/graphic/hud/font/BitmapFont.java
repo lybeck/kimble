@@ -27,7 +27,7 @@ public class BitmapFont {
         for (int i = 0; i < line.length(); i++) {
             char c = line.charAt(i);
             Glyph g = glyphs.get(c);
-            g.setPosition(new Vector3f(x, y + g.getOffsetY() + (int) verticalSpacing, 0));
+            g.setPosition(new Vector3f(x, y + g.getOffsetY() + verticalSpacing, 0));
             g.update(0);
             g.render(shader, camera);
             x += g.getWidth();

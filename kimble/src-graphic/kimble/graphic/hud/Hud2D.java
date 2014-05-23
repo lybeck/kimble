@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kimble.graphic.Input2D;
 import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera2D;
 import kimble.graphic.hud.font.BitmapFont;
@@ -17,6 +18,7 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class Hud2D {
 
+    private final Input2D input;
     private final Camera2D camera;
 
     private BitmapFont font36;
@@ -26,6 +28,8 @@ public class Hud2D {
     public Hud2D() {
         camera = new Camera2D();
         camera.setupProjectionMatrix();
+
+        input = new Input2D(camera);
         setup();
     }
 
@@ -42,10 +46,12 @@ public class Hud2D {
         }
 
         rectangle = new Rectangle(20, 20, Screen.getWidth() - 40, Screen.getHeight() - 40, new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
-        rectangle.move(0, 0, 1);
+        rectangle.move(0, 0, -0.01f);
     }
 
     public void update(float dt) {
+        input.update(dt);
+
         camera.update(dt);
         rectangle.update(dt);
     }
