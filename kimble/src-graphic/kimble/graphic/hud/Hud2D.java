@@ -1,9 +1,20 @@
 package kimble.graphic.hud;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera2D;
 import kimble.graphic.hud.font.BitmapFont;
+import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
@@ -14,7 +25,8 @@ public class Hud2D {
 
     private final Camera2D camera;
 
-    private BitmapFont font;
+    private BitmapFont font36;
+    private BitmapFont font24;
     private Rectangle rectangle;
 
     public Hud2D() {
@@ -28,9 +40,15 @@ public class Hud2D {
     }
 
     public void setup() {
-        font = new BitmapFont(16, 20);
+        try {
+            font36 = FontGenerator.create("font", new Font("Courier New", Font.BOLD, 36), Color.WHITE);
+            font24 = FontGenerator.create("font24", new Font("Courier New", Font.PLAIN, 24), Color.WHITE);
+        } catch (IOException ex) {
+            Logger.getLogger(BitmapFont.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         rectangle = new Rectangle(20, 20, Screen.getWidth() - 40, Screen.getHeight() - 40, new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
-        rectangle.setScale(1, 1, 0);
+//        rectangle.setScale(1, 1, 0);
     }
 
     public void update(float dt) {
@@ -41,12 +59,18 @@ public class Hud2D {
     }
 
     public void render(Shader shader) {
+        glDisable(GL_CULL_FACE);
+
         shader.bind();
-//        rectangle.render(shader, camera);
-//        font.render(shader, camera);
-        font.renderString(shader, camera, "Hello World!", 10, 10);
-        font.renderString(shader, camera, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10, 30);
-        font.renderString(shader, camera, "abcdefghijklmnopqrstuvwxyz", 10, 50);
+        
+        // TODO: the cull face is inverted on the RectangleMesh and the GlyphMesh
+
+        font36.renderString(shader, camera, "Testing more text than you can handle", 0, 0);
+        font24.renderString(shader, camera, "Testing more text than you can handle", 0, font36.getVerticalSpacing());
+
         shader.unbind();
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
     }
 }

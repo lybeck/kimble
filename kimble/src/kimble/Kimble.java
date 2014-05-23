@@ -14,7 +14,7 @@ public class Kimble {
 
     public static void main(String[] args) {
         boolean useGui = true;
-        boolean useHud = true;
+        boolean useHud = false;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("nogui")) {
                 useGui = false;

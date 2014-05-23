@@ -41,25 +41,25 @@ public class RectangleMesh extends Mesh {
         float ty = 1 / 16.0f * 4;
 
         VertexData v0 = new VertexData();
-        v0.setPosition(new Vector3f(x, y, 0));
+        v0.setPosition(new Vector3f(x, y, 1));
         v0.setNormal(new Vector3f(0, 0, -1));
         v0.setColor(color);
         v0.setTexCoords(new Vector2f(tx, ty));
 
         VertexData v1 = new VertexData();
-        v1.setPosition(new Vector3f(x + width, y, 0));
+        v1.setPosition(new Vector3f(x + width, y, 1));
         v1.setNormal(new Vector3f(0, 0, -1));
         v1.setColor(color);
         v1.setTexCoords(new Vector2f(tx + tx, ty));
 
         VertexData v2 = new VertexData();
-        v2.setPosition(new Vector3f(x + width, y + height, 0));
+        v2.setPosition(new Vector3f(x + width, y + height, 1));
         v2.setNormal(new Vector3f(0, 0, -1));
         v2.setColor(color);
         v2.setTexCoords(new Vector2f(tx + tx, ty + tx));
 
         VertexData v3 = new VertexData();
-        v3.setPosition(new Vector3f(x, y + height, 0));
+        v3.setPosition(new Vector3f(x, y + height, 1));
         v3.setNormal(new Vector3f(0, 0, -1));
         v3.setColor(color);
         v3.setTexCoords(new Vector2f(tx, ty + tx));

@@ -20,11 +20,13 @@ public class Camera2D extends Camera {
         float height = width / Screen.getAspectRatio();
         float left = -width / 2;
         float right = width / 2;
-        float top = height / 2;
-        float bottom = -height / 2;
+        float top = -height / 2;
+        float bottom = height / 2;
         setupOrthographicProjectionMatrix(left, right, top, bottom, -1, 1);
+//        setupOrthographicProjectionMatrix(-100, 100, -100, 100, -1, 1);
+//        setupOrthographicProjectionMatrix(-100, 100, 100, -100, -1, 1);
 //        setupOrthographicProjectionMatrix(0, Screen.getWidth(), 0, Screen.getHeight(), -1, 1);
-        setPosition(new Vector3f(right, top, 0));
+        setPosition(new Vector3f(right, bottom, 0));
     }
 
     /**
@@ -48,8 +50,6 @@ public class Camera2D extends Camera {
         projectionMatrix.m13 = -(top + bottom) / (top - bottom);
         projectionMatrix.m23 = -(zFar + zNear) / (zFar - zNear);
         projectionMatrix.m33 = 1;
-
-        System.out.println(projectionMatrix);
 
         projectionMatrix.store(projectionMatrixBuffer);
         projectionMatrixBuffer.flip();

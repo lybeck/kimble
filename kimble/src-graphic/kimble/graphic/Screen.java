@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
 import java.io.File;
@@ -25,9 +20,14 @@ public class Screen {
 
     public static void setupDisplay(String title, int width, int height) {
         try {
+            // TODO: Check what the arguments are!
+            PixelFormat pixelFormat = new PixelFormat(8, 1, 0, 8);
+            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
+                    .withProfileCore(true);
+
             Display.setDisplayMode(new DisplayMode(width, height));
             Display.setTitle(title);
-            Display.create();
+            Display.create(pixelFormat, contextAtrributes);
         } catch (LWJGLException ex) {
             Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
@@ -35,8 +35,9 @@ public class Screen {
     }
 
     public static void setupDisplayMacOsx(String title, int width, int height) {
+        // TODO: Remove this method when the font rendering code is done!
         try {
-            PixelFormat pixelFormat = new PixelFormat();
+            PixelFormat pixelFormat = new PixelFormat(8, 1, 0, 8);
             ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
                     .withProfileCore(true);
 
@@ -101,17 +102,6 @@ public class Screen {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glViewport(0, 0, Display.getWidth(), Display.getHeight());
-    }
-
-    public static void setupRendering3D() {
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-//        glDepthMask(true);
-    }
-
-    public static void setupRendering2D() {
-        glDisable(GL_DEPTH_TEST);
-//        glDepthMask(false);
     }
 
     public static void updateViewport() {

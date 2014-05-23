@@ -9,17 +9,17 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class Glyph extends Model {
 
-    private float width;
-    private float height;
+    private final float width;
+    private final float height;
+    private final float offsetY;
 
-    public Glyph(float tx, float ty, float cellWidth, float cellHeight, float width, float height) {
-        this.getMaterial().setDiffuse(new Vector4f(1, 1, 1, 1));
-        this.getMaterial().setTextureModulator(1.0f);
-        this.setScale(1, 1, 0);
-        this.setMesh(new GlyphMesh(tx, ty, cellWidth, cellHeight, width, height));
-
+    public Glyph(float textureX, float textureY, float textureWidth, float textureHeight, float width, float height, float offsetY) {
         this.width = width;
         this.height = height;
+        this.offsetY = offsetY;
+        this.getMaterial().setDiffuse(new Vector4f(1, 1, 1, 1));
+        this.getMaterial().setTextureModulator(1.0f);
+        this.setMesh(new GlyphMesh(textureX, textureY, textureWidth, textureHeight, width, height));
     }
 
     public float getWidth() {
@@ -28,6 +28,10 @@ public class Glyph extends Model {
 
     public float getHeight() {
         return height;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
     }
 
 }
