@@ -1,11 +1,14 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 
 
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[parfill]{parskip}
 \usepackage{fix-cm}
+\usepackage{pdfpages}
+\usepackage[hidelinks]{hyperref}
 
 \usepackage{setspace}
 \onehalfspacing
@@ -79,18 +82,15 @@ The game is run like a server and the AIs runs as clients connected to the serve
 
 It's strongly recommended that you check out all the template classes found in the KimbleAI project. They are done to be as simple as possible for you to use.
 
-\vspace{0.5cm}
+\subsection{Test Running Your AI}
 
-WHEN SENDING YOUR xXx\_AI.jar TO US IT HAS TO HAVE A UNIQUE NAME (ALL AIs ARE SAVED IN THE SAME DIRECTORY). IT'S ALSO BASED ON THIS NAME YOU FIND YOURSELF IN THE COMPETITION RANKINGS.
+The server is configured to start the clients as own processes by running the \textit{kimbleai.TournamentMain} class (java -cp YourJar.jar kimbleai/TournamentMain) this means that you \textbf{SHALL NOT} change or move this class. However there is one exception, if you change the name of \textit{yourpackage}, make sure that the \textit{kimbleai.TournamentMain} points to the new \textit{yourpackage.Main.startClient(host, port)} method (this method is used to start your implemented AI).
 
-\vspace{0.5cm}
+The clients (jar files) started are the ones specified in the implementation of the \textit{LoadClientsInterface}, as default are four instances of YourJar.jar run (see the comments and code in \textit{templates.LoadClients}). To run multiple different AIs you should build them all into separate jars! This is easiest achieved by maintaining multiple copies of the project one for each of your AIs you make and then just press the Clean-Build button in Netbeans. Another simple way (but riskier) is to rename the built jar before building again.
 
+%\vspace{0.3cm}
 
-The server is configured to start the clients as own processes by running the \textit{kimbleai.TournamentMain} class (java -cp YourJar.jar kimbleai/TournamentMain) this means that you \textbf{SHALL NOT} change or move this class. There is one exception, if you change the name of \textit{yourpackage}, then you should make sure that the \textit{kimbleai.TournamentMain} points to the new \textit{yourpackage.Main.startClient()} method (this method is used to start your implemented AI).
-
-The clients (jar files) started are the ones specified in the implementation of the \textit{LoadClientsInterface}, as default are four instances of your Project run. To run multiple different AIs you should build them all into separate jars! This is easiest achieved by maintaining multiple copies of the project for your different AIs you make and then just press the Clean-Build button in Netbeans. Another simple way (but riskier) is to rename the built jar before building again.
-
-\vspace{0.3cm}
+\subsection{Runtime Parameters}
 
 There are some parameters in the \textit{yourpackage.Main} to modify the server on startup:
 \begin{itemize}
@@ -101,10 +101,26 @@ There are some parameters in the \textit{yourpackage.Main} to modify the server 
 
 \item boolean USE\_HUD - (still wondering if this is necessary)
 
+\item String HOST\_ADDRESS - the url in text form to the server. This is for now run on the 'localhost' (later it'll be possible to run over networks as well).
+
+\item int PORT - the port on the HOST\_ADDRESS to connect to. This allows for multiple servers to be run on the same machines (as long as they have different ports).
 
 \end{itemize}
 
 The sample code is heavily commented and should be sufficient to get you going.
+
+\subsection{External files or folders}
+
+If you are in need of external files, you can either pack them inside your jar and load them with the \textit{getClass().getResouce()} methods or make sure that your external files are inside a unique directory (so they don't interfere with other projects' resources).
+
+
+\subsection{Sending in Your Contribution}
+
+%\vspace{0.5cm}
+
+WHEN SENDING IN YOUR YourJar.jar TO US IT HAS TO HAVE A UNIQUE NAME (ALL AIs ARE SAVED IN THE SAME DIRECTORY). IT'S ALSO BASED ON THIS NAME YOU FIND YOURSELF IN THE COMPETITION RANKINGS.
+
+%\vspace{0.5cm}
 
 
 
