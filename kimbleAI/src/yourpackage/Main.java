@@ -97,7 +97,7 @@ public class Main {
         // We have provided some simple Bots for you to compete
         // against.
         //
-        //  * kimble.bot.KImbleBot1
+        //  * kimble.bot.KimbleBot1
         //=======================================================
         new KimbleBot1(hostAddress, port);
     }

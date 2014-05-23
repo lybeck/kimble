@@ -2,6 +2,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[parfill]{parskip}
+\usepackage{fix-cm}
+
 \usepackage{setspace}
 \onehalfspacing
 
@@ -18,7 +23,7 @@
 
 \section{Introduction}
 
-Kimble (also known as Trouble) is a game where players compete to be the first to send four pieces all the way around the game board. The aim of this competition is to program an AI to play this game and compete against other AIs (or possibly human players).
+Kimble (also known as Trouble) is a game where players compete to be the first to send four pieces all the way around the game board. The aim of this competition is to program an AI (Artificial Intelligence) to play this game and compete against other AIs (or possibly human players).
 
 The rules of the game are covered in section \ref{sec:rules}. The technincal specifications of the competition can be found in section \ref{sec:tech-specs}. Other information (including information about the template Java-project) can be found in section \ref{sec:other-info}.
 
@@ -26,21 +31,80 @@ The rules of the game are covered in section \ref{sec:rules}. The technincal spe
 \section{Game rules}
 \label{sec:rules}
 
-Rules of Kimble here.
+% Rules of Kimble here.
 
+\subsection{Who starts?}
+The player to begin the actual game is chosen through a small die roll competition. All players roll the die and the highest value gets to start. If there is two or more equally high die rolls, the ones who rolled are rolling again until only one has the highest die value.
+
+Example:
+\begin{center}
+\begin{tabular}{c c}
+	Player & Die Roll \\
+	A & 3 \\
+	B & 4 \\
+	C & 2 \\
+	D & 4
+\end{tabular} 
+\end{center}
+
+Then player B and player D have to roll again to see who gets the higher value.
+
+\subsection{How to move a piece}
+
+% How to get out of the Home
+% How to get into the Goal
+% Moving on the field
+% Moving in the Goal
+
+\subsection{Who wins?}
+
+The one to first get all the pieces from the playing board into the goal wins.
 
 
 \section{Technical specifications}
 \label{sec:tech-specs}
 
-Technincal specs here.
+% Technincal specs here.
+
+In the competition there'll be \textbf{four (4)} players competing against each other with \textbf{four (4)} pieces each.
+
+The game is run like a server and the AIs runs as clients connected to the server.
 
 
 
 \section{Other information}
 \label{sec:other-info}
 
-Other info here. This includes info about the template NetBeans-project.
+% Other info here. This includes info about the template NetBeans-project.
+
+It's strongly recommended that you check out all the template classes found in the KimbleAI project. They are done to be as simple as possible for you to use.
+
+\vspace{0.5cm}
+
+WHEN SENDING YOUR xXx\_AI.jar TO US IT HAS TO HAVE A UNIQUE NAME (ALL AIs ARE SAVED IN THE SAME DIRECTORY). IT'S ALSO BASED ON THIS NAME YOU FIND YOURSELF IN THE COMPETITION RANKINGS.
+
+\vspace{0.5cm}
+
+
+The server is configured to start the clients as own processes by running the \textit{kimbleai.TournamentMain} class (java -cp YourJar.jar kimbleai/TournamentMain) this means that you \textbf{SHALL NOT} change or move this class. There is one exception, if you change the name of \textit{yourpackage}, then you should make sure that the \textit{kimbleai.TournamentMain} points to the new \textit{yourpackage.Main.startClient()} method (this method is used to start your implemented AI).
+
+The clients (jar files) started are the ones specified in the implementation of the \textit{LoadClientsInterface}, as default are four instances of your Project run. To run multiple different AIs you should build them all into separate jars! This is easiest achieved by maintaining multiple copies of the project for your different AIs you make and then just press the Clean-Build button in Netbeans. Another simple way (but riskier) is to rename the built jar before building again.
+
+\vspace{0.3cm}
+
+There are some parameters in the \textit{yourpackage.Main} to modify the server on startup:
+\begin{itemize}
+
+\item boolean USE\_GUI - make the gui visible or hidden. When it is visible the game is run approximately at 60 frames per second. When it is hidden the game runs as fast as possible.
+
+\item boolean USE\_LOGGER - logs each run as a separate json file. The log is later possible to replay through a Playback application.
+
+\item boolean USE\_HUD - (still wondering if this is necessary)
+
+
+\end{itemize}
+
+The sample code is heavily commented and should be sufficient to get you going.
 
 
 
