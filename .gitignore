@@ -10,7 +10,9 @@ kimbleAI/logs/
 
 rules-and-techspecs/*.aux
 rules-and-techspecs/*.log
+rules-and-techspecs/*.out
 rules-and-techspecs/*.pdf
+rules-and-techspecs/*.toc
 rules-and-techspecs/*.synctex.gz
 rules-and-techspecs/build/
 
