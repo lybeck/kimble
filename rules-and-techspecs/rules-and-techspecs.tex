@@ -9,9 +9,13 @@
 \usepackage{fix-cm}
 \usepackage{pdfpages}
 \usepackage[hidelinks]{hyperref}
+\usepackage{graphicx, float}
 
 \usepackage{setspace}
 \onehalfspacing
+
+% paths used for images
+\graphicspath{{img/}}
 
 
 \author{Christoffer Fridlund, Lasse Lybeck}
@@ -22,6 +26,8 @@
 
 
 \maketitle
+
+\tableofcontents
 
 
 \section{Introduction}
@@ -34,32 +40,74 @@ The rules of the game are covered in section \ref{sec:rules}. The technincal spe
 \section{Game rules}
 \label{sec:rules}
 
-% Rules of Kimble here.
+\subsection{Game setup}
+
+All participating players select one of the avaiable colors. After this, all the players place their four (4) pieces into their home squares.
 
 \subsection{Who starts?}
-The player to begin the actual game is chosen through a small die roll competition. All players roll the die and the highest value gets to start. If there is two or more equally high die rolls, the ones who rolled are rolling again until only one has the highest die value.
 
-Example:
-\begin{center}
+The player to begin the actual game is chosen through a die roll competition. All players roll the die and the highest value gets to start. If there are two or more equally high die rolls, the ones who rolled these roll again until only one has the highest die value. The turn then moves clockwise.
+
+\textbf{Example:}
+
 \begin{tabular}{c c}
 	Player & Die Roll \\
 	A & 3 \\
 	B & 4 \\
 	C & 2 \\
 	D & 4
-\end{tabular} 
-\end{center}
+\end{tabular}
 
 Then player B and player D have to roll again to see who gets the higher value.
 
 \subsection{How to move a piece}
 
-\subsubsection{Get out of Home}
+Each turn the player in turn rolls the die. The player may then move one piece according to the following rules. If the player rolled a six (6), then the player is awarded an extra turn. If no move is possible or only optional moves are possible and the player chooses to pass, the turn goes to the next player.
 
-\subsubsection{Move on the Field}
+\subsubsection{Moving out of Home}
 
-\subsubsection{Move in Goal}
+If the player in turn rolls a one (1) or a six (6) he/she may move one piece from the home square to the start square (given there are still pieces left in the home squares). However, the move cannot be made if the start square is already occupied by one of the players own pieces. If the start square is occupied by one of some other players pieces the piece can be eaten as explained in section \ref{sec:eat}.
 
+\subsubsection{Move in the Field}
+
+After rolling the die a piece on the field can be moved clockwise around the table a number of steps equal to the die roll. If there is however a players own piece on the destination square the move cannot be made. If some other player's piece occupies the destination square it can be eaten as described in section \ref{sec:eat}. An example of a move can be found in figure \ref{fig:move-normal}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=.4\linewidth]{move-1.png}
+\end{center}
+\caption{Example of a normal move.}
+\label{fig:move-normal}
+\end{figure}
+
+\subsubsection{Eating}
+\label{sec:eat}
+
+If the destination square of the move is occupied by piece belonging to another player the piece can be eaten. The move is made as normal, and the eaten piece is moved back to its home squares. An example can be found in figure \ref{fig:move-eat}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=.4\linewidth]{move-2.png}
+\end{center}
+\caption{Example of an eating move.}
+\label{fig:move-eat}
+\end{figure}
+
+\subsubsection{Move into and in the Goal}
+
+When a piece has traveled around the game board and would with a move pass the player's own start square it can be moved into the goal area. The piece moves as in the field in the goal, but can bounce back from the last square. If the piece is moved to the last goal square and there are still remaining steps to be taken the piece starts moving back toward the start of the goal squares. The piece may however not be moved back into the field.
+
+A piece that occupies a goal square may also be moved. This is however an \textbf{optional move}, which means that if the only possible move for a player is to move a piece already occupying a goal square, the turn may be passed without moving. This is the only situation where a player may choose not to move, altough there are legal moves available. When moving a piece from a goal square it is first moved away from the field, and may then be bounced off the last square as described above. As usual, the piece may not leave the goal squares and head back into the field.
+
+An example of a move into the goal can be found in figure \ref{fig:move-goal}. In the figure the same result would also come if the die roll would have been a 5, as the piece from the field would have bounced from the last square back to square number 3. Another legal move (although in this case a stupid move) would be to move the piece in square 2. The piece would also land in square 3, after bouncing back from the last goal square.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=.4\linewidth]{move-3.png}
+\end{center}
+\caption{Example of a move into the goal.}
+\label{fig:move-goal}
+\end{figure}
 
 \subsection{Who wins?}
 
