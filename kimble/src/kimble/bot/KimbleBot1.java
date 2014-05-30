@@ -1,9 +1,7 @@
 package kimble.bot;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import kimble.connection.clientside.KimbleClient;
 import kimble.connection.clientside.MoveInfo;
 import kimble.connection.clientside.PieceInfo;
 
@@ -11,72 +9,23 @@ import kimble.connection.clientside.PieceInfo;
  *
  * @author Lasse Lybeck
  */
-public class KimbleBot1 extends KimbleClient {
+public class KimbleBot1 extends AbstractKimbleBot {
 
-    public KimbleBot1(String hostAddress, int port) throws IOException {
-        super(hostAddress, port);
+    public KimbleBot1(String host, int port) throws IOException {
+        super(host, port);
     }
 
     @Override
-    public void preLoop() {
-    }
-
-    @Override
-    public void duringLoop() {
-        String messageType = getReceiveMessageType();
-        System.out.println("[Team " + getMyTeamId() + "] Received: " + messageType);
-
-        if (messageType.equals("moves")) {
-            MoveInfo bestMove = getBestMove();
-            if (bestMove != null) {
-                sendMove(bestMove);
-            } else {
-                sendPing();
-            }
-        }
-    }
-
-    @Override
-    public void postLoop() {
-    }
-
-    private MoveInfo getBestMove() {
-        List<MoveInfo> moves = getAvailableMoves();
-        List<MoveInfo> nonOptional = new ArrayList<>();
-        for (MoveInfo move : moves) {
-            if (!move.isOptional()) {
-                nonOptional.add(move);
-            }
-        }
+    protected MoveInfo getBestMove() {
+        /*
+         * This bot chooses a move according to a list of possible actions, and selects the move that first meets a
+         * criterion. If no other possible moves exists it selects the best in-goal move.
+         */
+        List<MoveInfo> nonOptional = getAvailableNonOptionalMoves();
         if (nonOptional.isEmpty()) {
-            return getBestInGoalMove(moves);
+            return getBestInGoalMove();
         }
         return getBestNormalMove(nonOptional);
-    }
-
-    private MoveInfo getBestInGoalMove(List<MoveInfo> moves) {
-
-//        System.out.println("Chose best IN GOAL move.");
-        List<MoveInfo> possibleMoves = new ArrayList<>();
-        for (MoveInfo move : moves) {
-            if (move.getDestinationSquareId() > move.getStartSquareId()) {
-                possibleMoves.add(move);
-            }
-        }
-
-        if (moves.isEmpty()) {
-            return null;
-        }
-
-        MoveInfo bestMove = null;
-        int bestDestId = -1;
-        for (MoveInfo move : possibleMoves) {
-            if (move.getDestinationSquareId() > bestDestId) {
-                bestDestId = move.getDestinationSquareId();
-                bestMove = move;
-            }
-        }
-        return bestMove;
     }
 
     private MoveInfo getBestNormalMove(List<MoveInfo> moves) {
