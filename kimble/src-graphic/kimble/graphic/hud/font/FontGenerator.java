@@ -100,6 +100,14 @@ public class FontGenerator {
         }
     }
 
+    /**
+     * Method used when debugging. Draws boxes around the glyphs.
+     *
+     * @param g
+     * @param stringBounds
+     * @param layoutBounds
+     * @param layoutPixelBounds
+     */
     private static void renderBoundingBoxes(Graphics2D g, Rectangle2D stringBounds, Rectangle2D layoutBounds, Rectangle2D layoutPixelBounds) {
         g.setColor(Color.RED);
         g.draw(stringBounds);

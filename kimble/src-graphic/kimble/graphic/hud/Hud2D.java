@@ -11,6 +11,8 @@ import kimble.graphic.camera.Camera2D;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
+import kimble.logic.Move;
+import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
@@ -20,6 +22,7 @@ import org.lwjgl.util.vector.Vector4f;
 public class Hud2D {
 
     private final Camera camera;
+
     private BitmapFont font1;
 
     // Mapping element id to the element
@@ -38,12 +41,32 @@ public class Hud2D {
 
     public final void setup() {
         try {
-            font1 = FontGenerator.create("font1", new Font("Monospaced", Font.PLAIN, 24), new Vector4f(1, 1, 1, 1));
+            font1 = FontGenerator.create("font1", new Font("Monospaced", Font.BOLD, 24), new Vector4f(1, 1, 1, 1));
         } catch (IOException ex) {
             Logger.getLogger(BitmapFont.class.getName()).log(Level.SEVERE, null, ex);
         }
         textElements = new HashMap<>();
-        textElements.put(0, new TextElement(font1, "Starting Player: ", 15, 10));
+
+        TextElement t = new TextElement(font1);
+        t.setPosition(15, 10);
+        t.addWord("Starting Player: ", BitmapFont.WHITE);
+        textElements.put(0, t);
+
+        TextElement t1 = new TextElement(font1);
+        t1.setPosition(15, 10 + font1.getVerticalSpacing());
+        t1.addWord("Current Player: ", BitmapFont.WHITE);
+        textElements.put(1, t1);
+
+        TextElement t3 = new TextElement(font1);
+        t3.setPosition(30, 10 + 2 * font1.getVerticalSpacing());
+        t3.addWord("Move: ", BitmapFont.WHITE);
+        textElements.put(3, t3);
+
+        TextElement t2 = new TextElement(font1);
+        t2.setPosition(15, 10 + 3 * font1.getVerticalSpacing());
+        t2.addWord("Next Player: ", BitmapFont.WHITE);
+        textElements.put(2, t2);
+
     }
 
     public void update(float dt) {
@@ -53,8 +76,44 @@ public class Hud2D {
         }
     }
 
-    public void setStartingPlayer(String player) {
-        textElements.get(0).appendText(player);
+    public void setStartingPlayer(Team team) {
+        textElements.get(0).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+    }
+
+    public void setCurrentPlayer(Team team) {
+        if (team != null) {
+            textElements.get(1).clear();
+            textElements.get(1).addWord("Current Player: ", BitmapFont.WHITE);
+            textElements.get(1).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+        }
+//        setMoveInfo(null, null);
+    }
+
+    public void setNextPlayer(Team team) {
+        textElements.get(2).clear();
+        textElements.get(2).addWord("Next Player: ", BitmapFont.WHITE);
+        textElements.get(2).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+    }
+
+    public void setMoveInfo(Move selectedMove, String moveMessage) {
+
+        textElements.get(3).clear();
+        textElements.get(3).addWord("Move: ", BitmapFont.WHITE);
+
+        StringBuilder sb = new StringBuilder();
+        if (selectedMove == null) {
+            sb.append(moveMessage);
+        } else {
+            sb.append("Piece [")
+                    .append(selectedMove.getPiece().getId())
+                    .append("] from [")
+                    .append(selectedMove.getOldPositionID())
+                    .append("] to [")
+                    .append(selectedMove.getDestination().getID())
+                    .append("]");
+        }
+        
+        textElements.get(3).addWord(sb.toString(), BitmapFont.WHITE);
     }
 
     public void render(Shader shader) {
@@ -64,57 +123,7 @@ public class Hud2D {
             textElements.get(key).render(shader, camera);
         }
 
-        shader.unbind();
+        shader.bind();
     }
 
-    private class TextElement {
-
-        private BitmapFont font;
-        private String text;
-        private int x;
-        private int y;
-
-        private Rectangle rectangle;
-
-        public TextElement(BitmapFont font, String text, int x, int y) {
-            this.font = font;
-            this.x = x;
-            this.y = y;
-
-            this.setText(text);
-        }
-
-        public final void setText(String text) {
-            this.text = text;
-            int rectangleWidth = font.calculateWidth(text);
-            if (rectangle != null) {
-                rectangle.dispose();
-            }
-            rectangle = new Rectangle(x - 5, y, rectangleWidth, font.getVerticalSpacing(), new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
-            rectangle.move(0, 0, -0.01f);
-        }
-
-        public final void appendText(String text) {
-            setText(this.text + " " + text);
-        }
-
-        public void setPosition(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public void setBitmapFont(BitmapFont font) {
-            this.font = font;
-            setText(text);
-        }
-
-        public void update(float dt) {
-            rectangle.update(dt);
-        }
-
-        public void render(Shader shader, Camera camera) {
-            rectangle.render(shader, camera);
-            font.renderString(shader, camera, text, x, y);
-        }
-    }
 }

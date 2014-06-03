@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
 import kimble.graphic.camera.Camera;
 import kimble.graphic.shader.Shader;
 import java.nio.FloatBuffer;
 import kimble.graphic.model.Mesh;
+import kimble.graphic.shader.DefaultMaterial;
 import kimble.graphic.shader.Material;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
@@ -28,7 +24,7 @@ public abstract class Model {
     private FloatBuffer modelMatrixBuffer;
 
     private Mesh mesh;
-    private Material material;
+    private DefaultMaterial material;
 
     public Model() {
         this(new Vector3f(), new Vector3f());
@@ -42,7 +38,7 @@ public abstract class Model {
         this.modelMatrix = new Matrix4f();
         this.modelMatrixBuffer = BufferUtils.createFloatBuffer(16);
 
-        this.material = new Material();
+        this.material = new DefaultMaterial();
     }
 
     public void move(float dx, float dy, float dz) {
@@ -121,11 +117,11 @@ public abstract class Model {
         return mesh;
     }
 
-    public void setMaterial(Material material) {
+    public void setMaterial(DefaultMaterial material) {
         this.material = material;
     }
 
-    public Material getMaterial() {
+    public DefaultMaterial getMaterial() {
         return material;
     }
 }
