@@ -44,7 +44,6 @@ public class KimbleGraphic extends AbstractGraphic {
     private Hud2D hud2d;
     private BitmapFont font;
 
-    private Team nextTeam;
     private boolean endMessageShown = false;
 
     private BoardGraphic board;
@@ -145,7 +144,6 @@ public class KimbleGraphic extends AbstractGraphic {
             hud2d.updateViewport();
         }
 
-        hud2d.setNextPlayer(logic.getNextTeamInTurn());
         turnTimer += dt;
         if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
             if (started) {
@@ -168,6 +166,12 @@ public class KimbleGraphic extends AbstractGraphic {
             p.update(dt);
         }
 
+        if (logic.isGameOver()) {
+            for (int i = 0; i < logic.getFinnishedTeams().size(); i++) {
+                Team team = logic.getFinnishedTeams().get(i);
+                hud2d.setTeamInfo(team.getId(), "Finnished " + (i + 1));
+            }
+        }
         hud2d.update(dt);
     }
 
@@ -176,14 +180,13 @@ public class KimbleGraphic extends AbstractGraphic {
         if (executeMove) {
             logic.executeMove();
             executeMove = false;
-            hud2d.setMoveInfo(logic.getSelectedMove(), logic.getMoveMessage());
         }
 
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
             if (!logic.isGameOver()) {
-                hud2d.setCurrentPlayer(logic.getNextTeamInTurn());
+                updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
 
                 die.setDieRoll(logic.getDieRoll());
                 dieHolderDome.bounce();
@@ -208,7 +211,12 @@ public class KimbleGraphic extends AbstractGraphic {
             if (startingRollMapKeyIterator.hasNext()) {
                 int teamID = startingRollMapKeyIterator.next();
 
-                hud2d.setCurrentPlayer(logic.getTeam(teamID));
+                String oldMessage = hud2d.getTeamInfo(teamID);
+                if (oldMessage == null || oldMessage.length() == 0) {
+                    hud2d.setTeamInfo(teamID, "Rolled: " + startingRollMap.get(teamID));
+                } else {
+                    hud2d.appendTeamInfo(teamID, ", " + startingRollMap.get(teamID));
+                }
 
                 die.setDieRoll(startingRollMap.get(teamID));
                 dieHolderDome.bounce();
@@ -217,9 +225,18 @@ public class KimbleGraphic extends AbstractGraphic {
                     startingRollMap = startingRollsIterator.next();
                     startingRollMapKeyIterator = startingRollMap.keySet().iterator();
                 } else {
-                    hud2d.setStartingPlayer(logic.getStartingTeam());
                     started = true;
                 }
+            }
+        }
+    }
+
+    private void updateTeamInfo(int teamID, int dieRoll) {
+        for (Team team : logic.getTeams()) {
+            if (team.getId() == teamID) {
+                hud2d.setTeamInfo(team.getId(), "Rolled: " + dieRoll);
+            } else {
+                hud2d.setTeamInfo(team.getId(), "");
             }
         }
     }
@@ -236,10 +253,9 @@ public class KimbleGraphic extends AbstractGraphic {
         for (PieceGraphic p : pieces) {
             p.render(shader, camera);
         }
-//        shader.unbind();
 
         textShader.bind();
-        font.renderString(textShader, camera, "Hello World!", new Vector3f(0, 2, 0));
+//        font.renderString(textShader, camera, "Hello World!", new Vector3f(0, 2, 0));
         hud2d.render(textShader);
     }
 

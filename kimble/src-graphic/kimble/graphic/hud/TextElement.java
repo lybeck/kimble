@@ -7,7 +7,6 @@ import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.shader.Shader;
 import kimble.graphic.shader.TextMaterial;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -15,13 +14,11 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class TextElement {
 
-    private BitmapFont font;
+    private final BitmapFont font;
 
     private float x;
     private float y;
-    private List<Word> words;
-
-    private Rectangle rectangle;
+    private final List<Word> words;
 
     public TextElement(BitmapFont font) {
         this.font = font;
@@ -39,32 +36,20 @@ public class TextElement {
 
     public void addWord(String word, TextMaterial color) {
         words.add(new Word(word, color));
-
-        int rectangleWidth = font.calculateWidth(words);
-        if (rectangle != null) {
-            rectangle.dispose();
-        }
-        rectangle = new Rectangle(x - 5, y, rectangleWidth, font.getVerticalSpacing(), new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
-//        rectangle.move(0, 0, -0.01f);
     }
 
     public List<Word> getWords() {
         return words;
     }
 
-    public void update(float dt) {
-        rectangle.update(dt);
-    }
-
     public void render(Shader shader, Camera camera) {
-        rectangle.render(shader, camera);
         font.renderWords(shader, camera, words, new Vector3f(x, y, 0));
     }
 
     public class Word {
 
-        private String text;
-        private TextMaterial color;
+        private final String text;
+        private final TextMaterial color;
 
         public Word(String text, TextMaterial color) {
             this.text = text;

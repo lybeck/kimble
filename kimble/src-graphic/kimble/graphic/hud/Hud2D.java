@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera;
 import kimble.graphic.camera.Camera2D;
+import kimble.graphic.hud.TextElement.Word;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
@@ -28,21 +28,15 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class Hud2D {
 
-    private static final int STARTING_TEAM_KEY = 0;
-    private static final int CURRENT_PLAYER_KEY = 1;
-    private static final int NEXT_PLAYER_KEY = 2;
-    private static final int CURRENT_PLAYER_MOVE_KEY = 3;
-
     private final Camera camera;
 
     private BitmapFont font1;
     private BitmapFont font2;
 
-    // Mapping element id to the element
-    private Map<Integer, TextElement> textElements;
-
-    private List<Team> teams;
+    private final List<Team> teams;
     private List<TextElement> teamOrderTextElements;
+    private Map<Integer, TextElement> teamInfoTextElements;
+    private float widestTeamName;
 
     public Hud2D(List<Team> teams) {
         camera = new Camera2D();
@@ -55,17 +49,8 @@ public class Hud2D {
 
     public void updateViewport() {
         camera.setupProjectionMatrix();
-
-        teamOrderTextElements = new ArrayList<>();
-        int scale = 1;
-        for (int i = teams.size() - 1; i >= 0; i--) {
-            Team team = teams.get(i);
-            TextElement t = new TextElement(font2);
-            t.addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
-            t.setPosition(15, Screen.getHeight() - scale * font2.getVerticalSpacing() - 15);
-            teamOrderTextElements.add(t);
-            scale++;
-        }
+        createTeamOrderTextElements(font2);
+        createTeamInfoTextElements(font2);
     }
 
     public final void setup() {
@@ -75,62 +60,75 @@ public class Hud2D {
         } catch (IOException ex) {
             Logger.getLogger(BitmapFont.class.getName()).log(Level.SEVERE, null, ex);
         }
-        textElements = new HashMap<>();
-
-        createTextElement(STARTING_TEAM_KEY, "Starting Player: ", font1, BitmapFont.WHITE, 15, 10);
-        createTextElement(CURRENT_PLAYER_KEY, "Current Player: ", font1, BitmapFont.WHITE, 15, 10
-                + font1.getVerticalSpacing());
-        createTextElement(CURRENT_PLAYER_MOVE_KEY, "Move: ", font2, BitmapFont.WHITE, 30, 10
-                + font1.getVerticalSpacing() + font2.getVerticalSpacing());
-        createTextElement(NEXT_PLAYER_KEY, "Next Player: ", font1, BitmapFont.WHITE, 15, 10 + 3
-                * font1.getVerticalSpacing());
+        createTeamOrderTextElements(font2);
+        createTeamInfoTextElements(font2);
     }
 
-    private void createTextElement(int key, String text, BitmapFont font, TextMaterial color, float x, float y) {
-        TextElement t = new TextElement(font);
-        t.setPosition(x, y);
-        t.addWord(text, color);
-        textElements.put(key, t);
+    private void createTeamOrderTextElements(BitmapFont font) {
+        teamOrderTextElements = new ArrayList<>();
 
-    }
+        widestTeamName = 0;
 
-    public void setStartingPlayer(Team team) {
-        textElements.get(STARTING_TEAM_KEY).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
-    }
+        for (int i = 0; i < teams.size(); i++) {
+            Team team = teams.get(i);
+            TextElement te = new TextElement(font);
+            te.addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+            if (font.calculateWidth(te.getWords()) > widestTeamName) {
+                widestTeamName = font.calculateWidth(te.getWords());
+            }
+            teamOrderTextElements.add(te);
+        }
 
-    public void setCurrentPlayer(Team team) {
-        if (team != null) {
-            textElements.get(CURRENT_PLAYER_KEY).clear();
-            textElements.get(CURRENT_PLAYER_KEY).addWord("Current Player: ", BitmapFont.WHITE);
-            textElements.get(CURRENT_PLAYER_KEY).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+        for (int i = 0; i < teamOrderTextElements.size(); i++) {
+            teamOrderTextElements.get(i).setPosition(15, 10 + i
+                    * font.getVerticalSpacing());
         }
     }
 
-    public void setNextPlayer(Team team) {
-        textElements.get(NEXT_PLAYER_KEY).clear();
-        textElements.get(NEXT_PLAYER_KEY).addWord("Next Player: ", BitmapFont.WHITE);
-        textElements.get(NEXT_PLAYER_KEY).addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
+    private void createTeamInfoTextElements(BitmapFont font) {
+        teamInfoTextElements = new HashMap<>();
+
+        for (int i = 0; i < teams.size(); i++) {
+            TextElement te = new TextElement(font);
+            te.addWord("", BitmapFont.WHITE);
+            te.setPosition(15 + 15 + widestTeamName, 10 + i
+                    * font.getVerticalSpacing());
+            teamInfoTextElements.put(i, te);
+        }
+    }
+
+    // =======================================================
+    /*
+     * Setters
+     */
+    // =======================================================
+    public void setTeamInfo(int teamID, String... info) {
+        teamInfoTextElements.get(teamID).clear();
+        for (String text : info) {
+            teamInfoTextElements.get(teamID).addWord(text, BitmapFont.WHITE);
+        }
+    }
+
+    public void appendTeamInfo(int teamID, String info) {
+        setTeamInfo(teamID, getTeamInfo(teamID) + info);
+    }
+
+    public String getTeamInfo(int teamID) {
+        List<Word> words = teamInfoTextElements.get(teamID).getWords();
+        StringBuilder sb = new StringBuilder();
+        for (Word word : words) {
+            sb.append(word.getText());
+        }
+        return sb.toString();
     }
 
     public void setMoveInfo(Move selectedMove, String moveMessage) {
 
-        textElements.get(CURRENT_PLAYER_MOVE_KEY).clear();
-        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord("Move: ", BitmapFont.WHITE);
-
-        StringBuilder sb = new StringBuilder();
-        if (selectedMove == null) {
-            sb.append(moveMessage);
-        } else {
-            sb.append("Piece [")
-                    .append(selectedMove.getPiece().getId())
-                    .append("] from [")
-                    .append(selectedMove.getOldPositionID())
-                    .append("] to [")
-                    .append(selectedMove.getDestination().getID())
-                    .append("]");
-        }
-
-        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(sb.toString(), BitmapFont.WHITE);
+//        textElements.get(CURRENT_PLAYER_MOVE_KEY).clear();
+//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord("Move: ", BitmapFont.WHITE);
+//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(moveMessage, BitmapFont.WHITE);
+//
+//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(message, BitmapFont.WHITE);
     }
 
     // =======================================================
@@ -140,9 +138,6 @@ public class Hud2D {
     // =======================================================
     public void update(float dt) {
         camera.update(dt);
-        for (int key : textElements.keySet()) {
-            textElements.get(key).update(dt);
-        }
     }
 
     /**
@@ -153,11 +148,11 @@ public class Hud2D {
     public void render(Shader shader) {
         glDisable(GL_DEPTH_TEST);
 
-        for (int key : textElements.keySet()) {
-            textElements.get(key).render(shader, camera);
-        }
         for (TextElement te : teamOrderTextElements) {
             te.render(shader, camera);
+        }
+        for (int key : teamInfoTextElements.keySet()) {
+            teamInfoTextElements.get(key).render(shader, camera);
         }
 
         glEnable(GL_DEPTH_TEST);
