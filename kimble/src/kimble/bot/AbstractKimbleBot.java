@@ -50,13 +50,9 @@ public abstract class AbstractKimbleBot extends KimbleClient {
         }
         return nonOptional;
     }
-    
-    @Override
-    public void preLoop() {
-    }
 
     @Override
-    public void duringLoop() {
+    public void handleTurn() {
         String messageType = getReceiveMessageType();
 //        System.out.println("[Team " + getMyTeamId() + "] Received: " + messageType);
 
@@ -68,9 +64,5 @@ public abstract class AbstractKimbleBot extends KimbleClient {
                 sendPing();
             }
         }
-    }
-
-    @Override
-    public void postLoop() {
     }
 }

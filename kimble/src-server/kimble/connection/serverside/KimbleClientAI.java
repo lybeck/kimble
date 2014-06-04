@@ -14,8 +14,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kimble.connection.messages.MoveMessage;
 import kimble.connection.messages.ReceiveMessage;
 import kimble.connection.messages.SendMessage;
@@ -52,6 +50,9 @@ public class KimbleClientAI extends KimbleAI {
 
     public ReceiveMessage receiveMessage() throws IOException {
         String line = reader.readLine();
+        if (line == null) {
+            return null;
+        }
         JsonObject jsonObject = new JsonParser().parse(line).getAsJsonObject();
         ReceiveMessage receiveMessage = new ReceiveMessage();
         receiveMessage.setType(jsonObject.get("type").getAsString());
@@ -84,20 +85,24 @@ public class KimbleClientAI extends KimbleAI {
 
         try {
             ReceiveMessage receiveMessage = receiveMessage();
-            String type = receiveMessage.getType();
-            if (type.equals("selectedMove")) {
-
-                int selectedMove = receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
-
-                return selectedMove;
-            } else if (type.equals("ping")) {
-
-                return -1;
+            if (receiveMessage != null) {
+                String type = receiveMessage.getType();
+                if (type.equals("selectedMove")) {
+                    int selectedMove = receiveMessage.getData().getAsJsonObject().get("selectedMove").getAsInt();
+                    return selectedMove;
+                } else if (type.equals("ping")) {
+                    return -1;
+                }
+            } else {
+                System.err.println("!!! Did not receive message from client !!!\n"
+                        + "  - client id: " + id + ".");
             }
-        } catch (IOException ex) {
-            Logger.getLogger(KimbleClientAI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Exception occurred in the server!! This should not happen!!"
+                    + "PLEASE send this stacktrace to the developers!!", ex);
         }
 
-        throw new RuntimeException("Did not receive proper message..");
+        // tell game an errenous answer or no answer was received
+        return -2;
     }
 }

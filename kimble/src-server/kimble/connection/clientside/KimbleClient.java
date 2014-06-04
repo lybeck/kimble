@@ -30,7 +30,7 @@ import kimble.connection.messages.SendMessage;
  *
  * @author Christoffer
  */
-public abstract class KimbleClient {
+public abstract class KimbleClient implements Runnable {
 
     private final Socket socket;
     private final BufferedReader reader;
@@ -58,14 +58,11 @@ public abstract class KimbleClient {
         this.socket = new Socket(host, port);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
         this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
-
         this.running = true;
-
-        loop();
     }
 
-    private void loop() throws IOException {
-        preLoop();
+    @Override
+    public final void run() {
         while (running) {
             ReceiveMessage receiveMessage = receiveMessage();
             if (getReceiveMessageType().equals("disconnect")) {
@@ -74,19 +71,27 @@ public abstract class KimbleClient {
                 running = false;
             }
             parseMessageData(receiveMessage);
-            duringLoop();
+            try {
+                handleTurn();
+            } catch (Exception ex) {
+                sendMessage(new ErrorMessage(ex));
+            }
         }
-        postLoop();
     }
 
     /**
      * This method doesn't parse the message data. It only receives the message and reads the message type.
      *
-     * @return
-     * @throws IOException
+     * @return The received message.
      */
-    private ReceiveMessage receiveMessage() throws IOException {
-        JsonObject jsonObject = new JsonParser().parse(reader.readLine()).getAsJsonObject();
+    private ReceiveMessage receiveMessage() {
+        JsonObject jsonObject;
+        try {
+            jsonObject = new JsonParser().parse(reader.readLine()).getAsJsonObject();
+        } catch (IOException ex) {
+            throw new RuntimeException("Something went wrong during message receival. This should not happen! "
+                    + "PLEASE contact the organizers and send them this stacktrace!", ex);
+        }
         ReceiveMessage receiveMessage = new ReceiveMessage();
         receiveMessage.setType(jsonObject.get("type").getAsString());
         receiveMessage.setData(jsonObject.get("data"));
@@ -321,7 +326,7 @@ public abstract class KimbleClient {
         return myTeamId;
     }
 
-    private void sendMessage(String message) {
+    private void sendMessageString(String message) {
         writer.println(message);
     }
 
@@ -330,8 +335,8 @@ public abstract class KimbleClient {
      *
      * @param message
      */
-    public void sendMessage(SendMessage message) {
-        sendMessage(message.toJson());
+    protected void sendMessage(SendMessage message) {
+        sendMessageString(message.toJson());
     }
 
     /**
@@ -339,30 +344,38 @@ public abstract class KimbleClient {
      *
      * @param move
      */
-    public void sendMove(MoveInfo move) {
+    protected void sendMove(MoveInfo move) {
         sendMessage(new MoveSelectedMessage(move));
     }
 
     /**
      * Sends a 'new PingMessage()' to the server through the 'sendMessage(SendMessage message)' method.
      */
-    public void sendPing() {
+    protected void sendPing() {
         sendMessage(new PingMessage());
     }
 
     /**
-     * This method is run before the loop. Recommended for initialization stuff. Because the constructor starts the loop
-     * your own constructor (extending this class' constructor) will be run at the end of the loop.
-     */
-    public abstract void preLoop();
-
-    /**
      * This method is run once every loop after the client has received the message from the server.
      */
-    public abstract void duringLoop();
+    protected abstract void handleTurn();
 
-    /**
-     * This method is run when the loop has ended. Suitable for clean up code (.close() on streams etc).
-     */
-    public abstract void postLoop();
+    private static class ErrorMessage extends SendMessage {
+
+        private final Exception exception;
+        
+        public ErrorMessage(Exception exception) {
+            this.exception = exception;
+        }
+
+        @Override
+        protected Object getData() {
+            return null;
+        }
+
+        @Override
+        protected String getType() {
+            return "error";
+        }
+    }
 }

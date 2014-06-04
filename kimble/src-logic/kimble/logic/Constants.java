@@ -13,6 +13,7 @@ public class Constants {
     public static final int DEFAULT_NUMBER_OF_PIECES = 4;
     public static final int DEFAULT_SIDE_LENGTH = 8;
     public static final int DEFAULT_DIE_SIDES = 6;
+    public static final int DEFAULT_FINISHING_TEAMS = 1;
     public static final Set<Integer> DEFAULT_START_VALUES;
     public static final Set<Integer> DEFAULT_CONTINUE_TURN_VALUES;
 

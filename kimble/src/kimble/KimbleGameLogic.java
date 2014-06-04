@@ -12,6 +12,7 @@ import java.util.Set;
 import static kimble.ServerGame.DEBUG;
 import static kimble.ServerGame.NUMBER_OF_PIECES;
 import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
+import static kimble.ServerGame.NUMBER_OF_FINISHING_TEAMS;
 import kimble.connection.logger.KimbleGameStateLogger;
 import kimble.logic.Constants;
 import kimble.logic.Game;
@@ -46,17 +47,19 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private Move selectedMove;
 
     public KimbleGameLogic(List<IPlayer> players) {
-        this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES, SQUARES_FROM_START_TO_START);
+        this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES,
+                SQUARES_FROM_START_TO_START, NUMBER_OF_FINISHING_TEAMS);
     }
 
-    public KimbleGameLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfPieces, int squaresFromStartToStart) {
+    public KimbleGameLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues,
+            int numberOfPieces, int squaresFromStartToStart, int numberOfFinishingTeams) {
         this.players = players;
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
         this.numberOfPieces = numberOfPieces;
         this.squaresFromStartToStart = squaresFromStartToStart;
-
-        this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, squaresFromStartToStart);
+        this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, squaresFromStartToStart,
+                numberOfFinishingTeams);
 
         setup();
     }
@@ -151,6 +154,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
 
                 // selectMove logs this output...
                 int selection = ((KimbleAI) player).selectMove(currentTurn, game.getTeams());
+
                 if (selection >= 0) {
 
                     // *********************************************************************
@@ -161,7 +165,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                     moveMessage = "moving";
                     selectedMove = currentTurn.getMove(selection);
                     game.executeMove(selection);
-                } else {
+                } else if (selection == -1) {
 
                     // *********************************************************************
                     if (KimbleGameStateLogger.isInitialized()) {
@@ -171,6 +175,10 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                     moveMessage = "pass";
                     selectedMove = null;
                     game.executeNoMove();
+                } else if (selection == -2) {
+                    game.disqualifyPlayer();
+                } else {
+                    throw new RuntimeException("Move selection was < -2. What?");
                 }
             } else {
                 throw new UnsupportedOperationException("Human players not yet supported!");
@@ -207,7 +215,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             currentTurn = game.getNextTurn();
         }
     }
-    
+
     @Override
     public int getWinner() {
         return winner;
