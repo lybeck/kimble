@@ -88,7 +88,7 @@ public class KimbleGraphic extends AbstractGraphic {
         shader = new Shader("shader.vert", "shader.frag");
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
-        camera = new Camera3D(new Vector3f(2, 7, -2), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
+        camera = new Camera3D(new Vector3f(2, 7, -2), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.1f, 1000f);
         camera.setupProjectionMatrix();
 
         extraInput = new ExtraInput();
@@ -114,7 +114,7 @@ public class KimbleGraphic extends AbstractGraphic {
 
         hud2d = new Hud2D(logic.getTeams());
         try {
-            font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1));
+            font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.01f);
         } catch (IOException ex) {
             Logger.getLogger(KimbleGraphic.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Couldn't load font for piece text!");
@@ -239,7 +239,7 @@ public class KimbleGraphic extends AbstractGraphic {
 //        shader.unbind();
 
         textShader.bind();
-        font.renderString(textShader, camera, "Hello World!", 0, 0);
+        font.renderString(textShader, camera, "Hello World!", new Vector3f(0, 2, 0));
         hud2d.render(textShader);
     }
 

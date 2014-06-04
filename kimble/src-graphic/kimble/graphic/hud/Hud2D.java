@@ -17,6 +17,9 @@ import kimble.graphic.shader.Shader;
 import kimble.graphic.shader.TextMaterial;
 import kimble.logic.Move;
 import kimble.logic.Team;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
@@ -83,7 +86,7 @@ public class Hud2D {
                 * font1.getVerticalSpacing());
     }
 
-    private void createTextElement(int key, String text, BitmapFont font, TextMaterial color, int x, int y) {
+    private void createTextElement(int key, String text, BitmapFont font, TextMaterial color, float x, float y) {
         TextElement t = new TextElement(font);
         t.setPosition(x, y);
         t.addWord(text, color);
@@ -142,13 +145,22 @@ public class Hud2D {
         }
     }
 
+    /**
+     * The shader needs to be bound before calling this method
+     *
+     * @param shader
+     */
     public void render(Shader shader) {
+        glDisable(GL_DEPTH_TEST);
+
         for (int key : textElements.keySet()) {
             textElements.get(key).render(shader, camera);
         }
         for (TextElement te : teamOrderTextElements) {
             te.render(shader, camera);
         }
+
+        glEnable(GL_DEPTH_TEST);
     }
 
 }

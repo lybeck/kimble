@@ -6,6 +6,7 @@ import kimble.graphic.camera.Camera;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.shader.Shader;
 import kimble.graphic.shader.TextMaterial;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
@@ -16,8 +17,8 @@ public class TextElement {
 
     private BitmapFont font;
 
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private List<Word> words;
 
     private Rectangle rectangle;
@@ -27,7 +28,7 @@ public class TextElement {
         this.words = new ArrayList<>();
     }
 
-    public void setPosition(int x, int y) {
+    public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
     }
@@ -44,7 +45,7 @@ public class TextElement {
             rectangle.dispose();
         }
         rectangle = new Rectangle(x - 5, y, rectangleWidth, font.getVerticalSpacing(), new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
-        rectangle.move(0, 0, -0.01f);
+//        rectangle.move(0, 0, -0.01f);
     }
 
     public List<Word> getWords() {
@@ -57,7 +58,7 @@ public class TextElement {
 
     public void render(Shader shader, Camera camera) {
         rectangle.render(shader, camera);
-        font.renderWords(shader, camera, words, x, y);
+        font.renderWords(shader, camera, words, new Vector3f(x, y, 0));
     }
 
     public class Word {

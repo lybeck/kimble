@@ -28,71 +28,70 @@ public class BitmapFont {
     }
 
     private final Map<Character, Glyph> glyphs;
-    private final int verticalSpacing;
+    private final float verticalSpacing;
     private final String textureKey;
 
-    public BitmapFont(Map<Character, Glyph> glyphs, int verticalSpacing, String textureKey) {
+    public BitmapFont(Map<Character, Glyph> glyphs, float verticalSpacing, String textureKey) {
         this.glyphs = glyphs;
         this.verticalSpacing = verticalSpacing;
         this.textureKey = textureKey;
     }
 
-    public void renderString(Shader shader, Camera camera, String line, int x, int y) {
+    public void renderString(Shader shader, Camera camera, String line, Vector3f position) {
         TextureManager.getTexture(textureKey).bind();
 
         for (int i = 0; i < line.length(); i++) {
             char c = line.charAt(i);
-            x = renderGlyph(c, x, y, shader, camera, WHITE);
+            position.x = renderGlyph(c, position, shader, camera, WHITE);
         }
 
         TextureManager.getTexture(textureKey).unbind();
     }
 
-    public void renderText(Shader shader, Camera camera, List<String> words, int x, int y) {
+    public void renderText(Shader shader, Camera camera, List<String> words, Vector3f position) {
         TextureManager.getTexture(textureKey).bind();
 
         for (int j = 0; j < words.size(); j++) {
             String word = words.get(j);
             for (int i = 0; i < word.length(); i++) {
                 char c = word.charAt(i);
-                x = renderGlyph(c, x, y, shader, camera, WHITE);
+                position.x = renderGlyph(c, position, shader, camera, WHITE);
             }
             // render a space after each character.
             if (j < words.size() - 1) {
                 char c = ' ';
-                x = renderGlyph(c, x, y, shader, camera, WHITE);
+                position.x = renderGlyph(c, position, shader, camera, WHITE);
             }
         }
 
         TextureManager.getTexture(textureKey).unbind();
     }
 
-    public void renderWords(Shader shader, Camera camera, List<Word> words, int x, int y) {
+    public void renderWords(Shader shader, Camera camera, List<Word> words, Vector3f position) {
         TextureManager.getTexture(textureKey).bind();
 
         for (int j = 0; j < words.size(); j++) {
             Word word = words.get(j);
             for (int i = 0; i < word.getText().length(); i++) {
                 char c = word.getText().charAt(i);
-                x = renderGlyph(c, x, y, shader, camera, word.getColor());
+                position.x = renderGlyph(c, position, shader, camera, word.getColor());
             }
-            // render a space after each character.
+            // render a space after each character except the last.
             if (j < words.size() - 1) {
                 char c = ' ';
-                x = renderGlyph(c, x, y, shader, camera, word.getColor());
+                position.x = renderGlyph(c, position, shader, camera, word.getColor());
             }
         }
 
         TextureManager.getTexture(textureKey).unbind();
     }
 
-    private int renderGlyph(char c, int x, int y, Shader shader, Camera camera, TextMaterial color) {
+    private float renderGlyph(char c, Vector3f position, Shader shader, Camera camera, TextMaterial color) {
         Glyph g = glyphs.get(c);
-        g.setPosition(new Vector3f(x, y, 0));
+        g.setPosition(position);
         g.update(0);
         g.render(shader, camera, color);
-        x += g.getWidth();
-        return x;
+        return position.x + g.getWidth();
     }
 
     public Map<Character, Glyph> getGlyphs() {
@@ -129,7 +128,7 @@ public class BitmapFont {
         return (int) Math.round(totalWidth);
     }
 
-    public int getVerticalSpacing() {
+    public float getVerticalSpacing() {
         return verticalSpacing;
     }
 
