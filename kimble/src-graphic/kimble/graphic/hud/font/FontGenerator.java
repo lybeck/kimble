@@ -26,6 +26,10 @@ public class FontGenerator {
     private static final boolean DEBUG = false;
 
     public static BitmapFont create(String key, Font font, Vector4f color) throws IOException {
+        return FontGenerator.create(key, font, color, 1.0f);
+    }
+
+    public static BitmapFont create(String key, Font font, Vector4f color, float scale) throws IOException {
         Map<Character, Glyph> glyphs = new HashMap<>();
 
         int imageSize = 512;
@@ -73,8 +77,8 @@ public class FontGenerator {
                     (float) (rect.getY() / imageSize),
                     (float) (rect.getWidth() / imageSize),
                     (float) (rect.getHeight() / imageSize),
-                    (float) rect.getWidth(),
-                    (float) rect.getHeight(),
+                    (float) rect.getWidth() * scale,
+                    (float) rect.getHeight() * scale,
                     color));
 
             x = (float) (rect.getX() + rect.getWidth()) + 5;
@@ -82,7 +86,7 @@ public class FontGenerator {
 
         createAndLoadTexture(outputImage, key);
 
-        BitmapFont bitmapFont = new BitmapFont(glyphs, (int) height, key);
+        BitmapFont bitmapFont = new BitmapFont(glyphs, (int) (height * scale), key);
         return bitmapFont;
     }
 

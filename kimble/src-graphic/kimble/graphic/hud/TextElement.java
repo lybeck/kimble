@@ -45,7 +45,6 @@ public class TextElement {
         }
         rectangle = new Rectangle(x - 5, y, rectangleWidth, font.getVerticalSpacing(), new Vector4f(0.2f, 0.2f, 0.2f, 0.4f));
         rectangle.move(0, 0, -0.01f);
-
     }
 
     public List<Word> getWords() {
