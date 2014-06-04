@@ -13,54 +13,58 @@ import kimble.logic.exception.IllegalMoveException;
  * @author Lasse Lybeck
  */
 public class Game {
-
+    
     private final Set<Integer> startValues;
     private final Set<Integer> continueTurnValues;
     private final List<Team> teams;
     private final List<Team> finishedTeams;
+    private final List<Team> disqualifiedTeams;
     private final Board board;
     private final Die die;
+    private final int numberOfPlayersToFinish;
     private int turnIndex;
     private Turn currentTurn;
-
+    
     public Game() {
         this(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, Constants.DEFAULT_NUMBER_OF_TEAMS,
-                Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH);
+                Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH, Constants.DEFAULT_FINISHING_TEAMS);
     }
-
-    public Game(Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfTeams, int numberOfPieces, int sideLength) {
+    
+    public Game(Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfTeams, int numberOfPieces, int sideLength, int numberOfPlayersToFinish) {
         teams = new ArrayList<>(numberOfTeams);
         for (int i = 0; i < numberOfTeams; i++) {
             teams.add(new Team(i, numberOfPieces));
         }
-        finishedTeams = new ArrayList<>(numberOfTeams);
+        finishedTeams = new ArrayList<>();
+        disqualifiedTeams = new ArrayList<>();
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
         this.board = new Board(numberOfTeams, numberOfPieces, sideLength);
         this.die = new Die();
+        this.numberOfPlayersToFinish = numberOfPlayersToFinish;
         this.turnIndex = -1;
     }
-
+    
     public Board getBoard() {
         return board;
     }
-
+    
     public Set<Integer> getStartValues() {
         return startValues;
     }
-
+    
     public List<Team> getTeams() {
         return teams;
     }
-
+    
     public Team getTeam(int id) {
         return teams.get(id);
     }
-
+    
     public int getNumberOfTeams() {
         return teams.size();
     }
-
+    
     public GameStart startGame() {
         if (this.turnIndex != -1) {
             throw new RuntimeException("Game::startGame can be called only once!");
@@ -69,7 +73,7 @@ public class Game {
         this.turnIndex = gameStart.getStartingTeamIndex();
         return gameStart;
     }
-
+    
     public Turn getNextTurn() {
         if (turnIndex == -1) {
             throw new RuntimeException("Game::startGame must be called before the first call to Game::getNextTurn!");
@@ -92,7 +96,7 @@ public class Game {
         this.currentTurn = new Turn(roll, moves);
         return currentTurn;
     }
-
+    
     public void executeMove(int i) {
         if (i < 0 || i >= currentTurn.size()) {
             throw new RuntimeException("Move index out of bounds!");
@@ -110,13 +114,11 @@ public class Game {
 //            System.out.println("Team " + teams.get(turnIndex).getId() + " finished!");
         }
         // check if game just finished
-        if (isGameOver()) {
-            addLastTeamToFinishedTeams();
-        } else {
+        if (!isGameOver()) {
             nextTurn();
         }
     }
-
+    
     public void executeNoMove() {
         for (Move move : currentTurn.getMoves()) {
             if (!move.isOptional()) {
@@ -125,27 +127,58 @@ public class Game {
         }
         nextTurn();
     }
-
+    
+    public void disqualifyPlayer() {
+        System.out.println("Game::disqualifyPlayer");
+        if (!disqualifiedTeams.contains(getTeamInTurn())) {
+            disqualifiedTeams.add(getTeamInTurn());
+        }
+        if (!isGameOver()) {
+            nextTurn();
+        }
+    }
+    
     private void nextTurn() {
-        if (!continueTurnValues.contains(currentTurn.getDieRoll())) {
+        if (isDisqualified(getTeamInTurn()) || !continueTurnValues.contains(currentTurn.getDieRoll())) {
             do {
                 if (++turnIndex >= teams.size()) {
                     turnIndex = 0;
                 }
-            } while (isFinished(teams.get(turnIndex)));
+            } while (isFinished(teams.get(turnIndex)) || isDisqualified(teams.get(turnIndex)));
         }
         currentTurn = null;
     }
-
+    
     public Team getTeamInTurn() {
         return teams.get(turnIndex);
     }
-
+    
     public boolean isGameOver() {
-        // all but one team is finishedTeams
-        return finishedTeams.size() >= teams.size() - 1;
+        // check if enough players have finished
+        if (finishedTeams.size() == numberOfPlayersToFinish) {
+            return true;
+        }
+        // check if all teams are either finished or disqualified
+        if (finishedTeams.size() + disqualifiedTeams.size() == teams.size()) {
+            return true;
+        }
+        // check if all but one team is disqualified
+        if (disqualifiedTeams.size() == teams.size() - 1) {
+            // add the lasting team to finished teams (if it is not yet there)
+            for (Team team : teams) {
+                if (!isDisqualified(team)) {
+                    if (!finishedTeams.contains(team)) {
+                        finishedTeams.add(team);
+                    }
+                    break;
+                }
+            }
+            return true;
+        }
+        // game has not yet finished
+        return false;
     }
-
+    
     private boolean isFinished(Team team) {
         for (Piece piece : team.getPieces()) {
             if (piece.getPosition() == null || !piece.getPosition().isGoalSquare()) {
@@ -154,11 +187,15 @@ public class Game {
         }
         return true;
     }
-
+    
+    private boolean isDisqualified(Team team) {
+        return disqualifiedTeams.contains(team);
+    }
+    
     public List<Team> getFinishedTeams() {
         return finishedTeams;
     }
-
+    
     private void addLastTeamToFinishedTeams() {
         Set<Team> teamSet = new HashSet<>(teams);
         for (Team team : finishedTeams) {
@@ -168,7 +205,7 @@ public class Game {
             finishedTeams.add(team);
         }
     }
-
+    
     @Override
     public String toString() {
         // <editor-fold defaultstate="collapsed" desc="Complicated code to get the current game status as a string.">
@@ -221,13 +258,13 @@ public class Game {
                 s.append(" ");
             }
         }
-
+        
         return s.toString();
         // </editor-fold>
     }
-
+    
     public Die getDie() {
         return die;
     }
-
+    
 }

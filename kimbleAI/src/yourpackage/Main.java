@@ -99,7 +99,10 @@ public class Main {
         //
         //  * kimble.bot.KimbleBot1
         //=======================================================
-        new KimbleBot1(hostAddress, port);
+        
+        // TODO: Change this to be only a getter for the bot. It can then be automatically started.
+        
+        new KimbleBot1(hostAddress, port).run();
     }
     // </editor-fold>
 
