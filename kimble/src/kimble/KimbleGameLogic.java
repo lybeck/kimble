@@ -198,7 +198,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             // *********************************************************************
             if (KimbleGameStateLogger.isInitialized()) {
                 for (Team team : game.getFinishedTeams()) {
-                    KimbleGameStateLogger.logTeamFinnish(team.getId());
+                    KimbleGameStateLogger.logTeamFinish(team.getId());
                 }
                 KimbleGameStateLogger.logWinner(winner);
             }
@@ -282,7 +282,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     }
 
     @Override
-    public List<Team> getFinnishedTeams() {
+    public List<Team> getFinishedTeams() {
         return getGame().getFinishedTeams();
     }
 

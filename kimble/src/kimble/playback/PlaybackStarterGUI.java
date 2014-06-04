@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.playback;
 
 import com.google.gson.Gson;
@@ -86,6 +81,11 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        logFileList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logFileListMouseClicked(evt);
+            }
+        });
         logFileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 logFileListValueChanged(evt);
@@ -190,6 +190,12 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
             startButton.setEnabled(true);
         }
     }//GEN-LAST:event_logFileListValueChanged
+
+    private void logFileListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logFileListMouseClicked
+        if (logFileList.getModel().getSize() == 1) {
+            startButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_logFileListMouseClicked
 
     /**
      * @param args the command line arguments

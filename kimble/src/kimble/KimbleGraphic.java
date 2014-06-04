@@ -43,6 +43,7 @@ public class KimbleGraphic extends AbstractGraphic {
 
     private Hud2D hud2d;
     private BitmapFont font;
+    private int lastTeamID = -1;
 
     private boolean endMessageShown = false;
 
@@ -127,9 +128,14 @@ public class KimbleGraphic extends AbstractGraphic {
             stop();
         }
 
-//        if(logic.getGame().isGameOver()){
+        if (logic.isGameOver()) {
+            for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
+                Team finishedTeam = logic.getFinishedTeams().get(i);
+                hud2d.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
+            }
 //            stop();
-//        }
+        }
+
         if (extraInput.rotateCamera()) {
             cameraPositionAngle += dt * 0.1;
             Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius()
@@ -166,12 +172,6 @@ public class KimbleGraphic extends AbstractGraphic {
             p.update(dt);
         }
 
-        if (logic.isGameOver()) {
-            for (int i = 0; i < logic.getFinnishedTeams().size(); i++) {
-                Team team = logic.getFinnishedTeams().get(i);
-                hud2d.setTeamInfo(team.getId(), "Finnished " + (i + 1));
-            }
-        }
         hud2d.update(dt);
     }
 
@@ -196,7 +196,6 @@ public class KimbleGraphic extends AbstractGraphic {
                 executeMove = true;
 //            } else {
 //                if (!endMessageShown && useHud) {
-//                    hud.appendLine(finnishInfoText());
 //                    endMessageShown = true;
 //                }
             }
@@ -233,12 +232,23 @@ public class KimbleGraphic extends AbstractGraphic {
 
     private void updateTeamInfo(int teamID, int dieRoll) {
         for (Team team : logic.getTeams()) {
-            if (team.getId() == teamID) {
-                hud2d.setTeamInfo(team.getId(), "Rolled: " + dieRoll);
+            if (team.isFinished()) {
+                for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
+                    Team finishedTeam = logic.getFinishedTeams().get(i);
+                    hud2d.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
+                }
+            } else if (team.getId() == teamID) {
+                // Appends all the die rolls after each other on the hud.
+                if (lastTeamID != teamID) {
+                    hud2d.setTeamInfo(teamID, "Rolled: " + dieRoll);
+                } else {
+                    hud2d.appendTeamInfo(teamID, ", " + dieRoll);
+                }
             } else {
                 hud2d.setTeamInfo(team.getId(), "");
             }
         }
+        lastTeamID = teamID;
     }
 
     @Override

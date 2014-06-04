@@ -111,8 +111,8 @@ public class KimbleGameStateLogger {
         logFile.addEntry(new LogEntry(EntryType.SKIP, teamID, dieRoll, null, null, null, null, optional));
     }
 
-    public static void logTeamFinnish(int teamID) {
-        logFile.addTeamFinnish(teamID);
+    public static void logTeamFinish(int teamID) {
+        logFile.addTeamFinish(teamID);
     }
 
     public static void logWinner(int teamID) {

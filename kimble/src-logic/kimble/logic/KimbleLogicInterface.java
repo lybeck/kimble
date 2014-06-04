@@ -41,5 +41,5 @@ public interface KimbleLogicInterface {
     
     public int getWinner();
     
-    public List<Team> getFinnishedTeams();
+    public List<Team> getFinishedTeams();
 }

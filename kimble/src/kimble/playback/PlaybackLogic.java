@@ -28,7 +28,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
     private int startingTeam;
     private List<Team> teams;
     private Board board;
-    private List<Team> teamsFinnished;
+    private List<Team> finishedTeams;
     private int winner;
 
     private final Iterator<LogEntry> logIterator;
@@ -42,7 +42,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
         initTeams(log);
         initStartingDieRolls(log);
         initBoard(log);
-        initTeamsFinnished(log);
+        initTeamsFinished(log);
 
         logIterator = log.getEntries().iterator();
         getNextMove();
@@ -70,11 +70,11 @@ public class PlaybackLogic implements KimbleLogicInterface {
         board = new Board(numberOfTeams, numberOfPieces, sideLength);
     }
 
-    private void initTeamsFinnished(LogFile log) {
-        teamsFinnished = new ArrayList<>();
-        for (int i = 0; i < log.getTeamFinnishOrder().size(); i++) {
-            int teamID = log.getTeamFinnishOrder().get(i);
-            teamsFinnished.add(getTeam(teamID));
+    private void initTeamsFinished(LogFile log) {
+        finishedTeams = new ArrayList<>();
+        for (int i = 0; i < log.getTeamFinishOrder().size(); i++) {
+            int teamID = log.getTeamFinishOrder().get(i);
+            finishedTeams.add(getTeam(teamID));
         }
         winner = log.getWinner();
     }
@@ -126,7 +126,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
             nextTeam = teams.get(entry.teamID);
 
             if (entry.type == EntryType.MOVE) {
-                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll);
+//                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll);
                 MoveEntry me = (MoveEntry) entry.getEntry();
 
                 Piece piece = teams.get(me.teamID).getPiece(me.pieceID);
@@ -139,8 +139,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
                 }
 
             } else if (entry.type == EntryType.SKIP) {
-                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll
-                        + " [Can't move]");
+//                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll
+//                        + " [Can't move]");
                 if (((SkipEntry) entry.getEntry()).optional) {
                     moveMessage = "pass";
                 } else {
@@ -191,8 +191,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
     }
 
     @Override
-    public List<Team> getFinnishedTeams() {
-        return teamsFinnished;
+    public List<Team> getFinishedTeams() {
+        return finishedTeams;
     }
 
 }

@@ -107,6 +107,7 @@ public class Game {
         }
         if (isFinished(teams.get(turnIndex))) {
             finishedTeams.add(teams.get(turnIndex));
+            teams.get(turnIndex).setFinished(true);
 //            System.out.println("Team " + teams.get(turnIndex).getId() + " finished!");
         }
         // check if game just finished
