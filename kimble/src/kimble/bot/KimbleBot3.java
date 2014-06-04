@@ -16,11 +16,15 @@ public class KimbleBot3 extends KimbleBot1 {
      */
     private final static double RANDOMNESS = .5;
 
-    private final Random random;
+    private Random random;
 
     public KimbleBot3(String host, int port) throws IOException {
         super(host, port);
-        this.random = new Random();
+    }
+
+    @Override
+    public void preLoop() {
+        super.preLoop();
     }
 
     @Override
@@ -28,11 +32,22 @@ public class KimbleBot3 extends KimbleBot1 {
         /*
          * This bot selects randomly either a random (non-optional) move or the best move according to its super class.
          */
-        if (random.nextDouble() < RANDOMNESS) {
+        if (getRandom().nextDouble() < RANDOMNESS) {
             List<MoveInfo> availableNonOptionalMoves = getAvailableNonOptionalMoves();
-            return availableNonOptionalMoves.get(random.nextInt(availableNonOptionalMoves.size()));
+            if (availableNonOptionalMoves.size() < 1) {
+                return getBestInGoalMove();
+            } else {
+                return availableNonOptionalMoves.get(random.nextInt(availableNonOptionalMoves.size()));
+            }
         } else {
             return super.getBestMove();
         }
+    }
+
+    public Random getRandom() {
+        if (random == null) {
+            random = new Random();
+        }
+        return random;
     }
 }
