@@ -21,7 +21,7 @@ public class LoadClients implements LoadClientsInterface {
 
         // Gets the path to the relative directory "dist" containing the built jar.
         // And gets the whole system path to it.
-        String dir = new File("dist").getAbsolutePath();
+        String dir = new File("bots").getAbsolutePath();
 
         // Looks for all files in the directory.
         File[] files = new File(dir).listFiles(new FilenameFilter() {

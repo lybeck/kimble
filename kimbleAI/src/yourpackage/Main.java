@@ -1,11 +1,11 @@
 package yourpackage;
 
 import java.io.IOException;
-import kimble.bot.KimbleBot1;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
 import templates.LoadClients;
+import templates.RandomAI;
 
 /**
  *
@@ -99,10 +99,9 @@ public class Main {
         //
         //  * kimble.bot.KimbleBot1
         //=======================================================
-        
+
         // TODO: Change this to be only a getter for the bot. It can then be automatically started.
-        
-        new KimbleBot1(hostAddress, port).run();
+        new RandomAI(hostAddress, port).run();
     }
     // </editor-fold>
 

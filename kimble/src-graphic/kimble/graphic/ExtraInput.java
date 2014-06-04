@@ -15,7 +15,7 @@ import org.lwjgl.input.Mouse;
  */
 public class ExtraInput {
 
-    private boolean rotateCamera = true;
+    private boolean rotateCamera = false;
 
     public void update(float dt) {
         while (Keyboard.next()) {
