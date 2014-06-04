@@ -183,6 +183,7 @@ public class KimbleGraphic extends AbstractGraphic {
             p.update(dt);
         }
 
+        hud2d.setPlaybackSpeed(PlaybackProfile.currentProfile);
         hud2d.update(dt);
     }
 

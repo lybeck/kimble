@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera;
 import kimble.graphic.camera.Camera2D;
 import kimble.graphic.hud.TextElement.Word;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
-import kimble.graphic.shader.TextMaterial;
-import kimble.logic.Move;
 import kimble.logic.Team;
+import kimble.playback.PlaybackProfile;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -38,6 +38,8 @@ public class Hud2D {
     private Map<Integer, TextElement> teamInfoTextElements;
     private float widestTeamName;
 
+    private List<TextElement> playbackSpeedTextElements;
+
     public Hud2D(List<Team> teams) {
         camera = new Camera2D();
         camera.setupProjectionMatrix();
@@ -51,6 +53,7 @@ public class Hud2D {
         camera.setupProjectionMatrix();
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
+        createPlaybackSpeedTextElements(font2);
     }
 
     public final void setup() {
@@ -62,6 +65,7 @@ public class Hud2D {
         }
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
+        createPlaybackSpeedTextElements(font2);
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -76,13 +80,12 @@ public class Hud2D {
             if (font.calculateWidth(te.getWords()) > widestTeamName) {
                 widestTeamName = font.calculateWidth(te.getWords());
             }
+            te.setPosition(15, 10 + i * font.getVerticalSpacing());
             teamOrderTextElements.add(te);
         }
 
-        for (int i = 0; i < teamOrderTextElements.size(); i++) {
-            teamOrderTextElements.get(i).setPosition(15, 10 + i
-                    * font.getVerticalSpacing());
-        }
+//        for (int i = 0; i < teamOrderTextElements.size(); i++) {
+//        }
     }
 
     private void createTeamInfoTextElements(BitmapFont font) {
@@ -91,9 +94,27 @@ public class Hud2D {
         for (int i = 0; i < teams.size(); i++) {
             TextElement te = new TextElement(font);
             te.addWord("", BitmapFont.WHITE);
-            te.setPosition(15 + 15 + widestTeamName, 10 + i
-                    * font.getVerticalSpacing());
+            te.setPosition(15 + 15 + widestTeamName, 10 + i * font.getVerticalSpacing());
             teamInfoTextElements.put(i, te);
+        }
+    }
+
+    private void createPlaybackSpeedTextElements(BitmapFont font) {
+        playbackSpeedTextElements = new ArrayList<>();
+
+        float width = 0;
+        for (int i = 0; i < PlaybackProfile.values().length; i++) {
+            TextElement te = new TextElement(font);
+            if (width < font.calculateWidth(PlaybackProfile.values()[i].name())) {
+                width = font.calculateWidth(PlaybackProfile.values()[i].name());
+            }
+            te.addWord("Key " + (PlaybackProfile.values()[i].ordinal() + 1) + ": " + PlaybackProfile.values()[i].name(), BitmapFont.GREY);
+            playbackSpeedTextElements.add(te);
+        }
+
+        for (int i = 0; i < playbackSpeedTextElements.size(); i++) {
+            TextElement te = playbackSpeedTextElements.get(i);
+            te.setPosition(15, Screen.getHeight() - (i + 1) * font.getVerticalSpacing() - 15);
         }
     }
 
@@ -122,19 +143,28 @@ public class Hud2D {
         return sb.toString();
     }
 
-    public void setMoveInfo(Move selectedMove, String moveMessage) {
-
+    public void setPlaybackSpeed(PlaybackProfile currentProfile) {
+        for (int i = 0; i < playbackSpeedTextElements.size(); i++) {
+            if (i == currentProfile.ordinal()) {
+                playbackSpeedTextElements.get(i).getWords().get(0).setColor(BitmapFont.WHITE);
+            } else {
+                playbackSpeedTextElements.get(i).getWords().get(0).setColor(BitmapFont.GREY);
+            }
+        }
+    }
+//    public void setMoveInfo(Move selectedMove, String moveMessage) {
+//
 //        textElements.get(CURRENT_PLAYER_MOVE_KEY).clear();
 //        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord("Move: ", BitmapFont.WHITE);
 //        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(moveMessage, BitmapFont.WHITE);
 //
 //        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(message, BitmapFont.WHITE);
-    }
-
+//    }
     // =======================================================
     /*
      * Update and render
      */
+
     // =======================================================
     public void update(float dt) {
         camera.update(dt);
@@ -153,6 +183,9 @@ public class Hud2D {
         }
         for (int key : teamInfoTextElements.keySet()) {
             teamInfoTextElements.get(key).render(shader, camera);
+        }
+        for (TextElement te : playbackSpeedTextElements) {
+            te.render(shader, camera);
         }
 
         glEnable(GL_DEPTH_TEST);

@@ -48,8 +48,8 @@ public class TextElement {
 
     public class Word {
 
-        private final String text;
-        private final TextMaterial color;
+        private String text;
+        private TextMaterial color;
 
         public Word(String text, TextMaterial color) {
             this.text = text;
@@ -60,8 +60,16 @@ public class TextElement {
             return text;
         }
 
+        public void setText(String text) {
+            this.text = text;
+        }
+
         public TextMaterial getColor() {
             return color;
+        }
+
+        public void setColor(TextMaterial color) {
+            this.color = color;
         }
 
     }

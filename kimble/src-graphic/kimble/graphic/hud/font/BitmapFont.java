@@ -20,6 +20,8 @@ import org.lwjgl.util.vector.Vector4f;
 public class BitmapFont {
 
     public static final TextMaterial WHITE = new TextMaterial(new Vector4f(1, 1, 1, 1));
+    public static final TextMaterial GREY = new TextMaterial(new Vector4f(0.5f, 0.5f, 0.5f, 1));
+
     public static final List<TextMaterial> TEXT_MATERIALS = new ArrayList<>();
 
     static {

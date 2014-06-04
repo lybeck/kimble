@@ -98,7 +98,6 @@ public class KimbleClientAI extends KimbleAI {
                         + "  - client id: " + id + ".");
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new RuntimeException("Exception occurred in the server!! This should not happen!!"
                     + "PLEASE send this stacktrace to the developers!!", ex);
         }
