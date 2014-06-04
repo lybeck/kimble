@@ -17,6 +17,7 @@ public class ServerGame {
 
     public final static int NUMBER_OF_TEAMS = 4;
     public final static int NUMBER_OF_PIECES = 4;
+    public final static int NUMBER_OF_FINISHING_TEAMS = 1;
     public final static int SQUARES_FROM_START_TO_START = 8;
 
     private final boolean useGui;

@@ -20,7 +20,7 @@ import kimble.logic.IPlayer;
  */
 public class KimbleServer implements Runnable {
 
-    public static final int TIME_OUT_MS = 500;
+    public static final int TIME_OUT_MS = 1000;
 
     private final int maxPlayers;
 
