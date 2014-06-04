@@ -69,7 +69,9 @@ public class KimbleGraphic extends AbstractGraphic {
     private boolean executeMove = false;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
-    private float cameraPositionAngle = 0;
+
+    // Change this variable to "0, PI/2, PI and 3/2 PI" to position the camera behind the home squares.
+    private float cameraPositionAngle = (float) (Math.PI / 2);
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile, boolean useHud) {
         super(useHud);
@@ -88,7 +90,7 @@ public class KimbleGraphic extends AbstractGraphic {
         shader = new Shader("shader.vert", "shader.frag");
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
-        camera = new Camera3D(new Vector3f(2, 7, -2), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.1f, 1000f);
+        camera = new Camera3D(70f, 0.1f, 1000f);
         float correctionAngle = -0.5f * board.getSegmentAngle();
         Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle
                 + correctionAngle), board.getRadius()
