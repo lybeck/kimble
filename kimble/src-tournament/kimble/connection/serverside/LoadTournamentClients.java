@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
-import kimble.connection.serverside.clientloading.LoadClientsInterface;
+import kimble.connection.serverside.clientloading.StartJarInterface;
 
 /**
  *
  * @author Christoffer
  */
-class LoadTournamentClients implements LoadClientsInterface {
+class LoadTournamentClients implements StartJarInterface {
 
     private final int numberOfPlayers;
 
@@ -19,7 +19,7 @@ class LoadTournamentClients implements LoadClientsInterface {
     }
 
     @Override
-    public List<KimbleClientInfo> loadInfoList() {
+    public List<KimbleClientInfo> jarStartInfo() {
         File f = new File("");
 
         File absFilePath = f.getAbsoluteFile();

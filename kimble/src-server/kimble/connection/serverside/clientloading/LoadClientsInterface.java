@@ -1,13 +1,10 @@
 package kimble.connection.serverside.clientloading;
 
-import java.util.List;
-import kimble.connection.serverside.KimbleClientInfo;
-
 /**
  *
  * @author Christoffer
  */
-public interface LoadClientsInterface {
+public interface LoadClientsInterface extends StartClientInterface,
+        StartJarInterface {
 
-    public List<KimbleClientInfo> loadInfoList();
 }

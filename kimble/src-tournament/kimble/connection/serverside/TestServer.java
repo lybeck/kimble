@@ -3,7 +3,7 @@ package kimble.connection.serverside;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.connection.serverside.clientloading.LoadClientsInterface;
+import kimble.connection.serverside.clientloading.StartJarInterface;
 
 /**
  *
@@ -17,12 +17,15 @@ public class TestServer {
 
     private static final int NUMBER_OF_PLAYERS = 4;
 
-    private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
+    private static final String HOST_ADDRESS = "localhost";
+    private static final int PORT = 5391;
+
+    private static void startServer(String hostAddress, int port, StartJarInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;
         try {
-            List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
+            List<KimbleClientInfo> clientInfo = loadClientsInterface.jarStartInfo();
             kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI, USE_HUD);
-            KimbleClientLoader.load(kimbleServer, clientInfo, "localhost", 1313);
+            KimbleClientLoader.load(kimbleServer, clientInfo, hostAddress, port);
             kimbleServer.run();
         } catch (Exception ex) {
             Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -33,6 +36,6 @@ public class TestServer {
     }
 
     public static void main(String[] args) {
-        startServer(5391, new LoadTournamentClients(NUMBER_OF_PLAYERS));
+        startServer(HOST_ADDRESS, PORT, new LoadTournamentClients(NUMBER_OF_PLAYERS));
     }
 }
