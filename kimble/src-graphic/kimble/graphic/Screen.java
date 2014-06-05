@@ -34,21 +34,6 @@ public class Screen {
         }
     }
 
-    public static void setupDisplayMacOsx(String title, int width, int height) {
-        // TODO: Remove this method when the font rendering code is done!
-        try {
-            PixelFormat pixelFormat = new PixelFormat(8, 1, 0, 8);
-            ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
-                    .withProfileCore(true);
-
-            Display.setDisplayMode(new DisplayMode(width, height));
-            Display.setTitle(title);
-            Display.create(pixelFormat, contextAtrributes);
-        } catch (LWJGLException ex) {
-            Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public static void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }

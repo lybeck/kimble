@@ -13,7 +13,6 @@ public class TestServer {
 
     private static final boolean USE_LOGGER = true;
     private static final boolean USE_GUI = true;
-    private static final boolean USE_HUD = false;
 
     private static final int NUMBER_OF_PLAYERS = 4;
 
@@ -24,7 +23,7 @@ public class TestServer {
         KimbleServer kimbleServer = null;
         try {
             List<KimbleClientInfo> clientInfo = loadClientsInterface.jarStartInfo();
-            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI, USE_HUD);
+            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI);
             KimbleClientLoader.load(kimbleServer, clientInfo, hostAddress, port);
             kimbleServer.run();
         } catch (Exception ex) {

@@ -21,21 +21,19 @@ public class ServerGame {
     public final static int SQUARES_FROM_START_TO_START = 8;
 
     private final boolean useGui;
-    private final boolean useHud;
 
     public ServerGame(List<IPlayer> players) {
-        this(true, true, players);
+        this(true, players);
     }
 
-    public ServerGame(boolean useGui, boolean useHud, List<IPlayer> players) {
+    public ServerGame(boolean useGui, List<IPlayer> players) {
         this.useGui = useGui;
-        this.useHud = useHud;
         this.logic = new KimbleGameLogic(players);
     }
 
     public void start() {
         if (useGui) {
-            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST, useHud);
+            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST);
             graphic.start();
         } else {
             while (!logic.getGame().isGameOver()) {

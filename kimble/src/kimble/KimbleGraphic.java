@@ -73,8 +73,7 @@ public class KimbleGraphic extends AbstractGraphic {
     // Change this variable to "0, PI/2, PI and 3/2 PI" to position the camera behind the home squares.
     private float cameraPositionAngle = (float) (Math.PI / 2);
 
-    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile, boolean useHud) {
-        super(useHud);
+    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         this.logic = logic;
 
         PlaybackProfile.setCurrentProfile(profile);
@@ -207,7 +206,7 @@ public class KimbleGraphic extends AbstractGraphic {
                 nextTurnTimer = 0;
                 executeMove = true;
 //            } else {
-//                if (!endMessageShown && useHud) {
+//                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
             }

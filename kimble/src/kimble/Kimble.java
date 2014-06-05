@@ -14,19 +14,15 @@ public class Kimble {
 
     public static void main(String[] args) {
         boolean useGui = true;
-        boolean useHud = false;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("nogui")) {
                 useGui = false;
             }
-            if (args[i].equalsIgnoreCase("nohud")) {
-                useHud = false;
-            }
         }
-        runSingleGame(useGui, useHud, 4);
+        runSingleGame(useGui, 4);
     }
 
-    private static void runSingleGame(boolean useGui, boolean useHud, int numberOfPlayers) {
+    private static void runSingleGame(boolean useGui, int numberOfPlayers) {
         List<IPlayer> players = new ArrayList<>();
 
         players.add(new TestAILasse());
@@ -34,7 +30,7 @@ public class Kimble {
             players.add(new TestAIRandom());
         }
 
-        new ServerGame(useGui, useHud, players).start();
+        new ServerGame(useGui, players).start();
     }
 
 //    private static void runMultipleGames(boolean noGui, int numberOfPlayers) {

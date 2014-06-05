@@ -35,13 +35,6 @@ public class Main {
     public static final boolean USE_GUI = true;
 
     /**
-     * USE_HUD = true, gives a info text area on top of the screen.
-     * <p>
-     * USE_HUD = false, doesn't initialize the HUD
-     */
-    public static final boolean USE_HUD = false;
-
-    /**
      * The following parameters defines where the server is running. You are
      * running a local server, hence we recommend "localhost" as host address.
      *
@@ -67,7 +60,7 @@ public class Main {
      * @throws IOException
      */
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
-        KimbleServer server = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
+        KimbleServer server = new KimbleServer(port, USE_LOGGER, USE_GUI);
         KimbleClientLoader.load(server, loadClientsInterface.clientStartInfo());
         KimbleClientLoader.load(server, loadClientsInterface.jarStartInfo());
         server.run();
