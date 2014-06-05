@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kimble.KimbleGraphic;
 import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera;
 import kimble.graphic.camera.Camera2D;
@@ -28,6 +29,7 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class Hud2D {
 
+    private final KimbleGraphic mainWindow;
     private final Camera camera;
 
     private BitmapFont font1;
@@ -40,11 +42,14 @@ public class Hud2D {
 
     private List<TextElement> playbackSpeedTextElements;
 
-    public Hud2D(List<Team> teams) {
-        camera = new Camera2D();
-        camera.setupProjectionMatrix();
+    private Button showTagsButton;
 
+    public Hud2D(KimbleGraphic mainWindow, List<Team> teams) {
+        this.mainWindow = mainWindow;
         this.teams = teams;
+
+        this.camera = new Camera2D();
+        this.camera.setupProjectionMatrix();
 
         setup();
     }
@@ -66,6 +71,16 @@ public class Hud2D {
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
+
+        showTagsButton = new Button("Toggle Tags", font2);
+        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+        showTagsButton.addCallback(new Callback() {
+
+            @Override
+            public void execute() {
+                mainWindow.toggleTags();
+            }
+        });
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -168,6 +183,7 @@ public class Hud2D {
     // =======================================================
     public void update(float dt) {
         camera.update(dt);
+        showTagsButton.update(dt);
     }
 
     /**
@@ -187,6 +203,8 @@ public class Hud2D {
         for (TextElement te : playbackSpeedTextElements) {
             te.render(shader, camera);
         }
+
+        showTagsButton.render(shader, camera);
 
         glEnable(GL_DEPTH_TEST);
     }

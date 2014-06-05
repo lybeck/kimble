@@ -46,14 +46,6 @@ public class BitmapFont {
     public void renderString(Shader shader, Camera camera, String line, Vector3f position, Vector3f rotation) {
         TextureManager.getTexture(textureKey).bind();
 
-//        for (int i = 0; i < line.length(); i++) {
-//            char c = line.charAt(i);
-//            if (i == 0) {
-//                renderGlyph(c, position, rotation, new Matrix4f(), shader, camera, BitmapFont.WHITE);
-//            } else {
-//                renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, BitmapFont.WHITE);
-//            }
-//        }
         renderLine(line, position, rotation, shader, camera, WHITE);
 
         TextureManager.getTexture(textureKey).unbind();
@@ -64,14 +56,6 @@ public class BitmapFont {
 
         for (int j = 0; j < words.size(); j++) {
             Word word = words.get(j);
-//            for (int i = 0; i < word.getText().length(); i++) {
-//                char c = word.getText().charAt(i);
-//                if (j == 0 && i == 0) {
-//                    renderGlyph(c, position, new Vector3f(), new Matrix4f(), shader, camera, word.getColor());
-//                } else {
-//                    renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, word.getColor());
-//                }
-//            }
             renderLine(word.getText(), position, rotation, shader, camera, word.getColor());
         }
 
@@ -112,7 +96,7 @@ public class BitmapFont {
         for (int i = 0; i < line.length(); i++) {
             totalWidth += glyphs.get(line.charAt(i)).getWidth();
         }
-        totalWidth += glyphs.get(' ').getWidth();
+//        totalWidth += glyphs.get(' ').getWidth();
 
         return Math.round(totalWidth);
     }

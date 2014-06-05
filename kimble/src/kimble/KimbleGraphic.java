@@ -44,6 +44,7 @@ public class KimbleGraphic extends AbstractGraphic {
     private Hud2D hud2d;
     private BitmapFont font;
     private int lastTeamID = -1;
+    private boolean showTags = true;
 
     private boolean endMessageShown = false;
 
@@ -122,7 +123,7 @@ public class KimbleGraphic extends AbstractGraphic {
         startingRollMap = startingRollsIterator.next();
         startingRollMapKeyIterator = startingRollMap.keySet().iterator();
 
-        hud2d = new Hud2D(logic.getTeams());
+        hud2d = new Hud2D(this, logic.getTeams());
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
         } catch (IOException ex) {
@@ -276,10 +277,16 @@ public class KimbleGraphic extends AbstractGraphic {
         }
 
         textShader.bind();
-        for (PieceGraphic p : pieces) {
-            String tag = "[" + p.getPieceLogic().getId() + "]";
-            font.renderString(textShader, camera, tag, new Vector3f(p.getPosition().x, 1.5f, p.getPosition().z), new Vector3f(camera.getRotation().x, (float) (-camera.getRotation().y
-                    + Math.PI), 0));
+
+        if (showTags) {
+            for (PieceGraphic p : pieces) {
+                String tag = "[" + p.getPieceLogic().getId() + "]";
+                font.renderString(textShader,
+                        camera,
+                        tag,
+                        new Vector3f(p.getPosition().x, 1.5f, p.getPosition().z),
+                        new Vector3f(camera.getRotation().x, (float) (-camera.getRotation().y + Math.PI), 0));
+            }
         }
 
         hud2d.render(textShader);
@@ -305,5 +312,9 @@ public class KimbleGraphic extends AbstractGraphic {
         TextureManager.dispose();
 
         Screen.dispose();
+    }
+
+    public void toggleTags() {
+        showTags = !showTags;
     }
 }
