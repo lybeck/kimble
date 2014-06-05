@@ -97,11 +97,15 @@ public class Hud2D {
                 widestTeamName = font.calculateWidth(te.getWords());
             }
             te.setPosition(15, 10 + i * font.getVerticalSpacing());
+            te.addCallback(new Callback() {
+
+                @Override
+                public void execute() {
+                    mainWindow.rotateCameraToTeam(team.getId());
+                }
+            });
             teamOrderTextElements.add(te);
         }
-
-//        for (int i = 0; i < teamOrderTextElements.size(); i++) {
-//        }
     }
 
     private void createTeamInfoTextElements(BitmapFont font) {
@@ -125,6 +129,14 @@ public class Hud2D {
                 width = font.calculateWidth(PlaybackProfile.values()[i].name());
             }
             te.addWord("Key " + (PlaybackProfile.values()[i].ordinal() + 1) + ": " + PlaybackProfile.values()[i].name(), BitmapFont.GREY);
+            PlaybackProfile profile = PlaybackProfile.values()[PlaybackProfile.values()[i].ordinal()];
+            te.addCallback(new Callback() {
+
+                @Override
+                public void execute() {
+                    PlaybackProfile.setCurrentProfile(profile);
+                }
+            });
             playbackSpeedTextElements.add(te);
         }
 
@@ -168,22 +180,18 @@ public class Hud2D {
             }
         }
     }
-//    public void setMoveInfo(Move selectedMove, String moveMessage) {
-//
-//        textElements.get(CURRENT_PLAYER_MOVE_KEY).clear();
-//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord("Move: ", BitmapFont.WHITE);
-//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(moveMessage, BitmapFont.WHITE);
-//
-//        textElements.get(CURRENT_PLAYER_MOVE_KEY).addWord(message, BitmapFont.WHITE);
-//    }
-    // =======================================================
-    /*
-     * Update and render
-     */
 
+    // =======================================================
+    // Update and render
     // =======================================================
     public void update(float dt) {
         camera.update(dt);
+        for (TextElement te : teamOrderTextElements) {
+            te.update(dt);
+        }
+        for (TextElement te : playbackSpeedTextElements) {
+            te.update(dt);
+        }
         showTagsButton.update(dt);
     }
 
@@ -209,5 +217,4 @@ public class Hud2D {
 
         glEnable(GL_DEPTH_TEST);
     }
-
 }

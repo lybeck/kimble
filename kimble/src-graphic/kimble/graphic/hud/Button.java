@@ -1,12 +1,8 @@
 package kimble.graphic.hud;
 
-import java.util.ArrayList;
-import java.util.List;
-import kimble.graphic.Screen;
 import kimble.graphic.camera.Camera;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.shader.Shader;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -14,10 +10,9 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class Button {
+public class Button extends AbstractHudItem {
 
     private final BitmapFont font;
-    private final List<Callback> callbacks;
 
     private String text;
     private Rectangle rectangle;
@@ -26,8 +21,6 @@ public class Button {
     private Vector3f textPosition;
     private Vector3f rotation;
 
-    private float width;
-    private float height;
     private float paddingX = 15;
 
     public Button(String text, BitmapFont font) {
@@ -36,40 +29,11 @@ public class Button {
 
         setPosition(0, 0);
         setText(text);
-
-        this.callbacks = new ArrayList<>();
     }
 
-    public void addCallback(Callback callback) {
-        callbacks.add(callback);
-    }
-
-    public void removeCallback(Callback callback) {
-        callbacks.remove(callback);
-    }
-
-    private void execute() {
-        System.out.println("Executing");
-        for (Callback callback : callbacks) {
-            callback.execute();
-        }
-    }
-
+    @Override
     public void update(float dt) {
-
-        int mouseX = Mouse.getX();
-        int mouseY = Screen.getHeight() - Mouse.getY();
-
-        while (Mouse.next()) {
-            if (Mouse.isButtonDown(0)) {
-                if (mouseX >= rectangle.getX()
-                        && mouseX <= rectangle.getX() + rectangle.getWidth()
-                        && mouseY >= rectangle.getY()
-                        && mouseY <= rectangle.getY() + rectangle.getHeight()) {
-                    execute();
-                }
-            }
-        }
+        super.update(dt);
         rectangle.update(dt);
     }
 
@@ -86,6 +50,8 @@ public class Button {
     }
 
     public final void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
         this.position = new Vector3f(x, y, 0);
         this.textPosition = new Vector3f(x + paddingX, y, 0);
         if (rectangle != null) {
@@ -97,11 +63,4 @@ public class Button {
         this.paddingX = padding;
     }
 
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
 }

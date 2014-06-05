@@ -12,12 +12,10 @@ import org.lwjgl.util.vector.Vector3f;
  *
  * @author Christoffer
  */
-public class TextElement {
+public class TextElement extends AbstractHudItem {
 
     private final BitmapFont font;
 
-    private float x;
-    private float y;
     private final List<Word> words;
 
     public TextElement(BitmapFont font) {
@@ -28,6 +26,8 @@ public class TextElement {
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
+        this.width = font.calculateWidth(words);
+        this.height = font.getVerticalSpacing();
     }
 
     public void clear() {
@@ -40,6 +40,11 @@ public class TextElement {
 
     public List<Word> getWords() {
         return words;
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
     }
 
     public void render(Shader shader, Camera camera) {
