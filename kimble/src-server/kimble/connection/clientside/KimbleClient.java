@@ -38,7 +38,9 @@ public abstract class KimbleClient implements Runnable {
 
     private boolean running;
 
+    private String name;
     private int myTeamId;
+
     private String receiveMessageType;
     private int dieRoll;
     private List<MoveInfo> availableMoves;
@@ -50,11 +52,13 @@ public abstract class KimbleClient implements Runnable {
     /**
      * Creates a new Client to communicate with the server.
      *
+     * @param name - The AI name
      * @param host - The url to the server.
      * @param port - The port the server is running on.
      * @throws IOException
      */
-    public KimbleClient(String host, int port) throws IOException {
+    public KimbleClient(String name, String host, int port) throws IOException {
+        this.name = name;
         this.socket = new Socket(host, port);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
         this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
@@ -326,6 +330,15 @@ public abstract class KimbleClient implements Runnable {
         return myTeamId;
     }
 
+    /**
+     * This client's name.
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
+
     private void sendMessageString(String message) {
         writer.println(message);
     }
@@ -363,7 +376,7 @@ public abstract class KimbleClient implements Runnable {
     private static class ErrorMessage extends SendMessage {
 
         private final Exception exception;
-        
+
         public ErrorMessage(Exception exception) {
             this.exception = exception;
         }

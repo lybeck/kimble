@@ -105,4 +105,8 @@ public class KimbleServer implements Runnable {
         clients.add(client);
         client.send(new YourTeamIdMessage(client.getID()));
     }
+
+    List<IPlayer> getClients() {
+        return clients;
+    }
 }

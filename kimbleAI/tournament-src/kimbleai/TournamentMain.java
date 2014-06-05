@@ -11,9 +11,9 @@ public class TournamentMain {
 
     public static void main(String[] args) throws IOException {
         if (args.length > 2) {
-            Main.startClient(args[0], Integer.parseInt(args[1]));
+            Main.startClient(args[0], Integer.parseInt(args[1])).run();
         } else {
-            Main.startClient(Main.HOST_ADDRESS, Main.PORT);
+            Main.startClient(Main.HOST_ADDRESS, Main.PORT).run();
         }
     }
 }

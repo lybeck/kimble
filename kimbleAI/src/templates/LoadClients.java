@@ -19,7 +19,7 @@ public class LoadClients implements LoadClientsInterface {
     @Override
     public List<KimbleClientInfo> loadInfoList() {
 
-        // Gets the path to the relative directory "dist" containing the built jar.
+        // Gets the path to the relative directory "bots" containing the pre-built bots.
         // And gets the whole system path to it.
         String dir = new File("bots").getAbsolutePath();
 
@@ -29,21 +29,20 @@ public class LoadClients implements LoadClientsInterface {
             @Override
             public boolean accept(File dir, String name) {
                 // filters the files in the directory and selects only 
-                // files with extension .jar
-                return name.endsWith(".jar");
+                // files with extension .jar and has the word Bot or bot in it.
+                return name.endsWith(".jar") && (name.contains("Bot") || name.contains("bot"));
             }
         });
 
         // if no files where found abort.
-        if (files == null || files.length == 0) {
-            System.out.println("You must clean build your project before running it!");
+        if (files == null || files.length <= 0) {
+            System.out.println("There weren't any bots in the 'bots' directory!");
             System.exit(1);
         }
 
+        // TODO: change this text to fit the new bot loading.
         // Coldly select the first jar and gets it's name without the system path.
         // (this could fail if you have a jar that is not a build from this project in the dist directory).
-        String jarName = files[0].getName();
-
         // Generate the list of client information that the server needs.
         //   * "new KimbleClientInfo(clientName, runDirectory, jarName)"
         //
@@ -63,14 +62,15 @@ public class LoadClients implements LoadClientsInterface {
         // four AIs running. Otherwise the server will crash and throw an exception telling you
         // how many players you need!
         //
-        int playerAmount = 4;
         List<KimbleClientInfo> clientInfo = new ArrayList<>();
-        if (files.length > 0) {
-            for (int i = 0; i < playerAmount; i++) {
-                System.out.println("Loading AI: " + jarName);
-                System.out.println("          : " + dir);
-                clientInfo.add(new KimbleClientInfo("Client_" + i, dir, jarName));
-            }
+        for (int i = 0; i < files.length; i++) {
+            String jarName = files[i].getName();
+            String botName = jarName.substring(0, jarName.length() - 4);
+            System.out.println("Loading AI: " + jarName);
+            System.out.println("      From: " + dir);
+            System.out.println("        As: " + botName);
+            System.out.println("");
+            clientInfo.add(new KimbleClientInfo(botName, dir, jarName));
         }
 
         // return the list of Client information. The server will then start

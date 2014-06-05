@@ -14,7 +14,7 @@ public class RandomAI extends KimbleClient {
     private Random random;
 
     public RandomAI(String hostAddress, int port) throws IOException {
-        super(hostAddress, port);
+        super("RandomAI", hostAddress, port);
         this.random = new Random();
     }
 
@@ -25,7 +25,7 @@ public class RandomAI extends KimbleClient {
         // is received.
         // =======================================
         String messageType = getReceiveMessageType();
-        System.out.println("Team " + getMyTeamId() + " Recieved: " + messageType);
+        System.out.println(getName() + " " + getMyTeamId() + " Recieved: " + messageType);
 
         if (messageType.equals("moves")) {
             List<MoveInfo> moves = getAvailableMoves();

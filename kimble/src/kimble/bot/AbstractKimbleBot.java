@@ -12,8 +12,8 @@ import kimble.connection.clientside.MoveInfo;
  */
 public abstract class AbstractKimbleBot extends KimbleClient {
 
-    public AbstractKimbleBot(String host, int port) throws IOException {
-        super(host, port);
+    public AbstractKimbleBot(String name, String host, int port) throws IOException {
+        super(name, host, port);
     }
 
     protected abstract MoveInfo getBestMove();

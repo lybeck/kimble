@@ -12,7 +12,11 @@ import kimble.connection.clientside.PieceInfo;
 public class KimbleBot1 extends AbstractKimbleBot {
 
     public KimbleBot1(String host, int port) throws IOException {
-        super(host, port);
+        super("KimbleBot1", host, port);
+    }
+
+    public KimbleBot1(String name, String host, int port) throws IOException {
+        super(name, host, port);
     }
 
     @Override

@@ -1,11 +1,12 @@
 package yourpackage;
 
 import java.io.IOException;
+import kimble.bot.KimbleBot3;
+import kimble.connection.clientside.KimbleClient;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
 import templates.LoadClients;
-import templates.RandomAI;
 
 /**
  *
@@ -51,6 +52,7 @@ public class Main {
      */
     public static final String HOST_ADDRESS = "localhost";
     public static final int PORT = 5391;
+//    public static final int PORT = 5291;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Start server method - You don't have to change anything here.">
@@ -67,7 +69,13 @@ public class Main {
      */
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
         KimbleServer kimbleServer = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
-        new KimbleClientLoader(kimbleServer, loadClientsInterface.loadInfoList());
+
+        // starts this instance
+        KimbleClientLoader.load(kimbleServer, startClient(HOST_ADDRESS, port));
+
+        // start all the clients in the list.
+        KimbleClientLoader.load(kimbleServer, loadClientsInterface.loadInfoList());
+
         kimbleServer.run();
     }
     // </editor-fold>
@@ -88,9 +96,10 @@ public class Main {
      *
      * @param hostAddress
      * @param port
+     * @return
      * @throws IOException
      */
-    public static void startClient(String hostAddress, int port) throws IOException {
+    public static KimbleClient startClient(String hostAddress, int port) throws IOException {
         //=======================================================
         // Change this to point to your own AI.
         //
@@ -98,21 +107,31 @@ public class Main {
         // against.
         //
         //  * kimble.bot.KimbleBot1
+        //  * kimble.bot.KimbleBot2
+        //  * kimble.bot.KimbleBot3
         //=======================================================
 
-        // TODO: Change this to be only a getter for the bot. It can then be automatically started.
-        new RandomAI(hostAddress, port).run();
+//        new KimbleBot3(hostAddress, port);
+        return new KimbleBot3(hostAddress, port);
     }
-    // </editor-fold>
 
+    // </editor-fold>
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < 1; i++) {
 
+//            ai = new RandomAI(HOST_ADDRESS, PORT);
             //=======================================================
             // Change the implementation of 'loadClients()' in 
             // 'LoadClients' to load different kinds of AIs.
             //=======================================================
             startServer(PORT, new LoadClients());
+//            KimbleServer server = startServer(PORT, new LoadClients());
+//            server.run();
+//            Thread serverThread = new Thread(server);
+//            serverThread.start();
+
+//            Thread aiThread = new Thread(ai);
+//            aiThread.start();
         }
     }
 

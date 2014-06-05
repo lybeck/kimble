@@ -19,7 +19,7 @@ public class KimbleBot3 extends KimbleBot1 {
     private final Random random;
 
     public KimbleBot3(String host, int port) throws IOException {
-        super(host, port);
+        super("KimbleBot3", host, port);
         this.random = new Random();
     }
 
