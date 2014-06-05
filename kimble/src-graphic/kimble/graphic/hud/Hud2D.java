@@ -59,6 +59,7 @@ public class Hud2D {
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
+        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
     }
 
     public final void setup() {

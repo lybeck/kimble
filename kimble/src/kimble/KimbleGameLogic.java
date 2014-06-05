@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble;
 
 import kimble.logic.KimbleLogicInterface;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import static kimble.ServerGame.DEBUG;
-import static kimble.ServerGame.NUMBER_OF_PIECES;
-import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
-import static kimble.ServerGame.NUMBER_OF_FINISHING_TEAMS;
 import kimble.connection.logger.KimbleGameStateLogger;
 import kimble.logic.Constants;
 import kimble.logic.Game;
@@ -30,14 +21,15 @@ import kimble.logic.player.KimbleAI;
  */
 public class KimbleGameLogic implements KimbleLogicInterface {
 
+    private static boolean DEBUG;
     private final Game game;
-    private List<IPlayer> players;
+    private final List<IPlayer> players;
     private int winner;
 
-    private Set<Integer> startValues;
-    private Set<Integer> continueTurnValues;
-    private int numberOfPieces;
-    private int squaresFromStartToStart;
+    private final Set<Integer> startValues;
+    private final Set<Integer> continueTurnValues;
+    private final int numberOfPieces;
+    private final int squaresFromStartToStart;
 
     private Turn currentTurn;
     private int startingTeamIndex;
@@ -47,12 +39,11 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private Move selectedMove;
 
     public KimbleGameLogic(List<IPlayer> players) {
-        this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, NUMBER_OF_PIECES,
-                SQUARES_FROM_START_TO_START, NUMBER_OF_FINISHING_TEAMS);
+        this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 8, 4, false);
     }
 
     public KimbleGameLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues,
-            int numberOfPieces, int squaresFromStartToStart, int numberOfFinishingTeams) {
+            int numberOfPieces, int squaresFromStartToStart, int numberOfFinishingTeams, boolean debug) {
         this.players = players;
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
@@ -60,6 +51,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         this.squaresFromStartToStart = squaresFromStartToStart;
         this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, squaresFromStartToStart,
                 numberOfFinishingTeams);
+        DEBUG = debug;
 
         setup();
     }
