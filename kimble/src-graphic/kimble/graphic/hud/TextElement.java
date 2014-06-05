@@ -43,7 +43,7 @@ public class TextElement {
     }
 
     public void render(Shader shader, Camera camera) {
-        font.renderWords(shader, camera, words, new Vector3f(x, y, 0));
+        font.renderWords(shader, camera, words, new Vector3f(x, y, 0), new Vector3f());
     }
 
     public class Word {

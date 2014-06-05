@@ -43,62 +43,58 @@ public class BitmapFont {
         this.previousGlyph = null;
     }
 
-//    public void renderString(Shader shader, Camera camera, String line, Vector3f position) {
-//        TextureManager.getTexture(textureKey).bind();
-//
-//        previousGlyph = null;
-//
+    public void renderString(Shader shader, Camera camera, String line, Vector3f position, Vector3f rotation) {
+        TextureManager.getTexture(textureKey).bind();
+
 //        for (int i = 0; i < line.length(); i++) {
 //            char c = line.charAt(i);
-//            renderGlyph(c, position, shader, camera, WHITE);
-//        }
-//
-//        TextureManager.getTexture(textureKey).unbind();
-//    }
-//
-//    public void renderText(Shader shader, Camera camera, List<String> words, Vector3f position) {
-//        TextureManager.getTexture(textureKey).bind();
-//
-//        previousGlyph = null;
-//
-//        for (int j = 0; j < words.size(); j++) {
-//            String word = words.get(j);
-//            for (int i = 0; i < word.length(); i++) {
-//                char c = word.charAt(i);
-//                renderGlyph(c, position, shader, camera, WHITE);
-//            }
-//            // render a space after each character.
-//            if (j < words.size() - 1) {
-//                char c = ' ';
-//                renderGlyph(c, position, shader, camera, WHITE);
+//            if (i == 0) {
+//                renderGlyph(c, position, rotation, new Matrix4f(), shader, camera, BitmapFont.WHITE);
+//            } else {
+//                renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, BitmapFont.WHITE);
 //            }
 //        }
-//
-//        TextureManager.getTexture(textureKey).unbind();
-//    }
-    public void renderWords(Shader shader, Camera camera, List<Word> words, Vector3f position) {
+        renderLine(line, position, rotation, shader, camera, WHITE);
+
+        TextureManager.getTexture(textureKey).unbind();
+    }
+
+    public void renderWords(Shader shader, Camera camera, List<Word> words, Vector3f position, Vector3f rotation) {
         TextureManager.getTexture(textureKey).bind();
 
         for (int j = 0; j < words.size(); j++) {
             Word word = words.get(j);
-            for (int i = 0; i < word.getText().length(); i++) {
-                char c = word.getText().charAt(i);
-                if (j == 0 && i == 0) {
-                    renderGlyph(c, position, new Matrix4f(), shader, camera, word.getColor());
-                } else {
-                    renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), previousGlyph.getModelMatrix(), shader, camera, word.getColor());
-                }
-            }
+//            for (int i = 0; i < word.getText().length(); i++) {
+//                char c = word.getText().charAt(i);
+//                if (j == 0 && i == 0) {
+//                    renderGlyph(c, position, new Vector3f(), new Matrix4f(), shader, camera, word.getColor());
+//                } else {
+//                    renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, word.getColor());
+//                }
+//            }
+            renderLine(word.getText(), position, rotation, shader, camera, word.getColor());
         }
 
         TextureManager.getTexture(textureKey).unbind();
     }
 
-    private void renderGlyph(char c, Vector3f position, Matrix4f matrix, Shader shader, Camera camera, TextMaterial color) {
+    private void renderLine(String line, Vector3f position, Vector3f rotation, Shader shader, Camera camera, TextMaterial color) {
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (i == 0) {
+                renderGlyph(c, position, rotation, new Matrix4f(), shader, camera, color);
+            } else {
+                renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, color);
+            }
+        }
+    }
+
+    private void renderGlyph(char c, Vector3f position, Vector3f rotation, Matrix4f matrix, Shader shader, Camera camera, TextMaterial color) {
         Glyph g = glyphs.get(c);
 
         g.setParentModelMatrix(matrix);
         g.setPosition(position);
+        g.rotate(rotation.x, rotation.y, rotation.z);
 
         g.update(0);
         g.render(shader, camera, color);
@@ -110,7 +106,7 @@ public class BitmapFont {
         return glyphs;
     }
 
-    public int calculateWidth(String line) {
+    public float calculateWidth(String line) {
         float totalWidth = 0;
 
         for (int i = 0; i < line.length(); i++) {
@@ -118,10 +114,10 @@ public class BitmapFont {
         }
         totalWidth += glyphs.get(' ').getWidth();
 
-        return (int) Math.round(totalWidth);
+        return Math.round(totalWidth);
     }
 
-    public int calculateWidth(List<Word> words) {
+    public float calculateWidth(List<Word> words) {
         float totalWidth = 0;
 
         for (Word word : words) {

@@ -59,11 +59,14 @@ public class PieceGraphic extends Model {
             }
 
             if (move(currentSquare.getPosition())) {
-                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
 
-                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
-                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 setPosition(tempPosition);
                 rotate(0, currentSquare.getRotation().y, 0);
             } else {
@@ -79,4 +82,9 @@ public class PieceGraphic extends Model {
 
         }
     }
+
+    public Piece getPieceLogic() {
+        return pieceLogic;
+    }
+
 }
