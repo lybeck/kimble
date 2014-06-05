@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
 import kimble.graphic.camera.Camera3D;
 import kimble.graphic.ExtraInput;
 import kimble.graphic.Input3D;
@@ -71,12 +70,10 @@ public class KimbleGraphic extends AbstractGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    // Change this variable to "0, PI/2, PI and 3/2 PI" to position the camera behind the home squares.
-    private float cameraPositionAngle = (float) (Math.PI / 2);
+    private float cameraPositionAngle;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         this.logic = logic;
-
         PlaybackProfile.setCurrentProfile(profile);
     }
 
@@ -86,19 +83,12 @@ public class KimbleGraphic extends AbstractGraphic {
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs(SQUARES_FROM_START_TO_START));
+        board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs());
         shader = new Shader("shader.vert", "shader.frag");
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         camera = new Camera3D(70f, 0.1f, 1000f);
-        float correctionAngle = -0.5f * board.getSegmentAngle();
-        Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle
-                + correctionAngle), board.getRadius()
-                * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle
-                        + correctionAngle));
-        camera.setPosition(cameraPos);
-        camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2
-                + correctionAngle, 0));
+        rotateCameraToTeam(1);
 
         camera.setupProjectionMatrix();
 
@@ -133,6 +123,23 @@ public class KimbleGraphic extends AbstractGraphic {
 
     }
 
+    private void updateCameraPosition() {
+
+        Vector3f cameraPos = new Vector3f(
+                board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle),
+                board.getRadius() * 1.5f,
+                board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)
+        );
+        Vector3f rotation = new Vector3f(
+                (float) (Math.PI / 3),
+                cameraPositionAngle - (float) (Math.PI / 2),
+                0
+        );
+
+        camera.setPosition(cameraPos);
+        camera.setRotation(rotation);
+    }
+
     @Override
     public void update(float dt) {
         if (Screen.isCloseRequested()) {
@@ -149,10 +156,7 @@ public class KimbleGraphic extends AbstractGraphic {
 
         if (extraInput.rotateCamera()) {
             cameraPositionAngle += dt * 0.1;
-            Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius()
-                    * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
-            camera.setPosition(cameraPos);
-            camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+            updateCameraPosition();
         }
 
         if (Screen.wasResized()) {
@@ -316,5 +320,10 @@ public class KimbleGraphic extends AbstractGraphic {
 
     public void toggleTags() {
         showTags = !showTags;
+    }
+
+    public void rotateCameraToTeam(int teamID) {
+        cameraPositionAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+        updateCameraPosition();
     }
 }

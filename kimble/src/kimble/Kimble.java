@@ -19,7 +19,7 @@ public class Kimble {
                 useGui = false;
             }
         }
-        runSingleGame(useGui, 8);
+        runSingleGame(useGui, 4);
     }
 
     private static void runSingleGame(boolean useGui, int numberOfPlayers) {

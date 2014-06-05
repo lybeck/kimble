@@ -14,7 +14,7 @@ import kimble.graphic.Model;
 import kimble.graphic.shader.Shader;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
-import kimble.utils.MathHelper;
+import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 

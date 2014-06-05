@@ -29,7 +29,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private final Set<Integer> startValues;
     private final Set<Integer> continueTurnValues;
     private final int numberOfPieces;
-    private final int squaresFromStartToStart;
+    private final int sideLength;
 
     private Turn currentTurn;
     private int startingTeamIndex;
@@ -38,18 +38,29 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private String moveMessage;
     private Move selectedMove;
 
-    public KimbleGameLogic(List<IPlayer> players) {
-        this(players, Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, 4, 8, 4, false);
+    public KimbleGameLogic(List<IPlayer> players, boolean debug) {
+        this(players,
+                Constants.DEFAULT_START_VALUES,
+                Constants.DEFAULT_CONTINUE_TURN_VALUES,
+                Constants.DEFAULT_NUMBER_OF_PIECES,
+                Constants.DEFAULT_SIDE_LENGTH,
+                Constants.DEFAULT_FINISHING_TEAMS,
+                debug);
     }
 
-    public KimbleGameLogic(List<IPlayer> players, Set<Integer> startValues, Set<Integer> continueTurnValues,
-            int numberOfPieces, int squaresFromStartToStart, int numberOfFinishingTeams, boolean debug) {
+    public KimbleGameLogic(List<IPlayer> players,
+            Set<Integer> startValues,
+            Set<Integer> continueTurnValues,
+            int numberOfPieces,
+            int sideLength,
+            int numberOfFinishingTeams,
+            boolean debug) {
         this.players = players;
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
         this.numberOfPieces = numberOfPieces;
-        this.squaresFromStartToStart = squaresFromStartToStart;
-        this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, squaresFromStartToStart,
+        this.sideLength = sideLength;
+        this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, sideLength,
                 numberOfFinishingTeams);
         DEBUG = debug;
 
@@ -230,7 +241,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     }
 
     public int getSquaresFromStartToStart() {
-        return squaresFromStartToStart;
+        return sideLength;
     }
 
     public Set<Integer> getStartValues() {
