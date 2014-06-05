@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kimble.connection.messages.MoveSelectedMessage;
 import kimble.connection.messages.PingMessage;
 import kimble.connection.messages.ReceiveMessage;
@@ -32,9 +34,12 @@ import kimble.connection.messages.SendMessage;
  */
 public abstract class KimbleClient implements Runnable {
 
-    private final Socket socket;
-    private final BufferedReader reader;
-    private final PrintWriter writer;
+    private final String host;
+    private final int port;
+
+    private Socket socket;
+    private BufferedReader reader;
+    private PrintWriter writer;
 
     private boolean running;
 
@@ -59,14 +64,22 @@ public abstract class KimbleClient implements Runnable {
      */
     public KimbleClient(String name, String host, int port) throws IOException {
         this.name = name;
-        this.socket = new Socket(host, port);
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
-        this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
-        this.running = true;
+        this.host = host;
+        this.port = port;
     }
 
     @Override
     public final void run() {
+        try {
+            this.socket = new Socket(host, port);
+            this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+            this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+        } catch (IOException ex) {
+            Logger.getLogger(KimbleClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        this.running = true;
+
         while (running) {
             ReceiveMessage receiveMessage = receiveMessage();
             if (getReceiveMessageType().equals("disconnect")) {

@@ -1,12 +1,12 @@
 package yourpackage;
 
 import java.io.IOException;
-import kimble.bot.KimbleBot3;
+import kimble.bot.KimbleBot1;
 import kimble.connection.clientside.KimbleClient;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
-import templates.LoadClients;
+import templates.RandomAI;
 
 /**
  *
@@ -68,18 +68,20 @@ public class Main {
      * @throws IOException
      */
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
-        KimbleServer kimbleServer = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
-
-        // starts this instance
-        KimbleClientLoader.load(kimbleServer, startClient(HOST_ADDRESS, port));
-
-        // start all the clients in the list.
-        KimbleClientLoader.load(kimbleServer, loadClientsInterface.loadInfoList());
-
-        kimbleServer.run();
+        KimbleServer server = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
+        KimbleClientLoader.load(server, loadClientsInterface.loadInfoList());
+        server.run();
     }
-    // </editor-fold>
 
+    private static KimbleServer createServer(int port) throws IOException {
+        return new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
+    }
+
+    private static void startServer(KimbleServer server) {
+        server.run();
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Start client method - You must change the 'new KimbleClient(hostAddress, port)' to point to your AI">
     /**
      * =====================================<br>
@@ -99,7 +101,7 @@ public class Main {
      * @return
      * @throws IOException
      */
-    public static KimbleClient startClient(String hostAddress, int port) throws IOException {
+    public static KimbleClient createAI(String hostAddress, int port) throws IOException {
         //=======================================================
         // Change this to point to your own AI.
         //
@@ -112,7 +114,7 @@ public class Main {
         //=======================================================
 
 //        new KimbleBot3(hostAddress, port);
-        return new KimbleBot3(hostAddress, port);
+        return new RandomAI(hostAddress, port);
     }
 
     // </editor-fold>
@@ -124,14 +126,27 @@ public class Main {
             // Change the implementation of 'loadClients()' in 
             // 'LoadClients' to load different kinds of AIs.
             //=======================================================
-            startServer(PORT, new LoadClients());
-//            KimbleServer server = startServer(PORT, new LoadClients());
-//            server.run();
-//            Thread serverThread = new Thread(server);
-//            serverThread.start();
+//            startServer(PORT, new LoadClients());
+            KimbleClient[] clients = new KimbleClient[4];
+            clients[0] = createAI(HOST_ADDRESS, PORT);
+            clients[1] = new KimbleBot1(HOST_ADDRESS, PORT);
+            clients[2] = createAI(HOST_ADDRESS, PORT);
+            clients[3] = createAI(HOST_ADDRESS, PORT);
 
-//            Thread aiThread = new Thread(ai);
-//            aiThread.start();
+            KimbleServer server = createServer(PORT);
+
+            for (KimbleClient client : clients) {
+                KimbleClientLoader.load(server, client);
+            }
+            startServer(server);
+
+//            startServer(PORT, clients);
+//            startServer(PORT, new KimbleClient[]{
+//                createAI(HOST_ADDRESS, PORT),
+//                createAI(HOST_ADDRESS, PORT),
+//                createAI(HOST_ADDRESS, PORT),
+//                createAI(HOST_ADDRESS, PORT)
+//            });
         }
     }
 

@@ -41,7 +41,8 @@ public class KimbleClientLoader {
      */
     public static void load(KimbleServer server, List<KimbleClientInfo> clientInfo) throws IOException {
         for (int i = 0; i < clientInfo.size(); i++) {
-            KimbleClientAI client = new KimbleClientAI(server.getClients().size(), clientInfo.get(i).getClientName());
+            int id = server.getClients().size();
+            KimbleClientAI client = new KimbleClientAI(id, clientInfo.get(i).getClientName());
             KimbleClientAIProcessStarter.startAI(client, clientInfo.get(i).getDirectory(), clientInfo.get(i).getJarName());
             server.addPlayer(client);
         }
