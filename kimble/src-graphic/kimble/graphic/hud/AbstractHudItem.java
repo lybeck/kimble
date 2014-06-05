@@ -3,6 +3,8 @@ package kimble.graphic.hud;
 import java.util.ArrayList;
 import java.util.List;
 import kimble.graphic.Screen;
+import kimble.graphic.camera.Camera;
+import kimble.graphic.shader.Shader;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -52,8 +54,9 @@ public abstract class AbstractHudItem {
                 }
             }
         }
-
     }
+
+    public abstract void render(Shader shader, Camera camera);
 
     public float getX() {
         return x;

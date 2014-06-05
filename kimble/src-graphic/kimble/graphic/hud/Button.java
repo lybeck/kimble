@@ -37,6 +37,7 @@ public class Button extends AbstractHudItem {
         rectangle.update(dt);
     }
 
+    @Override
     public void render(Shader shader, Camera camera) {
         rectangle.render(shader, camera);
         font.renderString(shader, camera, text, textPosition, rotation);

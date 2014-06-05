@@ -3,9 +3,7 @@ package kimble.graphic.hud;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.KimbleGraphic;
@@ -36,13 +34,14 @@ public class Hud2D {
     private BitmapFont font2;
 
     private final List<Team> teams;
-    private List<TextElement> teamOrderTextElements;
-    private Map<Integer, TextElement> teamInfoTextElements;
     private float widestTeamName;
 
+    private List<TextElement> teamOrderTextElements;
+    private List<TextElement> teamInfoTextElements;
     private List<TextElement> playbackSpeedTextElements;
-
     private Button showTagsButton;
+
+    private List<AbstractHudItem> items;
 
     public Hud2D(KimbleGraphic mainWindow, List<Team> teams) {
         this.mainWindow = mainWindow;
@@ -51,15 +50,16 @@ public class Hud2D {
         this.camera = new Camera2D();
         this.camera.setupProjectionMatrix();
 
+        this.items = new ArrayList<>();
         setup();
     }
 
     public void updateViewport() {
         camera.setupProjectionMatrix();
-        createTeamOrderTextElements(font2);
-        createTeamInfoTextElements(font2);
-        createPlaybackSpeedTextElements(font2);
-        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+        positionTeamOrderTextElements(font2);
+        positionTeamInfoTextElements(font2);
+        positionPlaybackSpeedTextElements(font2);
+        positionToggleButton();
     }
 
     public final void setup() {
@@ -72,16 +72,7 @@ public class Hud2D {
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
-
-        showTagsButton = new Button("Toggle Tags", font2);
-        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
-        showTagsButton.addCallback(new Callback() {
-
-            @Override
-            public void execute() {
-                mainWindow.toggleTags();
-            }
-        });
+        createToggleButton(font2);
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -106,17 +97,21 @@ public class Hud2D {
             });
             teamOrderTextElements.add(te);
         }
+
+        items.addAll(teamOrderTextElements);
     }
 
     private void createTeamInfoTextElements(BitmapFont font) {
-        teamInfoTextElements = new HashMap<>();
+        teamInfoTextElements = new ArrayList<>();
 
         for (int i = 0; i < teams.size(); i++) {
             TextElement te = new TextElement(font);
             te.addWord("", BitmapFont.WHITE);
             te.setPosition(15 + 15 + widestTeamName, 10 + i * font.getVerticalSpacing());
-            teamInfoTextElements.put(i, te);
+            teamInfoTextElements.add(te);
         }
+
+        items.addAll(teamInfoTextElements);
     }
 
     private void createPlaybackSpeedTextElements(BitmapFont font) {
@@ -140,16 +135,53 @@ public class Hud2D {
             playbackSpeedTextElements.add(te);
         }
 
+        positionPlaybackSpeedTextElements(font);
+
+        items.addAll(playbackSpeedTextElements);
+    }
+
+    private void createToggleButton(BitmapFont font) {
+        showTagsButton = new Button("Toggle Tags", font);
+        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+        showTagsButton.addCallback(new Callback() {
+
+            @Override
+            public void execute() {
+                mainWindow.toggleTags();
+            }
+        });
+
+        items.add(showTagsButton);
+    }
+
+    private void positionTeamOrderTextElements(BitmapFont font) {
+        for (int i = 0; i < teamOrderTextElements.size(); i++) {
+            TextElement te = teamOrderTextElements.get(i);
+            te.setPosition(15, 10 + i * font.getVerticalSpacing());
+        }
+    }
+
+    private void positionTeamInfoTextElements(BitmapFont font) {
+        for (int i = 0; i < teamInfoTextElements.size(); i++) {
+            teamInfoTextElements.get(i).setPosition(30 + widestTeamName, 10 + i * font.getVerticalSpacing());
+        }
+    }
+
+    private void positionPlaybackSpeedTextElements(BitmapFont font) {
         for (int i = 0; i < playbackSpeedTextElements.size(); i++) {
             TextElement te = playbackSpeedTextElements.get(i);
             te.setPosition(15, Screen.getHeight() - (i + 1) * font.getVerticalSpacing() - 15);
         }
     }
 
+    private void positionToggleButton() {
+        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+    }
     // =======================================================
     /*
      * Setters
      */
+
     // =======================================================
     public void setTeamInfo(int teamID, String... info) {
         teamInfoTextElements.get(teamID).clear();
@@ -186,13 +218,17 @@ public class Hud2D {
     // =======================================================
     public void update(float dt) {
         camera.update(dt);
-        for (TextElement te : teamOrderTextElements) {
-            te.update(dt);
+
+        for (AbstractHudItem item : items) {
+            item.update(dt);
         }
-        for (TextElement te : playbackSpeedTextElements) {
-            te.update(dt);
-        }
-        showTagsButton.update(dt);
+//        for (TextElement te : teamOrderTextElements) {
+//            te.update(dt);
+//        }
+//        for (TextElement te : playbackSpeedTextElements) {
+//            te.update(dt);
+//        }
+//        showTagsButton.update(dt);
     }
 
     /**
@@ -203,17 +239,9 @@ public class Hud2D {
     public void render(Shader shader) {
         glDisable(GL_DEPTH_TEST);
 
-        for (TextElement te : teamOrderTextElements) {
-            te.render(shader, camera);
+        for (AbstractHudItem item : items) {
+            item.render(shader, camera);
         }
-        for (int key : teamInfoTextElements.keySet()) {
-            teamInfoTextElements.get(key).render(shader, camera);
-        }
-        for (TextElement te : playbackSpeedTextElements) {
-            te.render(shader, camera);
-        }
-
-        showTagsButton.render(shader, camera);
 
         glEnable(GL_DEPTH_TEST);
     }
