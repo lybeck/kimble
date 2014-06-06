@@ -29,6 +29,7 @@ import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Piece;
 import kimble.logic.Team;
+import kimble.playback.PlaybackLogic;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -165,23 +166,24 @@ public class KimbleGraphic extends AbstractGraphic {
             hud2d.updateViewport();
         }
 
-        if (extraInput.isExecuteMove()) {
-            if (started) {
-                updateExecuteMoveManual(dt);
+        if (started) {
+            if (logic instanceof PlaybackLogic) {
+                updateExecuteMovePlayback();
             } else {
-                updateStartingDieRoll(dt);
+                updateExecuteMoveManual(dt);
             }
-            extraInput.setExecuteMove(false);
         }
 
         turnTimer += dt;
-        if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+        if (turnTimer
+                >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
             if (started) {
-                updateExecuteMove(dt);
+//                updateExecuteMove(dt);
             } else {
                 updateStartingDieRoll(dt);
             }
         }
+
         extraInput.update(dt);
         input.update(dt);
         camera.update(dt);
@@ -257,9 +259,29 @@ public class KimbleGraphic extends AbstractGraphic {
     private void updateExecuteMoveManual(float dt) {
 
         if (executeMove) {
-            logic.executeMove();
+            if (extraInput.isPlaybackNextMove()) {
+                logic.executeMove();
+                extraInput.setPlaybackNextMove(false);
+            }
             executeMove = false;
         }
+        updateDieRoll();
+    }
+
+    private void updateExecuteMovePlayback() {
+        if (executeMove) {
+            if (extraInput.isPlaybackNextMove()) {
+                ((PlaybackLogic) logic).getNextMove();
+                extraInput.setPlaybackNextMove(false);
+            } else if (extraInput.isPlaybackPreviousMove()) {
+                ((PlaybackLogic) logic).getPreviousMove();
+                extraInput.setPlaybackPreviousMove(false);
+            }
+            executeMove = false;
+        }
+    }
+
+    private void updateDieRoll() {
         if (!logic.isGameOver()) {
             updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
 

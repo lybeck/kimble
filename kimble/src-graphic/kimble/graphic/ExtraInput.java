@@ -17,6 +17,9 @@ public class ExtraInput {
 
     private boolean rotateCamera = false;
 
+    private boolean playbackNextMove = false;
+    private boolean playbackPreviousMove = false;
+
     public void update(float dt) {
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
@@ -43,6 +46,10 @@ public class ExtraInput {
 
             if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 executeMove = true;
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+                playbackNextMove = true;
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+                playbackPreviousMove = true;
             }
         }
     }
@@ -55,6 +62,22 @@ public class ExtraInput {
 
     public boolean isExecuteMove() {
         return executeMove;
+    }
+
+    public void setPlaybackNextMove(boolean playbackNextMove) {
+        this.playbackNextMove = playbackNextMove;
+    }
+
+    public boolean isPlaybackNextMove() {
+        return playbackNextMove;
+    }
+
+    public void setPlaybackPreviousMove(boolean playbackPreviousMove) {
+        this.playbackPreviousMove = playbackPreviousMove;
+    }
+
+    public boolean isPlaybackPreviousMove() {
+        return playbackPreviousMove;
     }
 
     public boolean rotateCamera() {

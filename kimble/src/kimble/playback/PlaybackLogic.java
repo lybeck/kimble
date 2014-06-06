@@ -114,13 +114,16 @@ public class PlaybackLogic implements KimbleLogicInterface {
         } catch (IllegalMoveException ex) {
             Logger.getLogger(PlaybackLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        getNextMove();
+//        getNextMove();
     }
 
     // TODO: separate the getNextMove() to a getNextMove() and getPreviousMove();
     private Team nextTeam;
 
-    private void getPreviousMove() {
+    public void getPreviousMove() {
+
+        executeMove();
+
         if (logIterator.hasPrevious()) {
             LogEntry entry = logIterator.previous();
 
@@ -156,7 +159,10 @@ public class PlaybackLogic implements KimbleLogicInterface {
         }
     }
 
-    private void getNextMove() {
+    public void getNextMove() {
+
+        executeMove();
+
         if (logIterator.hasNext()) {
             LogEntry entry = logIterator.next();
 

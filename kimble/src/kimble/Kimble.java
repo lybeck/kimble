@@ -1,16 +1,13 @@
 package kimble;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import kimble.logic.Constants;
 import kimble.logic.IPlayer;
 import kimble.logic.player.testai.FirstMoveAI;
 import kimble.logic.player.testai.TestAILasse;
 import kimble.logic.player.testai.TestAILasse1;
 import kimble.logic.player.testai.TestAIRandom;
-import kimble.util.Timer;
 
 /**
  *
