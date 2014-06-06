@@ -76,6 +76,11 @@
             <fileset dir="lib/natives/"/>
         </copy>
         
+        <copy todir="${dist.dir}/tournament/lib/">
+            <fileset dir="${dist.dir}/lib/"/>
+        </copy>
+        
+        <copy file="${dist.dir}/Kimble.jar" todir="${dist.dir}/tournament/lib/"/>
         <!--
         Moved the res folder into the jar
         

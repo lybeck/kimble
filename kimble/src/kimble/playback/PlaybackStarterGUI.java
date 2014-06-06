@@ -27,6 +27,9 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
         initComponents();
         initPlaybackProfileComboBox();
         loadLogFiles();
+
+        this.setTitle("Playback Logs");
+        this.setLocationRelativeTo(null);
     }
 
     private void initPlaybackProfileComboBox() {
