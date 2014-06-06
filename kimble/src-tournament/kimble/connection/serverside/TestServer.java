@@ -45,7 +45,7 @@ public class TestServer {
 //        jarNames.add("KimbleAI_3.jar");
 //        jarNames.add("KimbleAI_4.jar");
         
-        String directoryName = "tournament";
+        String directoryName = "kimble-tournament";
         
         Set<String> jarNames = new HashSet<>();
         jarNames.add("KimbleBot1.jar");
