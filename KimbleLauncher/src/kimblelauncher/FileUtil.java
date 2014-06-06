@@ -1,4 +1,4 @@
-package kimble.util;
+package kimblelauncher;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -9,8 +9,8 @@ import java.io.FilenameFilter;
  */
 public class FileUtil {
 
-    public static File findDirectory(String fileName, String root) {
-        return findDirectory(fileName, new File(root).getAbsoluteFile());
+    public static File findDirectory(String directoryName, String root) {
+        return findDirectory(directoryName, new File(root).getAbsoluteFile());
     }
 
     public static File findDirectory(String directoryName, File root) {

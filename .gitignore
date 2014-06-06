@@ -9,6 +9,10 @@ kimbleAI/nbproject/private/
 kimbleAI/logs/
 kimbleAI/bots/lib/
 
+KimbleLauncher/build/
+KimbleLauncher/dist/
+KimbleLauncher/nbproject/private/
+
 rules-and-techspecs/*.aux
 rules-and-techspecs/*.log
 rules-and-techspecs/*.out
