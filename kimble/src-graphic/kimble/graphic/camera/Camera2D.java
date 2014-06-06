@@ -23,9 +23,6 @@ public class Camera2D extends Camera {
         float top = -height / 2;
         float bottom = height / 2;
         setupOrthographicProjectionMatrix(left, right, top, bottom, -1, 1);
-//        setupOrthographicProjectionMatrix(-100, 100, -100, 100, -1, 1);
-//        setupOrthographicProjectionMatrix(-100, 100, 100, -100, -1, 1);
-//        setupOrthographicProjectionMatrix(0, Screen.getWidth(), 0, Screen.getHeight(), -1, 1);
         setPosition(new Vector3f(right, bottom, 0));
     }
 
@@ -41,7 +38,6 @@ public class Camera2D extends Camera {
      * @param zFar
      */
     public void setupOrthographicProjectionMatrix(float left, float right, float top, float bottom, float zNear, float zFar) {
-        // TODO: Figure out why the origin has to be centered.
         projectionMatrix = new Matrix4f();
         projectionMatrix.m00 = 2 / (right - left);
         projectionMatrix.m11 = 2 / (top - bottom);

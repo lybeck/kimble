@@ -36,26 +36,26 @@ public class Kimble {
         players.add(new TestAILasse1());
         players.add(new TestAIRandom());
 
-//        new ServerGame(players).start();
-        
-        int games = 100000;
-        
-        Map<Integer, Integer> wins = new HashMap<>();
-        for (int i = 0; i < 4; i++) {
-            wins.put(i, 0);
-        }
-        
-        Timer timer = new Timer();
-        timer.tic();
-        for (int i = 0; i < games; i++) {
-            ServerGame serverGame = new ServerGame(false, players);
-            serverGame.start();
-            int winner = serverGame.getLogic().getWinner();
-            wins.put(winner, wins.get(winner) + 1);
-        }
-        System.out.println("Time elapsed: " + timer.toc() + " seconds.");
-        
-        System.out.println("wins = " + wins);
+        new ServerGame(useGui, players).start();
+
+//        int games = 100000;
+//        
+//        Map<Integer, Integer> wins = new HashMap<>();
+//        for (int i = 0; i < 4; i++) {
+//            wins.put(i, 0);
+//        }
+//        
+//        Timer timer = new Timer();
+//        timer.tic();
+//        for (int i = 0; i < games; i++) {
+//            ServerGame serverGame = new ServerGame(false, players);
+//            serverGame.start();
+//            int winner = serverGame.getLogic().getWinner();
+//            wins.put(winner, wins.get(winner) + 1);
+//        }
+//        System.out.println("Time elapsed: " + timer.toc() + " seconds.");
+//        
+//        System.out.println("wins = " + wins);
     }
 
 //    private static void runMultipleGames(boolean noGui, int numberOfPlayers) {
