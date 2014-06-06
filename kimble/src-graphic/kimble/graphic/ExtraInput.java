@@ -40,7 +40,21 @@ public class ExtraInput {
                 rotateCamera = false;
                 Mouse.setGrabbed(true);
             }
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                executeMove = true;
+            }
         }
+    }
+
+    private boolean executeMove = false;
+
+    public void setExecuteMove(boolean executeMove) {
+        this.executeMove = executeMove;
+    }
+
+    public boolean isExecuteMove() {
+        return executeMove;
     }
 
     public boolean rotateCamera() {

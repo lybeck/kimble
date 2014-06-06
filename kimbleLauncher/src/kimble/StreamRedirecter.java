@@ -1,4 +1,4 @@
-package kimblelauncher;
+package kimble;
 
 import java.io.BufferedReader;
 import java.io.IOException;

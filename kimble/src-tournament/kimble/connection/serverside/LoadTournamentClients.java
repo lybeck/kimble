@@ -24,7 +24,7 @@ class LoadTournamentClients implements StartJarInterface {
 
     @Override
     public List<KimbleClientInfo> jarStartInfo() {
-        File aiDir = FileUtil.findDirectory(directoryName, new File("").getAbsoluteFile());
+        File aiDir = FileUtil.findDirectory(directoryName, "");
         if (aiDir == null) {
             throw new IllegalArgumentException("Directory: " + directoryName + " couldn't be found!");
         }

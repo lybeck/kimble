@@ -1,8 +1,8 @@
 package kimble.playback;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +31,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
     private List<Team> finishedTeams;
     private int winner;
 
-    private final Iterator<LogEntry> logIterator;
+    private final ListIterator<LogEntry> logIterator;
 
     private int dieRoll;
 
@@ -44,7 +44,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
         initBoard(log);
         initTeamsFinished(log);
 
-        logIterator = log.getEntries().iterator();
+        logIterator = log.getEntries().listIterator();
+
         getNextMove();
     }
 
@@ -116,7 +117,44 @@ public class PlaybackLogic implements KimbleLogicInterface {
         getNextMove();
     }
 
+    // TODO: separate the getNextMove() to a getNextMove() and getPreviousMove();
     private Team nextTeam;
+
+    private void getPreviousMove() {
+        if (logIterator.hasPrevious()) {
+            LogEntry entry = logIterator.previous();
+
+            dieRoll = entry.dieRoll;
+            nextTeam = teams.get(entry.teamID);
+
+            if (entry.type == EntryType.MOVE) {
+//                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll);
+                MoveEntry me = (MoveEntry) entry.getEntry();
+
+                Piece piece = teams.get(me.teamID).getPiece(me.pieceID);
+
+                if (me.destSquareID >= board.getSquares().size()) {
+                    int res = me.destSquareID % board.getGoalSquares(me.teamID).size();
+                    move = new Move(piece, board.getGoalSquare(me.teamID, res), me.optional);
+                } else {
+                    move = new Move(piece, board.getSquare(me.destSquareID), me.optional);
+                }
+
+            } else if (entry.type == EntryType.SKIP) {
+//                System.out.println("Team " + entry.getEntry().teamID + " rolled " + entry.getEntry().dieRoll
+//                        + " [Can't move]");
+                if (((SkipEntry) entry.getEntry()).optional) {
+                    moveMessage = "pass";
+                } else {
+                    moveMessage = "can't move";
+                }
+                move = null;
+            }
+        } else {
+            dieRoll = 0;
+            move = null;
+        }
+    }
 
     private void getNextMove() {
         if (logIterator.hasNext()) {

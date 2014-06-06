@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.connection.serverside.clientloading.StartJarInterface;
+import kimble.util.Timer;
 
 /**
  *
@@ -44,15 +45,18 @@ public class TestServer {
 //        jarNames.add("KimbleAI_2.jar");
 //        jarNames.add("KimbleAI_3.jar");
 //        jarNames.add("KimbleAI_4.jar");
-        
         String directoryName = "kimble-tournament";
-        
+
+        GenerateTournamentHeats heats = new GenerateTournamentHeats(directoryName);
+        heats.generateHeats();
+
         Set<String> jarNames = new HashSet<>();
         jarNames.add("KimbleBot1.jar");
         jarNames.add("KimbleBot2.jar");
         jarNames.add("KimbleBot3.jar");
         jarNames.add("KimbleAI.jar");
 
+        Timer t = new Timer();
         startServer(HOST_ADDRESS, PORT, new LoadTournamentClients(directoryName, jarNames));
     }
 }

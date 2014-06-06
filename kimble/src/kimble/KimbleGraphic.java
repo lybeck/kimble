@@ -29,6 +29,7 @@ import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Piece;
 import kimble.logic.Team;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -165,15 +166,23 @@ public class KimbleGraphic extends AbstractGraphic {
             hud2d.updateViewport();
         }
 
+        if (extraInput.isExecuteMove()) {
+            if (started) {
+                updateExecuteMoveManual(dt);
+            } else {
+                updateStartingDieRoll(dt);
+            }
+            extraInput.setExecuteMove(false);
+        }
+
         turnTimer += dt;
         if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
             if (started) {
-                updateExecuteMove(dt);
+//                updateExecuteMove(dt);
             } else {
                 updateStartingDieRoll(dt);
             }
         }
-
         extraInput.update(dt);
         input.update(dt);
         camera.update(dt);
@@ -243,6 +252,26 @@ public class KimbleGraphic extends AbstractGraphic {
                     started = true;
                 }
             }
+        }
+    }
+
+    private void updateExecuteMoveManual(float dt) {
+
+        if (executeMove) {
+            logic.executeMove();
+            executeMove = false;
+        }
+        if (!logic.isGameOver()) {
+            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+
+            die.setDieRoll(logic.getDieRoll());
+            dieHolderDome.bounce();
+
+            executeMove = true;
+//            } else {
+//                if (!endMessageShown) {
+//                    endMessageShown = true;
+//                }
         }
     }
 
