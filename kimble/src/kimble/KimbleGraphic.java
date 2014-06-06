@@ -29,7 +29,6 @@ import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Piece;
 import kimble.logic.Team;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -89,7 +88,7 @@ public class KimbleGraphic extends AbstractGraphic {
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         camera = new Camera3D(70f, 0.1f, 1000f);
-        rotateCameraToTeam(1);
+        rotateCameraToTeam(0);
 
         camera.setupProjectionMatrix();
 
@@ -178,7 +177,7 @@ public class KimbleGraphic extends AbstractGraphic {
         turnTimer += dt;
         if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
             if (started) {
-//                updateExecuteMove(dt);
+                updateExecuteMove(dt);
             } else {
                 updateStartingDieRoll(dt);
             }
