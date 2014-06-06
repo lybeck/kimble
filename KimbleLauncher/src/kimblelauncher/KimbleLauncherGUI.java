@@ -26,7 +26,7 @@ public class KimbleLauncherGUI extends javax.swing.JFrame {
         File kimbleJarFile = FileUtil.findFile("Kimble.jar", "/");
         if (kimbleJarFile != null) {
             this.filePath = kimbleJarFile.getParent();
-            this.pathTextField.setText(kimbleJarFile.getParent());
+            this.pathTextField.setText(filePath);
         } else {
             this.pathTextField.setText("");
         }
