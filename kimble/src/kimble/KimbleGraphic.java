@@ -276,7 +276,7 @@ public class KimbleGraphic extends AbstractGraphic {
     
     private void updateExecuteMovePlayback() {
 
-        // TODO: This method doesn't work properly! Jumpst randomly to home squares!
+        // TODO: This method doesn't work properly! Jumps randomly to home squares!
         if (extraInput.isPlaybackNextMove()) {
 //            if (firstForwards) {
 //                ((PlaybackLogic) logic).getNextMove();

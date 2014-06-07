@@ -54,15 +54,17 @@ public class BitmapFont {
     public void renderWords(Shader shader, Camera camera, List<Word> words, Vector3f position, Vector3f rotation) {
         TextureManager.getTexture(textureKey).bind();
 
+        Vector3f tempPosition = new Vector3f(position);
         for (int j = 0; j < words.size(); j++) {
             Word word = words.get(j);
-            renderLine(word.getText(), position, rotation, shader, camera, word.getColor());
+            tempPosition = renderLine(word.getText(), tempPosition, rotation, shader, camera, word.getColor());
         }
 
         TextureManager.getTexture(textureKey).unbind();
     }
 
-    private void renderLine(String line, Vector3f position, Vector3f rotation, Shader shader, Camera camera, TextMaterial color) {
+    private Vector3f renderLine(String line, Vector3f position, Vector3f rotation, Shader shader, Camera camera, TextMaterial color) {
+        float x = position.x;
         for (int i = 0; i < line.length(); i++) {
             char c = line.charAt(i);
             if (i == 0) {
@@ -70,7 +72,9 @@ public class BitmapFont {
             } else {
                 renderGlyph(c, new Vector3f(previousGlyph.getWidth(), 0, 0), new Vector3f(), previousGlyph.getModelMatrix(), shader, camera, color);
             }
+            x += previousGlyph.getWidth();
         }
+        return new Vector3f(x, position.y, position.z);
     }
 
     private void renderGlyph(char c, Vector3f position, Vector3f rotation, Matrix4f matrix, Shader shader, Camera camera, TextMaterial color) {

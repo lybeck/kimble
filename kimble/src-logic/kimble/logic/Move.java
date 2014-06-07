@@ -85,7 +85,6 @@ public class Move {
     }
 
     public void execute() throws IllegalMoveException {
-        System.out.println("Moving from: " + piece.getPosition() + " to " + destination);
         if (illegalMoveException != null) {
             throw illegalMoveException;
         }
