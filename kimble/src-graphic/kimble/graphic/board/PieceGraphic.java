@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.board;
 
 import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.model.ModelManager;
 import kimble.logic.Piece;
-import kimble.utils.MathHelper;
+import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -59,11 +54,14 @@ public class PieceGraphic extends Model {
             }
 
             if (move(currentSquare.getPosition())) {
-                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
 
-                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
-                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
                 setPosition(tempPosition);
                 rotate(0, currentSquare.getRotation().y, 0);
             } else {
@@ -71,12 +69,30 @@ public class PieceGraphic extends Model {
             }
         } else {
             currentSquare = board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId());
-            setPosition(currentSquare.getPosition());
+//            setPosition(currentSquare.getPosition());
             rotate(0, currentSquare.getRotation().y, 0);
-
             this.tempPosition = new Vector3f(getPosition().x, getPosition().y, getPosition().z);
-            this.angle = 0;
 
+            angle = 0;
+
+            if (move(currentSquare.getPosition())) {
+                angle = MathHelper.lerp(angle, (float) Math.PI, dt); // * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+
+                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
+                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
+                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+                setPosition(tempPosition);
+                rotate(0, currentSquare.getRotation().y, 0);
+            } else {
+                angle = 0;
+            }
         }
     }
+
+    public Piece getPieceLogic() {
+        return pieceLogic;
+    }
+
 }

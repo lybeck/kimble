@@ -51,7 +51,7 @@ public class Shader {
         viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
         modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-        Material.fetchUniformLocations(programID);
+//        DefaultMaterial.fetchUniformLocations(programID);
     }
 
     private int load(String filename, int type) {
@@ -86,6 +86,8 @@ public class Shader {
     }
 
     public void render(Camera camera, FloatBuffer modelMatrixBuffer, Material material) {
+        material.fetchUniformLocations(programID);
+        
         glUniformMatrix4(getProjectionMatrixLocation(), false, camera.getProjectionMatrixBuffer());
         glUniformMatrix4(getViewMatrixLocation(), false, camera.getViewMatrixBuffer());
         glUniformMatrix4(getModelMatrixLocation(), false, modelMatrixBuffer);

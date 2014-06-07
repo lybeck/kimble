@@ -1,7 +1,8 @@
 package yourpackage;
 
 import java.io.IOException;
-import kimble.bot.KimbleBot1;
+import kimble.bot.KimbleBot3;
+import kimble.connection.clientside.KimbleClient;
 import kimble.connection.serverside.KimbleClientLoader;
 import kimble.connection.serverside.KimbleServer;
 import kimble.connection.serverside.clientloading.LoadClientsInterface;
@@ -22,23 +23,16 @@ public class Main {
      *
      * "x = [number of files in logs/] + 1"
      *
-     * One log file is approximately 100 kb.
+     * One log file is approximately 100 kB.
      */
     public static final boolean USE_LOGGER = false;
 
     /**
-     * USE_GUI = true, runs the project with the OpenGL gui at ~60 fps.
+     * USE_GUI = true, runs the project with the OpenGL GUI at ~60 FPS.
      * <p>
-     * USE_GUI = false, runs the project as fast as possible without gui.
+     * USE_GUI = false, runs the project as fast as possible without GUI.
      */
     public static final boolean USE_GUI = true;
-
-    /**
-     * USE_HUD = true, gives a info text area on top of the screen.
-     * <p>
-     * USE_HUD = false, doesn't initialize the HUD
-     */
-    public static final boolean USE_HUD = false;
 
     /**
      * The following parameters defines where the server is running. You are
@@ -56,7 +50,7 @@ public class Main {
     // <editor-fold defaultstate="collapsed" desc="Start server method - You don't have to change anything here.">
     /**
      * Private method starting a local server on the specified 'port' with the
-     * clients loaded in the 'LoadClientsInterface' implementation.
+     * clients loaded in the 'StartJarInterface' implementation.
      *
      * in the template package there's a template on how to implement it. The
      * template is starting the same instance four (4) times.
@@ -66,54 +60,124 @@ public class Main {
      * @throws IOException
      */
     private static void startServer(int port, LoadClientsInterface loadClientsInterface) throws IOException {
-        KimbleServer kimbleServer = new KimbleServer(port, USE_LOGGER, USE_GUI, USE_HUD);
-        new KimbleClientLoader(kimbleServer, loadClientsInterface.loadInfoList());
-        kimbleServer.run();
+        KimbleServer server = new KimbleServer(port, USE_LOGGER, USE_GUI);
+        KimbleClientLoader.load(server, loadClientsInterface.clientStartInfo());
+        KimbleClientLoader.load(server, loadClientsInterface.jarStartInfo());
+        server.run();
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Start client method - You must change the 'new KimbleClient(hostAddress, port)' to point to your AI">
+    // <editor-fold defaultstate="collapsed" desc="Create client method - You must change the 'new RandomAI(hostAddress, port)' to point to your AI">
     /**
      * =====================================<br>
      * Dont remove this method!<br>
      * =====================================<br>
      *
-     * You can change the 'new KimbleClient(hostAddress, port)' implementation
-     * in the method.
+     * You can and should change the 'new KimbleClient(hostAddress, port)'
+     * implementation in this method.
      *
      * This method is run from the 'TournamentMain' to start your AI. When you
      * run this project the main method in this class will start the local
      * server. Then the server starts the clients based on the client
-     * information in the 'LoadClientsInterface' implementation.
+     * information in the 'StartJarInterface' implementation.
      *
      * @param hostAddress
      * @param port
+     * @return
      * @throws IOException
      */
-    public static void startClient(String hostAddress, int port) throws IOException {
-        //=======================================================
-        // Change this to point to your own AI.
-        //
-        // We have provided some simple Bots for you to compete
-        // against.
-        //
-        //  * kimble.bot.KimbleBot1
-        //=======================================================
-        
-        // TODO: Change this to be only a getter for the bot. It can then be automatically started.
-        
-        new KimbleBot1(hostAddress, port).run();
-    }
     // </editor-fold>
+    public static KimbleClient createAI(String hostAddress, int port) throws IOException {
+        // TODO: Change this to point to your own AI.
+        return new KimbleBot3(hostAddress, port);
+    }
 
+    // <editor-fold defaultstate="collapsed" desc="Define which AI:s runs each run.">
+    /**
+     * Generates the LoadClientsInterface implementation by creating a new
+     * LoadClients instance.
+     *
+     * It is recommended to use the "createAI(hostAddress, port)" method to
+     * start the instance of your own AI.
+     *
+     * ========================================================================
+     * Example usage:
+     * ------------------------------------------------------------------------
+     * Creates a new LoadClients instance with only "yourAI". If you don't
+     * create four (4) clients in this constructor, the LoadClients
+     * implementation will try to start some bots randomly from the bots folder.
+     *
+     * <code>
+     * LoadClients loadClients = new LoadClients(
+     *      createAI(hostAddress, port)
+     * );
+     * </code>
+     * ------------------------------------------------------------------------
+     * You could start your AI implementation this way also, but remember to
+     * change the return argument of the "createAI()" method to point to your
+     * AI, otherwise the TournamentMain will not be able to find it!
+     *
+     * <code>
+     * LoadClients loadClients = new LoadClients(
+     *      new RandomAI(hostAddress, port)
+     * );
+     * </code>
+     *
+     * ------------------------------------------------------------------------
+     *
+     * We have provided some simple Bots for you to compete against.
+     *
+     * kimble.bot.KimbleBot1 <br>
+     * kimble.bot.KimbleBot2 <br>
+     * kimble.bot.KimbleBot3 <br>
+     *
+     * You can load these from code with the example below, or run the pre-built
+     * jars in the jar folder (see LoadClients implementation for how this is
+     * done).
+     *
+     *
+     * Creates a new LoadClients list with "yourAI" and all of the three other
+     * bots. Don't exceed the maximum number of four (4) AI:s running on the
+     * server. It won't allow you!
+     *
+     * <code>
+     * LoadClients loadClients = new LoadClients(
+     *      createAI(hostAddress, port),
+     *      new KimbleBot1(hostAddress, port),
+     *      new KimbleBot2(hostAddress, port),
+     *      new KimbleBot3(hostAddress, port)
+     * );
+     * </code>
+     *
+     * @param hostAddress
+     * @param port
+     * @return
+     * @throws IOException
+     */
+    // </editor-fold>
+    private static LoadClientsInterface generateLoadClients(String hostAddress, int port) throws IOException {
+
+        LoadClients loadClients = new LoadClients(
+                createAI(hostAddress, port)
+        );
+
+        return loadClients;
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Main method - run's one instance of your AI and randomly chosen AI:s from the bots directory">
+    /**
+     *
+     * By surrounding the "startServer()" call with a loop you can make it run
+     * over and over again. Remember to disable the GUI with the USE_GUI
+     * variable at the top of this class, to make it go fast as well.
+     *
+     * @param args
+     * @throws IOException
+     */
+    // </editor-fold>
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < 1; i++) {
-
-            //=======================================================
-            // Change the implementation of 'loadClients()' in 
-            // 'LoadClients' to load different kinds of AIs.
-            //=======================================================
-            startServer(PORT, new LoadClients());
+            startServer(PORT, generateLoadClients(HOST_ADDRESS, PORT));
         }
     }
 

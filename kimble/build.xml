@@ -70,12 +70,18 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <property name="tournament.dir" value="kimble-tournament"/>
     <target name="-post-jar">
         <!-- <mkdir dir="${dist.dir}/lib/natives/" /> -->
         <copy todir="${dist.dir}/lib/natives/">
             <fileset dir="lib/natives/"/>
         </copy>
         
+        <copy todir="${dist.dir}/${tournament.dir}/lib/">
+            <fileset dir="${dist.dir}/lib/"/>
+        </copy>
+       
+        <copy file="${dist.dir}/Kimble.jar" todir="${dist.dir}/${tournament.dir}/lib/"/>
         <!--
         Moved the res folder into the jar
         

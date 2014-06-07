@@ -15,7 +15,7 @@ import org.lwjgl.input.Mouse;
  */
 public class ExtraInput {
 
-    private boolean rotateCamera = true;
+    private boolean rotateCamera = false;
 
     public void update(float dt) {
         while (Keyboard.next()) {
@@ -40,7 +40,21 @@ public class ExtraInput {
                 rotateCamera = false;
                 Mouse.setGrabbed(true);
             }
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                executeMove = true;
+            }
         }
+    }
+
+    private boolean executeMove = false;
+
+    public void setExecuteMove(boolean executeMove) {
+        this.executeMove = executeMove;
+    }
+
+    public boolean isExecuteMove() {
+        return executeMove;
     }
 
     public boolean rotateCamera() {

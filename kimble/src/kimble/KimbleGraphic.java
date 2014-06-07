@@ -1,5 +1,7 @@
 package kimble;
 
+import java.awt.Font;
+import java.io.IOException;
 import kimble.logic.KimbleLogicInterface;
 import kimble.graphic.AbstractGraphic;
 import kimble.playback.PlaybackProfile;
@@ -7,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import static kimble.ServerGame.SQUARES_FROM_START_TO_START;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kimble.graphic.camera.Camera3D;
 import kimble.graphic.ExtraInput;
 import kimble.graphic.Input3D;
@@ -18,15 +21,16 @@ import kimble.graphic.board.DieGraphic;
 import kimble.graphic.board.DieHolderDomeGraphic;
 import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.board.PieceGraphic;
-import kimble.graphic.hud.HUD;
 import kimble.graphic.hud.Hud2D;
+import kimble.graphic.hud.font.BitmapFont;
+import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
-import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -37,9 +41,10 @@ public class KimbleGraphic extends AbstractGraphic {
     private final KimbleLogicInterface logic;
 
     private Hud2D hud2d;
-    private HUD hud;
-    private Team nextTeam;
-    private Move selectedMove;
+    private BitmapFont font;
+    private int lastTeamID = -1;
+    private boolean showTags = true;
+
     private boolean endMessageShown = false;
 
     private BoardGraphic board;
@@ -52,6 +57,7 @@ public class KimbleGraphic extends AbstractGraphic {
     private Input3D input;
     private ExtraInput extraInput;
     private Shader shader;
+    private Shader textShader;
 
     private boolean started;
 
@@ -63,28 +69,27 @@ public class KimbleGraphic extends AbstractGraphic {
     private boolean executeMove = false;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
-    private float cameraPositionAngle = 0;
 
-    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile, boolean useHud) {
-        super(useHud);
+    private float cameraPositionAngle;
+
+    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         this.logic = logic;
-
         PlaybackProfile.setCurrentProfile(profile);
     }
 
     @Override
     public void setup() {
-        if (useHud) {
-            hud = new HUD();
-        }
 
         ModelManager.loadModels();
         TextureManager.loadTextures();
 
-        board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs(SQUARES_FROM_START_TO_START));
+        board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs());
         shader = new Shader("shader.vert", "shader.frag");
+        textShader = new Shader("text_shader.vert", "text_shader.frag");
 
-        camera = new Camera3D(new Vector3f(2, 7, -2), new Vector3f((float) (Math.PI / 3.0), 0, 0), 70f, 0.3f, 1000f);
+        camera = new Camera3D(70f, 0.1f, 1000f);
+        rotateCameraToTeam(0);
+
         camera.setupProjectionMatrix();
 
         extraInput = new ExtraInput();
@@ -108,14 +113,31 @@ public class KimbleGraphic extends AbstractGraphic {
         startingRollMap = startingRollsIterator.next();
         startingRollMapKeyIterator = startingRollMap.keySet().iterator();
 
-        if (useHud) {
-            hud.appendLine("===============================");
-            hud.appendLine("Rolling for starting order");
-            hud.appendLine("===============================\n");
-            started = false;
+        hud2d = new Hud2D(this, logic.getTeams());
+        try {
+            font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
+        } catch (IOException ex) {
+            Logger.getLogger(KimbleGraphic.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Couldn't load font for piece text!");
         }
 
-        hud2d = new Hud2D();
+    }
+
+    private void updateCameraPosition() {
+
+        Vector3f cameraPos = new Vector3f(
+                board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle),
+                board.getRadius() * 1.5f,
+                board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle)
+        );
+        Vector3f rotation = new Vector3f(
+                (float) (Math.PI / 3),
+                cameraPositionAngle - (float) (Math.PI / 2),
+                0
+        );
+
+        camera.setPosition(cameraPos);
+        camera.setRotation(rotation);
     }
 
     @Override
@@ -124,25 +146,32 @@ public class KimbleGraphic extends AbstractGraphic {
             stop();
         }
 
-//        if(logic.getGame().isGameOver()){
+        if (logic.isGameOver()) {
+            for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
+                Team finishedTeam = logic.getFinishedTeams().get(i);
+                hud2d.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
+            }
 //            stop();
-//        }
+        }
+
         if (extraInput.rotateCamera()) {
             cameraPositionAngle += dt * 0.1;
-            Vector3f cameraPos = new Vector3f(board.getRadius() * 1.2f * (float) Math.cos(cameraPositionAngle), board.getRadius()
-                    * 1.5f, board.getRadius() * 1.2f * (float) Math.sin(cameraPositionAngle));
-            camera.setPosition(cameraPos);
-            camera.setRotation(new Vector3f((float) (Math.PI / 3.0), cameraPositionAngle - (float) Math.PI / 2, 0));
+            updateCameraPosition();
         }
 
         if (Screen.wasResized()) {
             Screen.updateViewport();
-            if (useHud) {
-                hud.setViewport(0, 0, Screen.getWidth(), Screen.getHeight());
-            }
             camera.setupProjectionMatrix();
             hud2d.updateViewport();
-//            camera.updateProjectionMatrixAttributes();
+        }
+
+        if (extraInput.isExecuteMove()) {
+            if (started) {
+                updateExecuteMoveManual(dt);
+            } else {
+                updateStartingDieRoll(dt);
+            }
+            extraInput.setExecuteMove(false);
         }
 
         turnTimer += dt;
@@ -153,7 +182,6 @@ public class KimbleGraphic extends AbstractGraphic {
                 updateStartingDieRoll(dt);
             }
         }
-
         extraInput.update(dt);
         input.update(dt);
         camera.update(dt);
@@ -167,10 +195,7 @@ public class KimbleGraphic extends AbstractGraphic {
             p.update(dt);
         }
 
-        if (useHud) {
-            hud.update(dt);
-        }
-
+        hud2d.setPlaybackSpeed(PlaybackProfile.currentProfile);
         hud2d.update(dt);
     }
 
@@ -179,21 +204,13 @@ public class KimbleGraphic extends AbstractGraphic {
         if (executeMove) {
             logic.executeMove();
             executeMove = false;
-
-            if (useHud) {
-                selectedMove = logic.getSelectedMove();
-                hud.appendLine(moveInfoText());
-            }
         }
 
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
             if (!logic.isGameOver()) {
-                if (useHud) {
-                    nextTeam = logic.getNextTeamInTurn();
-                    hud.appendLine(dieRollInfoText());
-                }
+                updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
 
                 die.setDieRoll(logic.getDieRoll());
                 dieHolderDome.bounce();
@@ -201,11 +218,10 @@ public class KimbleGraphic extends AbstractGraphic {
                 turnTimer = 0;
                 nextTurnTimer = 0;
                 executeMove = true;
-            } else {
-                if (!endMessageShown && useHud) {
-                    hud.appendLine(finnishInfoText());
-                    endMessageShown = true;
-                }
+//            } else {
+//                if (!endMessageShown) {
+//                    endMessageShown = true;
+//                }
             }
         }
     }
@@ -217,48 +233,66 @@ public class KimbleGraphic extends AbstractGraphic {
 
             if (startingRollMapKeyIterator.hasNext()) {
                 int teamID = startingRollMapKeyIterator.next();
-                int dieRoll = startingRollMap.get(teamID);
 
-                if (useHud) {
-                    hud.appendLine(new StringBuilder().append("[ID = ")
-                            .append(teamID).append("] rolled ")
-                            .append(dieRoll).append(" (")
-                            .append(logic.getTeam(teamID).getName())
-                            .append(")\n"));
+                String oldMessage = hud2d.getTeamInfo(teamID);
+                if (oldMessage == null || oldMessage.length() == 0) {
+                    hud2d.setTeamInfo(teamID, "Rolled: " + startingRollMap.get(teamID));
+                } else {
+                    hud2d.appendTeamInfo(teamID, ", " + startingRollMap.get(teamID));
                 }
 
-                die.setDieRoll(dieRoll);
+                die.setDieRoll(startingRollMap.get(teamID));
                 dieHolderDome.bounce();
             } else {
                 if (startingRollsIterator.hasNext()) {
                     startingRollMap = startingRollsIterator.next();
                     startingRollMapKeyIterator = startingRollMap.keySet().iterator();
-                    if (useHud) {
-                        hud.appendLine("");
-                    }
                 } else {
-
-                    Team startingTeam = logic.getStartingTeam();
-                    hud2d.setStartingPlayer(new StringBuilder().append("\n[ID = ")
-                            .append(startingTeam.getId())
-                            .append("] starts the game (")
-                            .append(startingTeam.getName()).append(")").toString());
-
-//                    if (useHud) {
-//
-//                        Team startingTeam = logic.getStartingTeam();
-//                        hud.appendLine(new StringBuilder().append("\n[ID = ")
-//                                .append(startingTeam.getId())
-//                                .append("] starts the game (")
-//                                .append(startingTeam.getName())
-//                                .append(")\n"));
-//                        hud.appendLine("===============================");
-//                        hud.appendLine("");
-//                    }
                     started = true;
                 }
             }
         }
+    }
+
+    private void updateExecuteMoveManual(float dt) {
+
+        if (executeMove) {
+            logic.executeMove();
+            executeMove = false;
+        }
+        if (!logic.isGameOver()) {
+            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+
+            die.setDieRoll(logic.getDieRoll());
+            dieHolderDome.bounce();
+
+            executeMove = true;
+//            } else {
+//                if (!endMessageShown) {
+//                    endMessageShown = true;
+//                }
+        }
+    }
+
+    private void updateTeamInfo(int teamID, int dieRoll) {
+        for (Team team : logic.getTeams()) {
+            if (team.isFinished()) {
+                for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
+                    Team finishedTeam = logic.getFinishedTeams().get(i);
+                    hud2d.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
+                }
+            } else if (team.getId() == teamID) {
+                // Appends all the die rolls after each other on the hud.
+                if (lastTeamID != teamID) {
+                    hud2d.setTeamInfo(teamID, "Rolled: " + dieRoll);
+                } else {
+                    hud2d.appendTeamInfo(teamID, ", " + dieRoll);
+                }
+            } else {
+                hud2d.setTeamInfo(team.getId(), "");
+            }
+        }
+        lastTeamID = teamID;
     }
 
     @Override
@@ -273,19 +307,29 @@ public class KimbleGraphic extends AbstractGraphic {
         for (PieceGraphic p : pieces) {
             p.render(shader, camera);
         }
-        shader.unbind();
 
-        if (useHud) {
-            hud.render();
+        textShader.bind();
+
+        if (showTags) {
+            for (PieceGraphic p : pieces) {
+                String tag = "[" + p.getPieceLogic().getId() + "]";
+                font.renderString(textShader,
+                        camera,
+                        tag,
+                        new Vector3f(p.getPosition().x, 1.5f, p.getPosition().z),
+                        new Vector3f(camera.getRotation().x, (float) (-camera.getRotation().y + Math.PI), 0));
+            }
         }
 
-        hud2d.render(shader);
+        hud2d.render(textShader);
     }
 
     @Override
     public void dispose() {
 
         shader.dispose();
+        textShader.dispose();
+
         board.dispose();
 
         dieHolder.dispose();
@@ -296,75 +340,18 @@ public class KimbleGraphic extends AbstractGraphic {
             p.dispose();
         }
 
-        if (useHud) {
-            hud.dispose();
-        }
-
         ModelManager.dispose();
         TextureManager.dispose();
 
         Screen.dispose();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HUD information texts">
-    /**
-     * Creates a string builder for the Die Roll info text. For use in HUD.
-     *
-     * @return
-     */
-    private StringBuilder dieRollInfoText() {
-        // Append a new die roll to the info-stream in gui
-        StringBuilder sb = new StringBuilder();
-        sb.append("[ID = ")
-                .append(nextTeam.getId())
-                .append("] rolled ")
-                .append(logic.getDieRoll());
-        return sb;
+    public void toggleTags() {
+        showTags = !showTags;
     }
 
-    private StringBuilder moveInfoText() {
-        // append the move info based on the move selection.
-        StringBuilder sb = new StringBuilder();
-        if (selectedMove == null) {
-            sb.append(": ")
-                    .append(logic.getMoveMessage());
-        } else {
-            sb.append(": Piece [")
-                    .append(selectedMove.getPiece().getId())
-                    .append("] from [")
-                    .append(selectedMove.getOldPositionID())
-                    .append("] to [")
-                    .append(selectedMove.getDestination().getID())
-                    .append("]");
-        }
-        sb.append(" (")
-                .append(nextTeam.getName())
-                .append(")\n");
-        return sb;
+    public void rotateCameraToTeam(int teamID) {
+        cameraPositionAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+        updateCameraPosition();
     }
-
-    private StringBuilder finnishInfoText() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n")
-                .append("===============================")
-                .append("\n")
-                .append("Finnishing order: ");
-
-        int size = logic.getFinnishedTeams().size();
-        for (int i = 0; i < size; i++) {
-            sb.append("[").append(logic.getFinnishedTeams().get(i).getId()).append("]");
-            if (i < size - 1) {
-                sb.append(", ");
-            }
-        }
-
-        sb.append("\n")
-                .append("Winner: ")
-                .append("[").append(logic.getWinner()).append("]")
-                .append("\n")
-                .append("===============================");
-
-        return sb;
-    }
-    //</editor-fold>
 }

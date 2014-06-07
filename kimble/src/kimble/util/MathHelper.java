@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package kimble.utils;
+package kimble.util;
 
 /**
  *

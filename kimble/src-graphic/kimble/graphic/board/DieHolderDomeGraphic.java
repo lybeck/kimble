@@ -8,7 +8,7 @@ package kimble.graphic.board;
 import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
 import kimble.graphic.model.ModelManager;
-import kimble.utils.MathHelper;
+import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 

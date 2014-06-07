@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
-import kimble.graphic.Screen;
 import org.lwjgl.LWJGLUtil;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
@@ -19,10 +13,7 @@ public abstract class AbstractGraphic {
 
     private boolean running;
 
-    protected boolean useHud;
-
-    public AbstractGraphic(boolean useHud) {
-        this.useHud = useHud;
+    public AbstractGraphic() {
         setupLWJGL();
     }
 
@@ -30,25 +21,11 @@ public abstract class AbstractGraphic {
         Screen.setupNativesLWJGL();
 
         if (!LWJGLUtil.isMacOSXEqualsOrBetterThan(3, 2)) {
-            System.err.println("You need an OpenGL version of 3.2 or higher to run this application!");
+            System.err.println("You need an OpenGL version of 3.2 or higher to run this application with a GUI. You can still run the logic just specify the USE_GUI = false");
+            System.exit(1);
         }
 
-        System.out.println("*************************************************");
-
-        if (LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX) {
-            System.out.println("Using MacOSx - no support for the HUD.");
-            Screen.setupDisplayMacOsx("Kimble - beta 0.1", 800, 600);
-            useHud = false;
-        } else {
-            Screen.setupDisplay("Kimble - alpha 0.1", 800, 600);
-        }
-
-        System.out.println("OS name " + System.getProperty("os.name"));
-        System.out.println("OS version " + System.getProperty("os.version"));
-        System.out.println("LWJGL version " + org.lwjgl.Sys.getVersion());
-        System.out.println("OpenGL version " + glGetString(GL_VERSION));
-        System.out.println("OpenGL shading language " + glGetString(GL_SHADING_LANGUAGE_VERSION));
-        System.out.println("*************************************************");
+        Screen.setupDisplay("Kimble - alpha 1.0", 800, 600);
 
         Screen.setupOpenGL();
         Screen.setResizable(true);

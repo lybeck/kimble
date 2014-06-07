@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble;
 
 import kimble.playback.PlaybackProfile;
@@ -20,27 +15,20 @@ public class ServerGame {
     private final KimbleGameLogic logic;
     private KimbleGraphic graphic;
 
-    public final static int NUMBER_OF_TEAMS = 4;
-    public final static int NUMBER_OF_PIECES = 4;
-    public final static int NUMBER_OF_FINISHING_TEAMS = 1;
-    public final static int SQUARES_FROM_START_TO_START = 8;
-
     private final boolean useGui;
-    private final boolean useHud;
 
     public ServerGame(List<IPlayer> players) {
-        this(true, true, players);
+        this(true, players);
     }
 
-    public ServerGame(boolean useGui, boolean useHud, List<IPlayer> players) {
+    public ServerGame(boolean useGui, List<IPlayer> players) {
         this.useGui = useGui;
-        this.useHud = useHud;
-        this.logic = new KimbleGameLogic(players);
+        this.logic = new KimbleGameLogic(players, DEBUG);
     }
 
     public void start() {
         if (useGui) {
-            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST, useHud);
+            graphic = new KimbleGraphic(logic, PlaybackProfile.FAST);
             graphic.start();
         } else {
             while (!logic.getGame().isGameOver()) {

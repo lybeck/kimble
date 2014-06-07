@@ -7,6 +7,11 @@ kimbleAI/build/
 kimbleAI/dist/
 kimbleAI/nbproject/private/
 kimbleAI/logs/
+kimbleAI/bots/lib/
+
+kimbleLauncher/build/
+kimbleLauncher/dist/
+kimbleLauncher/nbproject/private/
 
 rules-and-techspecs/*.aux
 rules-and-techspecs/*.log
@@ -23,3 +28,4 @@ test-projects/SocketClient/nbproject/private/
 test-projects/SocketServer/build/
 test-projects/SocketServer/dist/
 test-projects/SocketServer/nbproject/private/
+/KimbleLauncher/dist/

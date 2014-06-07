@@ -1,10 +1,16 @@
 package kimble;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import kimble.logic.Constants;
 import kimble.logic.IPlayer;
+import kimble.logic.player.testai.FirstMoveAI;
 import kimble.logic.player.testai.TestAILasse;
+import kimble.logic.player.testai.TestAILasse1;
 import kimble.logic.player.testai.TestAIRandom;
+import kimble.util.Timer;
 
 /**
  *
@@ -14,27 +20,42 @@ public class Kimble {
 
     public static void main(String[] args) {
         boolean useGui = true;
-        boolean useHud = false;
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("nogui")) {
                 useGui = false;
             }
-            if (args[i].equalsIgnoreCase("nohud")) {
-                useHud = false;
-            }
         }
-        runSingleGame(useGui, useHud, 4);
+        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
     }
 
-    private static void runSingleGame(boolean useGui, boolean useHud, int numberOfPlayers) {
+    private static void runSingleGame(boolean useGui, int numberOfPlayers) {
         List<IPlayer> players = new ArrayList<>();
 
+        players.add(new FirstMoveAI("First_move_AI"));
         players.add(new TestAILasse());
-        for (int i = 0; i < numberOfPlayers - 1; i++) {
-            players.add(new TestAIRandom());
-        }
+        players.add(new TestAILasse1());
+        players.add(new TestAIRandom());
 
-        new ServerGame(useGui, useHud, players).start();
+//        new ServerGame(players).start();
+        
+        int games = 100000;
+        
+        Map<Integer, Integer> wins = new HashMap<>();
+        for (int i = 0; i < 4; i++) {
+            wins.put(i, 0);
+        }
+        
+        Timer timer = new Timer();
+        timer.tic();
+        for (int i = 0; i < games; i++) {
+            ServerGame serverGame = new ServerGame(false, players);
+            serverGame.start();
+            int winner = serverGame.getLogic().getWinner();
+            wins.put(winner, wins.get(winner) + 1);
+        }
+        System.out.println("Time elapsed: " + timer.toc() + " seconds.");
+        
+        System.out.println("wins = " + wins);
     }
 
 //    private static void runMultipleGames(boolean noGui, int numberOfPlayers) {

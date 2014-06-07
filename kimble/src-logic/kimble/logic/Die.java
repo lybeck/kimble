@@ -1,5 +1,6 @@
 package kimble.logic;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -13,7 +14,7 @@ public class Die {
 
     public Die() {
         this.maxValue = Constants.DEFAULT_DIE_SIDES;
-        random = new Random();
+        random = new SecureRandom();
     }
 
     public int roll() {

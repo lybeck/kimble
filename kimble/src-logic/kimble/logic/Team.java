@@ -13,12 +13,16 @@ public class Team {
     private String name;
     private final List<Piece> pieces;
 
+    private boolean finished;
+
     public Team(int id, int numberOfPieces) {
         this.id = id;
         this.pieces = new ArrayList<>(numberOfPieces);
         for (int i = 0; i < numberOfPieces; i++) {
             pieces.add(new Piece(i, id));
         }
+
+        finished = false;
     }
 
     public int getId() {
@@ -40,4 +44,13 @@ public class Team {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
 }

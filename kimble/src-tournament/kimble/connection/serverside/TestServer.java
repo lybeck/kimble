@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.serverside;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.connection.serverside.clientloading.LoadClientsInterface;
+import kimble.ServerGame;
+import kimble.connection.serverside.clientloading.StartJarInterface;
+import kimble.util.Timer;
 
 /**
  *
@@ -17,17 +18,17 @@ import kimble.connection.serverside.clientloading.LoadClientsInterface;
 public class TestServer {
 
     private static final boolean USE_LOGGER = true;
-    private static final boolean USE_GUI = true;
-    private static final boolean USE_HUD = false;
+    private static final boolean USE_GUI = false;
 
-    private static final int NUMBER_OF_PLAYERS = 4;
+    private static final String HOST_ADDRESS = "localhost";
+    private static final int PORT = 5391;
 
-    private static void startServer(int port, LoadClientsInterface loadClientsInterface) {
+    private static void startServer(String hostAddress, int port, StartJarInterface loadClientsInterface) {
         KimbleServer kimbleServer = null;
         try {
-            List<KimbleClientInfo> clientInfo = loadClientsInterface.loadInfoList();
-            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI, USE_HUD);
-            new KimbleClientLoader(kimbleServer, clientInfo, "localhost", 1313);
+            List<KimbleClientInfo> clientInfo = loadClientsInterface.jarStartInfo();
+            kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI);
+            KimbleClientLoader.load(kimbleServer, clientInfo, hostAddress, port);
             kimbleServer.run();
         } catch (Exception ex) {
             Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -38,6 +39,27 @@ public class TestServer {
     }
 
     public static void main(String[] args) {
-        startServer(5391, new LoadTournamentClients(NUMBER_OF_PLAYERS));
+        // TODO: add a loop that loops over all sets of games. This is just a test set - the real sets needs to be generated from the real bots! Combinatorics: sets of four out of all teams!
+
+//        String directoryName = "competitors";
+//        
+//        Set<String> jarNames = new HashSet<>();
+//        jarNames.add("KimbleAI_1.jar");
+//        jarNames.add("KimbleAI_2.jar");
+//        jarNames.add("KimbleAI_3.jar");
+//        jarNames.add("KimbleAI_4.jar");
+        String directoryName = "kimble-tournament";
+
+        GenerateTournamentHeats heats = new GenerateTournamentHeats(directoryName);
+        heats.generateHeats();
+
+        Set<String> jarNames = new HashSet<>();
+        jarNames.add("KimbleBot1.jar");
+        jarNames.add("KimbleBot2.jar");
+        jarNames.add("KimbleBot3.jar");
+        jarNames.add("KimbleAI.jar");
+
+        Timer t = new Timer();
+        startServer(HOST_ADDRESS, PORT, new LoadTournamentClients(directoryName, jarNames));
     }
 }

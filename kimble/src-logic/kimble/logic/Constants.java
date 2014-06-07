@@ -21,6 +21,7 @@ public class Constants {
         DEFAULT_START_VALUES = new HashSet<>(2);
         DEFAULT_START_VALUES.add(1);
         DEFAULT_START_VALUES.add(6);
+
         DEFAULT_CONTINUE_TURN_VALUES = new HashSet<>(1);
         DEFAULT_CONTINUE_TURN_VALUES.add(6);
     }

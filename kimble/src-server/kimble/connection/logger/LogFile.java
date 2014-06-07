@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.logger;
 
 import java.util.ArrayList;
@@ -30,7 +25,7 @@ public class LogFile {
     private List<Map<Integer, Integer>> startRolls;
     private Integer startingTeam;
     private List<LogEntry> moves;
-    private List<Integer> teamFinnishOrder;
+    private List<Integer> teamFinishOrder;
     private Integer winner;
 
     public LogFile() {
@@ -41,7 +36,7 @@ public class LogFile {
         this.teams = new ArrayList<>();
         this.board = new BoardInfo();
         this.moves = new ArrayList<>();
-        this.teamFinnishOrder = new ArrayList<>();
+        this.teamFinishOrder = new ArrayList<>();
     }
 
     // ================================================
@@ -55,8 +50,8 @@ public class LogFile {
         moves.add(entry);
     }
 
-    public void addTeamFinnish(Integer teamID) {
-        teamFinnishOrder.add(teamID);
+    public void addTeamFinish(Integer teamID) {
+        teamFinishOrder.add(teamID);
     }
 
     // ================================================
@@ -117,8 +112,8 @@ public class LogFile {
         return moves;
     }
 
-    public List<Integer> getTeamFinnishOrder() {
-        return teamFinnishOrder;
+    public List<Integer> getTeamFinishOrder() {
+        return teamFinishOrder;
     }
 
     public int getWinner() {

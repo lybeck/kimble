@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kimble.playback;
+package kimble.logic.player.testai;
 
 import java.util.List;
+import kimble.logic.Move;
 import kimble.logic.Team;
 import kimble.logic.Turn;
 import kimble.logic.player.KimbleAI;
@@ -14,19 +15,24 @@ import kimble.logic.player.KimbleAI;
  *
  * @author Christoffer
  */
-public class PlaybackPlayer extends KimbleAI {
+public class FirstMoveAI extends KimbleAI {
 
-    private final int id;
-
-    public PlaybackPlayer(int id, String teamName) {
+    public FirstMoveAI(String teamName) {
         super(teamName);
-
-        this.id = id;
     }
 
     @Override
     public int selectMove(Turn turn, List<Team> teams) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        List<Move> moves = turn.getMoves();
 
+        if (moves.isEmpty()) {
+            return -1;
+        }
+        for (int i = 0; i < moves.size(); i++) {
+            if (!moves.get(i).isOptional()) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

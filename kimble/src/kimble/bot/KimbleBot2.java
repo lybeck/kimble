@@ -11,7 +11,7 @@ import kimble.connection.clientside.MoveInfo;
 public class KimbleBot2 extends AbstractKimbleBot {
 
     public KimbleBot2(String host, int port) throws IOException {
-        super(host, port);
+        super("KimbleBot2", host, port);
     }
 
     @Override

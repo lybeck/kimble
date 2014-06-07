@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
 import kimble.graphic.camera.Camera;
 import kimble.graphic.shader.Shader;
 import java.nio.FloatBuffer;
 import kimble.graphic.model.Mesh;
+import kimble.graphic.shader.DefaultMaterial;
 import kimble.graphic.shader.Material;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
@@ -24,25 +20,31 @@ public abstract class Model {
     private Vector3f rotation;
     private Vector3f scale;
 
+    private Matrix4f parentModelMatrix;
     private Matrix4f modelMatrix;
     private FloatBuffer modelMatrixBuffer;
 
     private Mesh mesh;
-    private Material material;
+    private DefaultMaterial material;
 
     public Model() {
         this(new Vector3f(), new Vector3f());
     }
 
     public Model(Vector3f position, Vector3f rotation) {
+        this(position, rotation, new Matrix4f());
+    }
+
+    public Model(Vector3f position, Vector3f rotation, Matrix4f parentModelMatrix) {
         this.position = position;
         this.rotation = rotation;
         this.scale = new Vector3f(1, 1, 1);
 
+        this.parentModelMatrix = parentModelMatrix;
         this.modelMatrix = new Matrix4f();
         this.modelMatrixBuffer = BufferUtils.createFloatBuffer(16);
 
-        this.material = new Material();
+        this.material = new DefaultMaterial();
     }
 
     public void move(float dx, float dy, float dz) {
@@ -59,6 +61,8 @@ public abstract class Model {
 
     public void update(float dt) {
         modelMatrix = new Matrix4f();
+
+        Matrix4f.mul(modelMatrix, parentModelMatrix, modelMatrix);
 
         Matrix4f.scale(scale, modelMatrix, modelMatrix);
         Matrix4f.translate(position, modelMatrix, modelMatrix);
@@ -91,6 +95,14 @@ public abstract class Model {
         return modelMatrixBuffer;
     }
 
+    public Matrix4f getModelMatrix() {
+        return modelMatrix;
+    }
+
+    public void setParentModelMatrix(Matrix4f parentModelMatrix) {
+        this.parentModelMatrix = parentModelMatrix;
+    }
+
     public Vector3f getPosition() {
         return position;
     }
@@ -121,11 +133,11 @@ public abstract class Model {
         return mesh;
     }
 
-    public void setMaterial(Material material) {
+    public void setMaterial(DefaultMaterial material) {
         this.material = material;
     }
 
-    public Material getMaterial() {
+    public DefaultMaterial getMaterial() {
         return material;
     }
 }
