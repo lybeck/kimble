@@ -24,6 +24,8 @@ import kimble.logic.exception.IllegalMoveException;
  */
 public class PlaybackLogic implements KimbleLogicInterface {
 
+    private boolean gameOver = false;
+
     private List<Map<Integer, Integer>> startingDieRolls;
     private int startingTeam;
     private List<Team> teams;
@@ -122,8 +124,6 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
     public void getPreviousMove() {
 
-        executeMove();
-
         if (logIterator.hasPrevious()) {
             LogEntry entry = logIterator.previous();
 
@@ -136,11 +136,16 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
                 Piece piece = teams.get(me.teamID).getPiece(me.pieceID);
 
-                if (me.destSquareID >= board.getSquares().size()) {
-                    int res = me.destSquareID % board.getGoalSquares(me.teamID).size();
+                System.out.println(piece.getPosition());
+                System.out.println(me.startSquareID + " : " + me.destSquareID);
+
+                if (me.startSquareID >= board.getSquares().size()) {
+                    int res = me.startSquareID % board.getGoalSquares(me.teamID).size();
                     move = new Move(piece, board.getGoalSquare(me.teamID, res), me.optional);
+                } else if (me.startSquareID < 0) {
+                    move = new Move(piece, null, me.optional);
                 } else {
-                    move = new Move(piece, board.getSquare(me.destSquareID), me.optional);
+                    move = new Move(piece, board.getSquare(me.startSquareID), me.optional);
                 }
 
             } else if (entry.type == EntryType.SKIP) {
@@ -160,8 +165,6 @@ public class PlaybackLogic implements KimbleLogicInterface {
     }
 
     public void getNextMove() {
-
-        executeMove();
 
         if (logIterator.hasNext()) {
             LogEntry entry = logIterator.next();
@@ -197,8 +200,6 @@ public class PlaybackLogic implements KimbleLogicInterface {
             move = null;
         }
     }
-
-    private boolean gameOver = false;
 
     @Override
     public boolean isGameOver() {

@@ -53,6 +53,12 @@ public class ExtraInput {
             }
         }
     }
+    
+    public void reset(){
+        executeMove = false;
+        playbackNextMove = false;
+        playbackPreviousMove = false;
+    }
 
     private boolean executeMove = false;
 
