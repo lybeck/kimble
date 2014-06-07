@@ -197,9 +197,6 @@ public class Hud2D {
     public void removeLastAppendTeamInfo(int teamID) {
         List<Word> words = teamInfoTextElements.get(teamID).getWords();
         if (words.size() > 0) {
-            for (Word w : words) {
-                System.out.println(w.getText());
-            }
             words.remove(words.size() - 1);
         }
     }

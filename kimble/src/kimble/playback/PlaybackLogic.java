@@ -136,9 +136,6 @@ public class PlaybackLogic implements KimbleLogicInterface {
 
                 Piece piece = teams.get(me.teamID).getPiece(me.pieceID);
 
-                System.out.println(piece.getPosition());
-                System.out.println(me.startSquareID + " : " + me.destSquareID);
-
                 if (me.startSquareID >= board.getSquares().size()) {
                     int res = me.startSquareID % board.getGoalSquares(me.teamID).size();
                     move = new Move(piece, board.getGoalSquare(me.teamID, res), me.optional);
