@@ -17,8 +17,8 @@ public class ExtraInput {
 
     private boolean rotateCamera = false;
 
-    private boolean playbackNextMove = false;
-    private boolean playbackPreviousMove = false;
+    private boolean executeNextMove = false;
+    private boolean executePreviousMove = false;
 
     public void update(float dt) {
         while (Keyboard.next()) {
@@ -44,46 +44,28 @@ public class ExtraInput {
                 Mouse.setGrabbed(true);
             }
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                executeMove = true;
-            } else if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-                playbackNextMove = true;
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+                executeNextMove = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-                playbackPreviousMove = true;
+                executePreviousMove = true;
             }
         }
     }
-    
-    public void reset(){
-        executeMove = false;
-        playbackNextMove = false;
-        playbackPreviousMove = false;
+
+    public void setExecuteNextMove(boolean executeMove) {
+        this.executeNextMove = executeMove;
     }
 
-    private boolean executeMove = false;
-
-    public void setExecuteMove(boolean executeMove) {
-        this.executeMove = executeMove;
+    public boolean isExecuteNextMove() {
+        return executeNextMove;
     }
 
-    public boolean isExecuteMove() {
-        return executeMove;
+    public void setExecutePreviousMove(boolean playbackPreviousMove) {
+        this.executePreviousMove = playbackPreviousMove;
     }
 
-    public void setPlaybackNextMove(boolean playbackNextMove) {
-        this.playbackNextMove = playbackNextMove;
-    }
-
-    public boolean isPlaybackNextMove() {
-        return playbackNextMove;
-    }
-
-    public void setPlaybackPreviousMove(boolean playbackPreviousMove) {
-        this.playbackPreviousMove = playbackPreviousMove;
-    }
-
-    public boolean isPlaybackPreviousMove() {
-        return playbackPreviousMove;
+    public boolean isExecutePreviousMove() {
+        return executePreviousMove;
     }
 
     public boolean rotateCamera() {
