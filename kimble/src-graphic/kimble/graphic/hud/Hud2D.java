@@ -73,6 +73,7 @@ public class Hud2D {
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
         createToggleButtons(font2);
+        updateViewport();
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {

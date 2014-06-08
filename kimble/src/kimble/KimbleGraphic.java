@@ -47,7 +47,7 @@ public class KimbleGraphic extends AbstractGraphic {
     private int lastTeamID = -1;
     private int lookAtTeamID = 0;
 
-    private boolean showTags = true;
+    private boolean showTags = false;
     private boolean moveAuto = true;
 
     private boolean endMessageShown = false;
@@ -215,6 +215,9 @@ public class KimbleGraphic extends AbstractGraphic {
     private void updateExecuteMove(float dt) {
 
         executeMoveLogic();
+        if (logic instanceof PlaybackLogic) {
+            ((PlaybackLogic) logic).getNextMove();
+        }
 
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
@@ -222,8 +225,7 @@ public class KimbleGraphic extends AbstractGraphic {
             if (!logic.isGameOver()) {
                 updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
 
-                die.setDieRoll(logic.getDieRoll());
-                dieHolderDome.bounce();
+                updateDieRoll();
 
                 turnTimer = 0;
                 nextTurnTimer = 0;
@@ -260,8 +262,8 @@ public class KimbleGraphic extends AbstractGraphic {
         // TODO: this will cause the "Rolled: dieRoll" label to append the same roll twice.
         if (extraInput.isExecuteNextMove()) {
 
-            ((PlaybackLogic) logic).getNextMove();
             logic.executeMove();
+            ((PlaybackLogic) logic).getNextMove();
             extraInput.setExecuteNextMove(false);
 
             updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
@@ -417,19 +419,46 @@ public class KimbleGraphic extends AbstractGraphic {
         return moveAuto;
     }
 
+    private float goalAngle = 0;
+
     private void updateCameraAngle(int teamID, float dt) {
-
-        float goalAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
-
-        // TODO: move the camera in the opposite direction if the distance is closer that way.
-//        if ((goalAngle - cameraPositionAngle) > Math.PI) {
-//            goalAngle = (float) (Math.PI - (goalAngle - cameraPositionAngle));
-//        }
-        cameraPositionAngle = MathHelper.lerp(cameraPositionAngle, goalAngle, dt);
+        cameraPositionAngle = MathHelper.lerp(cameraPositionAngle, goalAngle, dt * 5);
         updateCameraPosition();
     }
 
     public void rotateCameraToTeam(int teamID) {
+        goalAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+
+        if (goalAngle < 0) {
+            goalAngle += 2 * Math.PI;
+        } else if (goalAngle > 2 * Math.PI) {
+            goalAngle -= 2 * Math.PI;
+        }
+
+        if (cameraPositionAngle > 2 * Math.PI) {
+            cameraPositionAngle -= 2 * Math.PI;
+        } else if (cameraPositionAngle < 0) {
+            cameraPositionAngle += 2 * Math.PI;
+        }
+
+        System.out.println("cameraPositionAngle = " + cameraPositionAngle);
+        System.out.println("goalAngle = " + goalAngle);
+
+        float tempGoalAngle = (float) (goalAngle > cameraPositionAngle ? goalAngle : goalAngle + 2 * Math.PI);
+        float diff = tempGoalAngle - cameraPositionAngle;
+        if (diff > Math.PI) {
+            System.out.println("Higher");
+//            goalAngle = (float) (2 * Math.PI - diff);
+            goalAngle = (float) (tempGoalAngle - 2 * Math.PI);
+//            goalAngle = cameraPositionAngle - (float) (2 * Math.PI - Math.abs(cameraPositionAngle - goalAngle));
+        } else {
+            System.out.println("lower");
+            goalAngle = tempGoalAngle;
+        }
+
+        System.out.println("goalAngle = " + goalAngle);
+        System.out.println("------------------------------------------");
+
         lookAtTeamID = teamID;
     }
 }

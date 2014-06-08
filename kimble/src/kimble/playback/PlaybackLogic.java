@@ -159,6 +159,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
             dieRoll = 0;
             move = null;
         }
+        
+//        executeMove();
     }
 
     public void getNextMove() {
@@ -196,6 +198,8 @@ public class PlaybackLogic implements KimbleLogicInterface {
             dieRoll = 0;
             move = null;
         }
+        
+//        executeMove();
     }
 
     @Override
