@@ -3,7 +3,6 @@ package kimble.logic;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import kimble.logic.exception.IllegalMoveException;
@@ -115,7 +114,6 @@ public class Game {
         }
         if (isFinished(teams.get(turnIndex))) {
             finishedTeams.add(teams.get(turnIndex));
-            teams.get(turnIndex).setFinished(true);
 //            System.out.println("Team " + teams.get(turnIndex).getId() + " finished!");
         }
         // check if game just finished
