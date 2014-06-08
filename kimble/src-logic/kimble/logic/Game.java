@@ -22,6 +22,7 @@ public class Game {
     private final Board board;
     private final Die die;
     private final int numberOfPlayersToFinish;
+    private int startingTeamIndex;
     private int turnIndex;
     private Turn currentTurn;
     private int turnCount;
@@ -72,7 +73,8 @@ public class Game {
             throw new RuntimeException("Game::startGame can be called only once!");
         }
         GameStart gameStart = new GameStart(teams, die);
-        this.turnIndex = gameStart.getStartingTeamIndex();
+        this.startingTeamIndex = gameStart.getStartingTeamIndex();
+        this.turnIndex = this.startingTeamIndex;
         return gameStart;
     }
 
@@ -141,16 +143,15 @@ public class Game {
     }
 
     private void nextTurn() {
-        int lastTurnIndex = turnIndex;
         if (isDisqualified(getTeamInTurn()) || !continueTurnValues.contains(currentTurn.getDieRoll())) {
             do {
                 if (++turnIndex >= teams.size()) {
                     turnIndex = 0;
                 }
+                if (turnIndex == startingTeamIndex) {
+                    ++turnCount;
+                }
             } while (isFinished(teams.get(turnIndex)) || isDisqualified(teams.get(turnIndex)));
-            if (turnIndex < lastTurnIndex) {
-                ++turnCount;
-            }
         }
         currentTurn = null;
     }
