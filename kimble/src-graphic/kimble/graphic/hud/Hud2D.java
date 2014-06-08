@@ -30,7 +30,6 @@ public class Hud2D {
     private final KimbleGraphic mainWindow;
     private final Camera camera;
 
-    private BitmapFont font1;
     private BitmapFont font2;
 
     private final List<Team> teams;
@@ -39,7 +38,9 @@ public class Hud2D {
     private List<TextElement> teamOrderTextElements;
     private List<TextElement> teamInfoTextElements;
     private List<TextElement> playbackSpeedTextElements;
+
     private Button showTagsButton;
+    private Button moveAutoButton;
 
     private List<AbstractHudItem> items;
 
@@ -59,12 +60,11 @@ public class Hud2D {
         positionTeamOrderTextElements(font2);
         positionTeamInfoTextElements(font2);
         positionPlaybackSpeedTextElements(font2);
-        positionToggleButton();
+        positionToggleButtons();
     }
 
     public final void setup() {
         try {
-            font1 = FontGenerator.create("font1", new Font("Monospaced", Font.BOLD, 24), new Vector4f(1, 1, 1, 1));
             font2 = FontGenerator.create("font2", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1));
         } catch (IOException ex) {
             Logger.getLogger(BitmapFont.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,7 +72,7 @@ public class Hud2D {
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
-        createToggleButton(font2);
+        createToggleButtons(font2);
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -140,18 +140,46 @@ public class Hud2D {
         items.addAll(playbackSpeedTextElements);
     }
 
-    private void createToggleButton(BitmapFont font) {
-        showTagsButton = new Button("Toggle Tags", font);
-        showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+    private void createToggleButtons(BitmapFont font) {
+        showTagsButton = new Button("Toggle Tags OFF", font);
+        updateTextShowTagsButton();
         showTagsButton.addCallback(new Callback() {
 
             @Override
             public void execute() {
                 mainWindow.toggleTags();
+                updateTextShowTagsButton();
             }
         });
-
         items.add(showTagsButton);
+
+        moveAutoButton = new Button("Auto OFF", font);
+        updateTextMoveAutoButton();
+        moveAutoButton.addCallback(new Callback() {
+
+            @Override
+            public void execute() {
+                mainWindow.toggleMoveAuto();
+                updateTextMoveAutoButton();
+            }
+        });
+        items.add(moveAutoButton);
+    }
+
+    private void updateTextShowTagsButton() {
+        if (mainWindow.isShowTags()) {
+            showTagsButton.setTextKeepWidth("Toggle Tags ON");
+        } else {
+            showTagsButton.setTextKeepWidth("Toggle Tags OFF");
+        }
+    }
+
+    private void updateTextMoveAutoButton() {
+        if (mainWindow.isMoveAuto()) {
+            moveAutoButton.setTextKeepWidth("Auto ON");
+        } else {
+            moveAutoButton.setTextKeepWidth("Auto OFF");
+        }
     }
 
     private void positionTeamOrderTextElements(BitmapFont font) {
@@ -174,8 +202,10 @@ public class Hud2D {
         }
     }
 
-    private void positionToggleButton() {
+    private void positionToggleButtons() {
         showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
+        moveAutoButton.setPosition(Screen.getWidth() - moveAutoButton.getWidth() - 15, 15 + moveAutoButton.getHeight()
+                + 5);
     }
     // =======================================================
     /*
@@ -191,7 +221,14 @@ public class Hud2D {
     }
 
     public void appendTeamInfo(int teamID, String info) {
-        setTeamInfo(teamID, getTeamInfo(teamID) + info);
+        teamInfoTextElements.get(teamID).addWord(info, BitmapFont.WHITE);
+    }
+
+    public void removeLastAppendTeamInfo(int teamID) {
+        List<Word> words = teamInfoTextElements.get(teamID).getWords();
+        if (words.size() > 0) {
+            words.remove(words.size() - 1);
+        }
     }
 
     public String getTeamInfo(int teamID) {
@@ -222,13 +259,6 @@ public class Hud2D {
         for (AbstractHudItem item : items) {
             item.update(dt);
         }
-//        for (TextElement te : teamOrderTextElements) {
-//            te.update(dt);
-//        }
-//        for (TextElement te : playbackSpeedTextElements) {
-//            te.update(dt);
-//        }
-//        showTagsButton.update(dt);
     }
 
     /**

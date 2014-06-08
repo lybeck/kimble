@@ -52,42 +52,30 @@ public class PieceGraphic extends Model {
             } else {
                 currentSquare = board.getSquares().get(squareID);
             }
-
-            if (move(currentSquare.getPosition())) {
-                angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10
-                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-
-                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
-                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-                tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
-                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
-                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-                setPosition(tempPosition);
-                rotate(0, currentSquare.getRotation().y, 0);
-            } else {
-                angle = 0;
-            }
         } else {
             currentSquare = board.getEmptyHomeSquare(pieceLogic.getId(), pieceLogic.getTeamId());
-//            setPosition(currentSquare.getPosition());
-            rotate(0, currentSquare.getRotation().y, 0);
             this.tempPosition = new Vector3f(getPosition().x, getPosition().y, getPosition().z);
+        }
 
+        rotate(0, currentSquare.getRotation().y, 0);
+        updateMove(currentSquare, dt);
+    }
+
+    private void updateMove(SquareGraphic currentSquare, float dt) {
+
+        if (move(currentSquare.getPosition())) {
+            angle = MathHelper.lerp(angle, (float) Math.PI, dt * 10
+                    * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+
+            tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
+                    * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+            tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
+            tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
+                    * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+            setPosition(tempPosition);
+            rotate(0, currentSquare.getRotation().y, 0);
+        } else {
             angle = 0;
-
-            if (move(currentSquare.getPosition())) {
-                angle = MathHelper.lerp(angle, (float) Math.PI, dt); // * 10 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-
-                tempPosition.x = MathHelper.lerp(tempPosition.x, currentSquare.getPosition().x, dt * 10
-                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-                tempPosition.y = (float) (1.5 * Math.sin(angle)); //MathHelper.lerp(tempPosition.y, currentSquare.getPosition().y, dt * 10);
-                tempPosition.z = MathHelper.lerp(tempPosition.z, currentSquare.getPosition().z, dt * 10
-                        * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-                setPosition(tempPosition);
-                rotate(0, currentSquare.getRotation().y, 0);
-            } else {
-                angle = 0;
-            }
         }
     }
 

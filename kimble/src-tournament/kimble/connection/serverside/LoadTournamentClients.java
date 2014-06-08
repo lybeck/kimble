@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import kimble.connection.serverside.clientloading.StartJarInterface;
 import kimble.util.FileUtil;
 
@@ -15,9 +14,9 @@ import kimble.util.FileUtil;
 class LoadTournamentClients implements StartJarInterface {
 
     private final String directoryName;
-    private final Set<String> jarNames;
+    private final List<String> jarNames;
 
-    public LoadTournamentClients(String directoryName, Set<String> jarNames) {
+    public LoadTournamentClients(String directoryName, List<String> jarNames) {
         this.directoryName = directoryName;
         this.jarNames = jarNames;
     }

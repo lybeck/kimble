@@ -50,6 +50,13 @@ public class Button extends AbstractHudItem {
         this.rectangle = new Rectangle(position.x, position.y, width, font.getVerticalSpacing(), new Vector4f(0.4f, 0.4f, 0.4f, 0.4f));
     }
 
+    public final void setTextKeepWidth(String text) {
+        this.text = text;
+        float textWidth = font.calculateWidth(text);
+        textPosition = new Vector3f(textPosition);
+        textPosition.x = position.x + (width - textWidth) / 2;
+    }
+
     public final void setPosition(float x, float y) {
         this.x = x;
         this.y = y;

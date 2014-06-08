@@ -88,15 +88,17 @@ public class Move {
         if (illegalMoveException != null) {
             throw illegalMoveException;
         }
-        if (destination.isPiecePresent()) {
-            destination.getPiece().setPosition(null);
+        if (destination != null) {
+            if (destination.isPiecePresent()) {
+                destination.getPiece().setPosition(null);
+            }
+            destination.setPiece(piece);
         }
         Square oldPosition = piece.getPosition();
         if (oldPosition != null) {
             oldPosition.setPiece(null);
         }
         piece.setPosition(destination);
-        destination.setPiece(piece);
     }
 
     public Piece getPiece() {

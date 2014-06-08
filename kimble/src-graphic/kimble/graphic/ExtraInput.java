@@ -17,6 +17,9 @@ public class ExtraInput {
 
     private boolean rotateCamera = false;
 
+    private boolean executeNextMove = false;
+    private boolean executePreviousMove = false;
+
     public void update(float dt) {
         while (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
@@ -41,20 +44,28 @@ public class ExtraInput {
                 Mouse.setGrabbed(true);
             }
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                executeMove = true;
+            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+                executeNextMove = true;
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+                executePreviousMove = true;
             }
         }
     }
 
-    private boolean executeMove = false;
-
-    public void setExecuteMove(boolean executeMove) {
-        this.executeMove = executeMove;
+    public void setExecuteNextMove(boolean executeMove) {
+        this.executeNextMove = executeMove;
     }
 
-    public boolean isExecuteMove() {
-        return executeMove;
+    public boolean isExecuteNextMove() {
+        return executeNextMove;
+    }
+
+    public void setExecutePreviousMove(boolean playbackPreviousMove) {
+        this.executePreviousMove = playbackPreviousMove;
+    }
+
+    public boolean isExecutePreviousMove() {
+        return executePreviousMove;
     }
 
     public boolean rotateCamera() {
