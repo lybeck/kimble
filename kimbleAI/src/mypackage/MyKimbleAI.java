@@ -12,8 +12,8 @@ import kimble.connection.clientside.MoveInfo;
 public class MyKimbleAI extends KimbleClient {
 
     /**
-     * This is the name that is shown in the game <b>during the training</b>. The name of your AI in the actual
-     * tournament won't be affected by this.
+     * This is the name that is shown in the game <b>during the training</b>.
+     * The name of your AI in the actual tournament won't be affected by this.
      */
     private static final String NAME_OF_MY_AI = "<myname>-AI";
 
@@ -54,8 +54,8 @@ public class MyKimbleAI extends KimbleClient {
     }
 
     /**
-     * Selects the wanted move which is sent to the server. Return value {@code null} means that no move should be made
-     * (pass turn).
+     * Selects the wanted move which is sent to the server. Return value
+     * {@code null} means that no move should be made (pass turn).
      *
      * @param availableMoves List of available moves.
      * @return The selected move, or {@code null} if selected to pass turn.

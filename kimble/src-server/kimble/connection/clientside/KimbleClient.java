@@ -85,6 +85,7 @@ public abstract class KimbleClient implements Runnable {
                 handleTurn();
             } catch (Exception ex) {
                 sendMessage(new ErrorMessage(ex));
+                throw ex;
             }
         }
     }

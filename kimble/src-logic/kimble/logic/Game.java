@@ -134,6 +134,11 @@ public class Game {
     public void disqualifyPlayer() {
         if (!disqualifiedTeams.contains(getTeamInTurn())) {
             disqualifiedTeams.add(getTeamInTurn());
+            for (Piece piece : getTeamInTurn().getPieces()) {
+                if (piece.getPosition() != null && !piece.getPosition().isGoalSquare()) {
+                    piece.setPosition(null);
+                }
+            }
         }
         if (!isGameOver()) {
             nextTurn();
