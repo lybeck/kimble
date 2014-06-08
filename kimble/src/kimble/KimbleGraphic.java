@@ -335,12 +335,16 @@ public class KimbleGraphic extends AbstractGraphic {
     }
 
     private void updateTeamInfo(int teamID, int dieRoll) {
+
         for (Team team : logic.getTeams()) {
-            if (team.isFinished()) {
+            if (logic.isFinished(team.getId())) {
                 for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
                     Team finishedTeam = logic.getFinishedTeams().get(i);
-                    hud2d.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
+                    hud2d.setTeamInfo(finishedTeam.getId(), "Finished: " + (i + 1));
+                    break;
                 }
+            } else if (logic.isDisqualified(team.getId())) {
+                hud2d.setTeamInfo(team.getId(), "DSQ");
             } else if (team.getId() == teamID) {
                 // Appends all the die rolls after each other on the hud.
                 if (lastTeamID != teamID) {
