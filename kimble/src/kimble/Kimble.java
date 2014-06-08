@@ -31,7 +31,9 @@ public class Kimble {
         players.add(new FirstMoveAI("First_move_AI"));
         players.add(new TestAILasse());
         players.add(new TestAILasse1());
-        players.add(new TestAIRandom());
+        while (players.size() < numberOfPlayers) {
+            players.add(new TestAIRandom());
+        }
 
         new ServerGame(useGui, players).start();
 
