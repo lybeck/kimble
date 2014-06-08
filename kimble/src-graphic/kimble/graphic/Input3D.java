@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
 import kimble.graphic.camera.Camera3D;
+import kimble.logic.Constants;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -22,8 +18,8 @@ public class Input3D {
 
     public Input3D(Camera3D camera) {
         this.camera = camera;
-        this.mouseSpeed = 0.5f;
-        this.moveSpeed = 1;
+        this.mouseSpeed = Constants.DEFAULT_MOUSE_SPEED;
+        this.moveSpeed = Constants.DEFAULT_MOVE_SPEED;
     }
 
     public void update(float dt) {

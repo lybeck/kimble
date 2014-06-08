@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic;
 
 import kimble.playback.PlaybackProfile;
@@ -17,11 +12,15 @@ public class ExtraInput {
 
     private boolean rotateCamera = false;
 
+    private boolean updateCameraPosition = true;
+
     private boolean executeNextMove = false;
     private boolean executePreviousMove = false;
 
     public void update(float dt) {
         while (Keyboard.next()) {
+
+            // Update playback speed
             if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
             } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
@@ -35,19 +34,22 @@ public class ExtraInput {
             } else if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
                 PlaybackProfile.setCurrentProfile(PlaybackProfile.OUT_OF_CONTROL);
             }
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_R)) {
-                rotateCamera = true;
+            
+            // Random input
+            else if (Keyboard.isKeyDown(Keyboard.KEY_R)) {
+                rotateCamera = !rotateCamera;
+                updateCameraPosition = !rotateCamera;
                 Mouse.setGrabbed(false);
-            } else if (Keyboard.isKeyDown(Keyboard.KEY_T)) {
-                rotateCamera = false;
-                Mouse.setGrabbed(true);
-            }
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+            } 
+            
+            // Manual movement
+            else if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
                 executeNextMove = true;
             } else if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
                 executePreviousMove = true;
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_U)) {
+                updateCameraPosition = !updateCameraPosition;
+                Mouse.setGrabbed(!updateCameraPosition);
             }
         }
     }
@@ -68,7 +70,12 @@ public class ExtraInput {
         return executePreviousMove;
     }
 
-    public boolean rotateCamera() {
+    public boolean isRotateCamera() {
         return rotateCamera;
     }
+
+    public boolean isUpdateCameraPosition() {
+        return updateCameraPosition;
+    }
+
 }

@@ -45,7 +45,6 @@ public class KimbleGraphic extends AbstractGraphic {
     private Hud2D hud2d;
     private BitmapFont font;
     private int lastTeamID = -1;
-    private int lookAtTeamID = 0;
 
     private boolean showTags = false;
     private boolean moveAuto = true;
@@ -93,7 +92,7 @@ public class KimbleGraphic extends AbstractGraphic {
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         camera = new Camera3D(70f, 0.1f, 1000f);
-        rotateCameraToTeam(lookAtTeamID);
+        rotateCameraToTeam(0);
 
         camera.setupProjectionMatrix();
 
@@ -159,11 +158,6 @@ public class KimbleGraphic extends AbstractGraphic {
 //            stop();
         }
 
-        if (extraInput.rotateCamera()) {
-            cameraPositionAngle += dt * 0.1;
-            updateCameraPosition();
-        }
-
         if (Screen.wasResized()) {
             Screen.updateViewport();
             camera.setupProjectionMatrix();
@@ -173,8 +167,15 @@ public class KimbleGraphic extends AbstractGraphic {
         extraInput.update(dt);
         input.update(dt);
 
-        updateCameraAngle(lookAtTeamID, dt);
+        if (extraInput.isRotateCamera()) {
+            cameraPositionAngle += dt * 0.1;
+            updateCameraPosition();
+        }
 
+        if (extraInput.isUpdateCameraPosition()) {
+            updateCameraAngle(dt);
+            updateCameraPosition();
+        }
         camera.update(dt);
 
         if (moveAuto) {
@@ -421,9 +422,8 @@ public class KimbleGraphic extends AbstractGraphic {
 
     private float goalAngle = 0;
 
-    private void updateCameraAngle(int teamID, float dt) {
+    private void updateCameraAngle(float dt) {
         cameraPositionAngle = MathHelper.lerp(cameraPositionAngle, goalAngle, dt * 5);
-        updateCameraPosition();
     }
 
     public void rotateCameraToTeam(int teamID) {
@@ -441,24 +441,12 @@ public class KimbleGraphic extends AbstractGraphic {
             cameraPositionAngle += 2 * Math.PI;
         }
 
-        System.out.println("cameraPositionAngle = " + cameraPositionAngle);
-        System.out.println("goalAngle = " + goalAngle);
-
         float tempGoalAngle = (float) (goalAngle > cameraPositionAngle ? goalAngle : goalAngle + 2 * Math.PI);
         float diff = tempGoalAngle - cameraPositionAngle;
         if (diff > Math.PI) {
-            System.out.println("Higher");
-//            goalAngle = (float) (2 * Math.PI - diff);
             goalAngle = (float) (tempGoalAngle - 2 * Math.PI);
-//            goalAngle = cameraPositionAngle - (float) (2 * Math.PI - Math.abs(cameraPositionAngle - goalAngle));
         } else {
-            System.out.println("lower");
             goalAngle = tempGoalAngle;
         }
-
-        System.out.println("goalAngle = " + goalAngle);
-        System.out.println("------------------------------------------");
-
-        lookAtTeamID = teamID;
     }
 }
