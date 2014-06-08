@@ -1,6 +1,5 @@
 package kimble.bot;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 import kimble.connection.clientside.MoveInfo;
@@ -18,7 +17,7 @@ public class KimbleBot3 extends KimbleBot1 {
 
     private final Random random;
 
-    public KimbleBot3(String host, int port) throws IOException {
+    public KimbleBot3(String host, int port) {
         super("KimbleBot3", host, port);
         this.random = new Random();
     }
