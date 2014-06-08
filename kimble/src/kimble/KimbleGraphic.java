@@ -301,6 +301,8 @@ public class KimbleGraphic extends AbstractGraphic {
 //                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
+
+            hud2d.setTurnCount(logic.getTurnCount());
         }
     }
 
@@ -367,7 +369,6 @@ public class KimbleGraphic extends AbstractGraphic {
         }
 
         textShader.bind();
-
         if (showTags) {
             for (PieceGraphic p : pieces) {
                 String tag = "[" + p.getPieceLogic().getId() + "]";

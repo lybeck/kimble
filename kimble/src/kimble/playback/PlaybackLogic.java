@@ -159,7 +159,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
             dieRoll = 0;
             move = null;
         }
-        
+
 //        executeMove();
     }
 
@@ -198,7 +198,7 @@ public class PlaybackLogic implements KimbleLogicInterface {
             dieRoll = 0;
             move = null;
         }
-        
+
 //        executeMove();
     }
 
@@ -239,6 +239,21 @@ public class PlaybackLogic implements KimbleLogicInterface {
     @Override
     public List<Team> getFinishedTeams() {
         return finishedTeams;
+    }
+
+    @Override
+    public int getTurnCount() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isFinished(int teamID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isDisqualified(int teamID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

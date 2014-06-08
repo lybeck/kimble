@@ -35,6 +35,7 @@ public class Hud2D {
     private final List<Team> teams;
     private float widestTeamName;
 
+    private TextElement turnCountTextElement;
     private List<TextElement> teamOrderTextElements;
     private List<TextElement> teamInfoTextElements;
     private List<TextElement> playbackSpeedTextElements;
@@ -57,6 +58,7 @@ public class Hud2D {
 
     public void updateViewport() {
         camera.setupProjectionMatrix();
+        positionTurnCountTextElement();
         positionTeamOrderTextElements(font2);
         positionTeamInfoTextElements(font2);
         positionPlaybackSpeedTextElements(font2);
@@ -69,11 +71,18 @@ public class Hud2D {
         } catch (IOException ex) {
             Logger.getLogger(BitmapFont.class.getName()).log(Level.SEVERE, null, ex);
         }
+        createTurnCountTextElement(font2);
         createTeamOrderTextElements(font2);
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
         createToggleButtons(font2);
         updateViewport();
+    }
+
+    private void createTurnCountTextElement(BitmapFont font) {
+        turnCountTextElement = new TextElement(font);
+        turnCountTextElement.addWord("Turn Count: 0", BitmapFont.WHITE);
+        items.add(turnCountTextElement);
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -183,16 +192,21 @@ public class Hud2D {
         }
     }
 
+    private void positionTurnCountTextElement() {
+        turnCountTextElement.setPosition(15, 10);
+    }
+
     private void positionTeamOrderTextElements(BitmapFont font) {
         for (int i = 0; i < teamOrderTextElements.size(); i++) {
             TextElement te = teamOrderTextElements.get(i);
-            te.setPosition(15, 10 + i * font.getVerticalSpacing());
+            te.setPosition(15, 15 + (i + 1) * font.getVerticalSpacing());
         }
     }
 
     private void positionTeamInfoTextElements(BitmapFont font) {
         for (int i = 0; i < teamInfoTextElements.size(); i++) {
-            teamInfoTextElements.get(i).setPosition(30 + widestTeamName, 10 + i * font.getVerticalSpacing());
+            TextElement te = teamInfoTextElements.get(i);
+            te.setPosition(30 + widestTeamName, 15 + (i + 1) * font.getVerticalSpacing());
         }
     }
 
@@ -249,6 +263,11 @@ public class Hud2D {
                 playbackSpeedTextElements.get(i).getWords().get(0).setColor(BitmapFont.GREY);
             }
         }
+    }
+
+    public void setTurnCount(int turnCount) {
+        turnCountTextElement.clear();
+        turnCountTextElement.addWord("Turn Count: " + turnCount, BitmapFont.WHITE);
     }
 
     // =======================================================

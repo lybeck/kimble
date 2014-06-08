@@ -297,4 +297,19 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         return getGame().getFinishedTeams();
     }
 
+    @Override
+    public int getTurnCount() {
+        return getGame().getTurnCount();
+    }
+
+    @Override
+    public boolean isFinished(int teamID) {
+        return getGame().isFinished(teamID);
+    }
+
+    @Override
+    public boolean isDisqualified(int teamID) {
+        return getGame().isDisqualified(teamID);
+    }
+
 }
