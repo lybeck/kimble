@@ -1,10 +1,12 @@
 package kimble.connection.serverside;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.connection.serverside.clientloading.StartJarInterface;
+import kimble.logic.Constants;
 import kimble.util.Timer;
 
 /**
@@ -35,27 +37,20 @@ public class TestServer {
     }
 
     public static void main(String[] args) {
-        // TODO: add a loop that loops over all sets of games. This is just a test set - the real sets needs to be generated from the real bots! Combinatorics: sets of four out of all teams!
-
-//        String directoryName = "competitors";
-//        
-//        Set<String> jarNames = new HashSet<>();
-//        jarNames.add("KimbleAI_1.jar");
-//        jarNames.add("KimbleAI_2.jar");
-//        jarNames.add("KimbleAI_3.jar");
-//        jarNames.add("KimbleAI_4.jar");
+        
         String directoryName = "kimble-tournament";
 
-        GenerateTournamentHeats heats = new GenerateTournamentHeats(directoryName);
-        heats.generateHeats();
+        List<Heat> heats = new TournamentHeatGenerator(directoryName, Constants.DEFAULT_NUMBER_OF_TEAMS).getHeats();
 
-        List<String> jarNames = new ArrayList<>();
-        jarNames.add("KimbleBot1.jar");
-        jarNames.add("KimbleBot2.jar");
-        jarNames.add("KimbleBot3.jar");
-        jarNames.add("KimbleAI.jar");
+        // TODO: Define a way to select number of rounds
+        int rounds = 5;
 
-        Timer t = new Timer();
-        startServer(HOST_ADDRESS, PORT, new LoadTournamentClients(directoryName, jarNames));
+        for (int i = 0; i < rounds; i++) {
+            Collections.shuffle(heats);
+            for (Heat heat : heats) {
+                startServer(HOST_ADDRESS, PORT, new LoadTournamentClients(heat.getShuffledTeams()));
+            }
+        }
+
     }
 }
