@@ -25,7 +25,8 @@ public class LogFile {
     private List<Map<Integer, Integer>> startRolls;
     private Integer startingTeam;
     private List<LogEntry> moves;
-    private List<Integer> teamFinishOrder;
+    private Map<Integer, Integer> teamFinishTurns;
+    private Map<Integer, Integer> teamDisqualifiedTurns;
     private Integer winner;
 
     public LogFile() {
@@ -36,7 +37,8 @@ public class LogFile {
         this.teams = new ArrayList<>();
         this.board = new BoardInfo();
         this.moves = new ArrayList<>();
-        this.teamFinishOrder = new ArrayList<>();
+        this.teamFinishTurns = new HashMap<>();
+        this.teamDisqualifiedTurns = new HashMap<>();
     }
 
     // ================================================
@@ -50,8 +52,12 @@ public class LogFile {
         moves.add(entry);
     }
 
-    public void addTeamFinish(Integer teamID) {
-        teamFinishOrder.add(teamID);
+    public void addTeamFinished(Integer teamID, int turnCount) {
+        teamFinishTurns.put(teamID, turnCount);
+    }
+
+    public void addTeamDisqualified(Integer teamID, int turnCount) {
+        teamDisqualifiedTurns.put(teamID, turnCount);
     }
 
     // ================================================
@@ -112,8 +118,12 @@ public class LogFile {
         return moves;
     }
 
-    public List<Integer> getTeamFinishOrder() {
-        return teamFinishOrder;
+    public Map<Integer, Integer> getTeamFinnishTurns() {
+        return teamFinishTurns;
+    }
+
+    public Map<Integer, Integer> getTeamDisqualifiedTurns() {
+        return teamDisqualifiedTurns;
     }
 
     public int getWinner() {

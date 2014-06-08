@@ -18,7 +18,7 @@ import mypackage.MyKimbleAI;
  */
 public class Main {
 
-    public static final boolean USE_LOGGER = false;
+    public static final boolean USE_LOGGER = true;
     public static final boolean USE_GUI = true;
     public static final String HOST_ADDRESS = "localhost";
     public static final int PORT = 5391;

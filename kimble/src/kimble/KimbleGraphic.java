@@ -216,9 +216,6 @@ public class KimbleGraphic extends AbstractGraphic {
     private void updateExecuteMove(float dt) {
 
         executeMoveLogic();
-        if (logic instanceof PlaybackLogic) {
-            ((PlaybackLogic) logic).getNextMove();
-        }
 
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
@@ -235,6 +232,10 @@ public class KimbleGraphic extends AbstractGraphic {
 //                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
+
+                if (logic instanceof PlaybackLogic) {
+                    ((PlaybackLogic) logic).getNextMove();
+                }
             }
         }
     }
@@ -263,7 +264,8 @@ public class KimbleGraphic extends AbstractGraphic {
         // TODO: this will cause the "Rolled: dieRoll" label to append the same roll twice.
         if (extraInput.isExecuteNextMove()) {
 
-            logic.executeMove();
+            executeMoveLogic();
+//            logic.executeMove();
             ((PlaybackLogic) logic).getNextMove();
             extraInput.setExecuteNextMove(false);
 
@@ -273,7 +275,8 @@ public class KimbleGraphic extends AbstractGraphic {
         } else if (extraInput.isExecutePreviousMove()) {
 
             ((PlaybackLogic) logic).getPreviousMove();
-            logic.executeMove();
+//            logic.executeMove();
+            executeMoveLogic();
             extraInput.setExecutePreviousMove(false);
 
             hud2d.removeLastAppendTeamInfo(logic.getNextTeamInTurn().getId());

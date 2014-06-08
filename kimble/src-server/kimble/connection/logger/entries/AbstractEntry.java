@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.logger.entries;
 
 /**
@@ -11,10 +6,12 @@ package kimble.connection.logger.entries;
  */
 public abstract class AbstractEntry {
 
+    public final int turnCount;
     public final int teamID;
     public final int dieRoll;
 
-    public AbstractEntry(int teamID, int dieRoll) {
+    public AbstractEntry(int turnCount, int teamID, int dieRoll) {
+        this.turnCount = turnCount;
         this.teamID = teamID;
         this.dieRoll = dieRoll;
     }
