@@ -87,7 +87,8 @@ public class TestAILasse1 extends KimbleAI {
         if (position == null) {
             return Integer.MAX_VALUE - 1;
         }
-        int dist = 0;
+        position = position.getNext();
+        int dist = 1;
         while (!position.equals(board.getStartSquare(getMyTeam().getId()))) {
             ++dist;
             position = position.getNext();

@@ -7,6 +7,7 @@ import kimble.logic.IPlayer;
 import kimble.logic.player.testai.FirstMoveAI;
 import kimble.logic.player.testai.TestAILasse;
 import kimble.logic.player.testai.TestAILasse1;
+import kimble.logic.player.testai.TestAILasse2;
 import kimble.logic.player.testai.TestAIRandom;
 
 /**
@@ -31,6 +32,7 @@ public class Kimble {
         players.add(new FirstMoveAI("First_move_AI"));
         players.add(new TestAILasse());
         players.add(new TestAILasse1());
+        players.add(new TestAILasse2());
         while (players.size() < numberOfPlayers) {
             players.add(new TestAIRandom());
         }
