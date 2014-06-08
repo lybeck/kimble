@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.clientside;
 
 import com.google.gson.JsonArray;
@@ -43,7 +38,7 @@ public abstract class KimbleClient implements Runnable {
 
     private boolean running;
 
-    private String name;
+    private final String name;
     private int myTeamId;
 
     private String receiveMessageType;
@@ -60,9 +55,8 @@ public abstract class KimbleClient implements Runnable {
      * @param name - The AI name
      * @param host - The url to the server.
      * @param port - The port the server is running on.
-     * @throws IOException
      */
-    public KimbleClient(String name, String host, int port) throws IOException {
+    public KimbleClient(String name, String host, int port) {
         this.name = name;
         this.host = host;
         this.port = port;
@@ -83,7 +77,6 @@ public abstract class KimbleClient implements Runnable {
         while (running) {
             ReceiveMessage receiveMessage = receiveMessage();
             if (getReceiveMessageType().equals("disconnect")) {
-                System.out.println("Got a disconnect message!");
                 sendMessage(new PingMessage());
                 running = false;
             }

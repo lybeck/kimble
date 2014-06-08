@@ -130,7 +130,6 @@ public class Game {
     }
     
     public void disqualifyPlayer() {
-        System.out.println("Game::disqualifyPlayer");
         if (!disqualifiedTeams.contains(getTeamInTurn())) {
             disqualifiedTeams.add(getTeamInTurn());
         }

@@ -1,6 +1,5 @@
 package kimble.bot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import kimble.connection.clientside.KimbleClient;
@@ -12,7 +11,7 @@ import kimble.connection.clientside.MoveInfo;
  */
 public abstract class AbstractKimbleBot extends KimbleClient {
 
-    public AbstractKimbleBot(String name, String host, int port) throws IOException {
+    public AbstractKimbleBot(String name, String host, int port) {
         super(name, host, port);
     }
 
