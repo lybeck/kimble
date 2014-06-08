@@ -15,17 +15,20 @@ import kimble.logic.player.KimbleAI;
  *
  * @author Lasse Lybeck
  */
-public class TestAILasse extends KimbleAI {
+public class TestAILasse2 extends KimbleAI {
 
     private Random random;
 
-    public TestAILasse() {
-        super("TestAILasse");
+    public TestAILasse2() {
+        super("TestAILasse_New");
         this.random = new Random();
     }
 
     @Override
     public int selectMove(Turn turn, List<Team> teams) {
+        if (turn.getMoves().isEmpty()) {
+            return -1;
+        }
         Map<Move, Integer> map = new HashMap<>();
         for (int i = 0; i < turn.getMoves().size(); ++i) {
             Move move = turn.getMove(i);
@@ -37,7 +40,6 @@ public class TestAILasse extends KimbleAI {
             if (!turn.getMoves().isEmpty()) {
                 return getBestInGoalMove(turn.getMoves());
             }
-            return -1;
         }
         // check goal moves
         for (Move move : map.keySet()) {
@@ -58,21 +60,21 @@ public class TestAILasse extends KimbleAI {
             }
         }
         // check moves from start square
-        for (Move move : map.keySet()) {
-            if (move.getPiece().getPosition() != null
-                    && move.getPiece().getPosition().equals(getBoard().getStartSquare(getMyTeam().getId()))) {
-                return map.get(move);
-            }
-        }
+//        for (Move move : map.keySet()) {
+//            if (move.getPiece().getPosition() != null
+//                    && move.getPiece().getPosition().equals(getBoard().getStartSquare(getMyTeam().getId()))) {
+//                return map.get(move);
+//            }
+//        }
         return getBestNormalMove(map, getBoard());
     }
 
     private int getBestNormalMove(Map<Move, Integer> map, Board board) {
         Move bestMove = null;
-        int bestDist = Integer.MAX_VALUE;
+        int bestDist = Integer.MIN_VALUE;
         for (Move move : map.keySet()) {
             int distance = getDistanceToGoal(move, board);
-            if (distance < bestDist) {
+            if (distance > bestDist) {
                 bestMove = move;
                 bestDist = distance;
             }
@@ -98,6 +100,9 @@ public class TestAILasse extends KimbleAI {
         Map<Move, Integer> map = new HashMap<>();
         for (int i = 0; i < moves.size(); i++) {
             Move move = moves.get(i);
+            if (!move.isOptional()) {
+                continue;
+            }
             Square startPosition = move.getPiece().getPosition();
             Square endPosition = move.getDestination();
             if (startPosition.getID() < endPosition.getID()) {
