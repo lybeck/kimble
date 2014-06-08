@@ -20,7 +20,7 @@ public class Screen {
 
     public static void setupDisplay(String title, int width, int height) {
         try {
-            // TODO: Check what the arguments are!
+            // TODO: Check what the arguments 8, 1, 0 and 8 actually are!
             PixelFormat pixelFormat = new PixelFormat(8, 1, 0, 8);
             ContextAttribs contextAtrributes = new ContextAttribs(3, 2)
                     .withProfileCore(true);

@@ -29,6 +29,8 @@ import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Piece;
 import kimble.logic.Team;
+import kimble.playback.PlaybackLogic;
+import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -43,7 +45,10 @@ public class KimbleGraphic extends AbstractGraphic {
     private Hud2D hud2d;
     private BitmapFont font;
     private int lastTeamID = -1;
+    private int lookAtTeamID = 0;
+
     private boolean showTags = true;
+    private boolean moveAuto = true;
 
     private boolean endMessageShown = false;
 
@@ -88,7 +93,7 @@ public class KimbleGraphic extends AbstractGraphic {
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         camera = new Camera3D(70f, 0.1f, 1000f);
-        rotateCameraToTeam(0);
+        rotateCameraToTeam(lookAtTeamID);
 
         camera.setupProjectionMatrix();
 
@@ -165,26 +170,34 @@ public class KimbleGraphic extends AbstractGraphic {
             hud2d.updateViewport();
         }
 
-        if (extraInput.isExecuteMove()) {
-            if (started) {
-                updateExecuteMoveManual(dt);
-            } else {
-                updateStartingDieRoll(dt);
-            }
-            extraInput.setExecuteMove(false);
-        }
-
-        turnTimer += dt;
-        if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
-            if (started) {
-                updateExecuteMove(dt);
-            } else {
-                updateStartingDieRoll(dt);
-            }
-        }
         extraInput.update(dt);
         input.update(dt);
+
+        updateCameraAngle(lookAtTeamID, dt);
+
         camera.update(dt);
+
+        if (moveAuto) {
+            turnTimer += dt;
+            if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
+                if (started) {
+                    updateExecuteMove(dt);
+                } else {
+                    updateStartingDieRoll(dt);
+                }
+            }
+        } else {
+            if (started) {
+                if (logic instanceof PlaybackLogic) {
+                    updateExecuteMovePlayback();
+                } else {
+                    updateExecuteMoveManual();
+                }
+            } else {
+                // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)
+                updateStartingDieRoll(dt);
+            }
+        }
 
         board.update(dt);
         dieHolder.update(dt);
@@ -201,10 +214,7 @@ public class KimbleGraphic extends AbstractGraphic {
 
     private void updateExecuteMove(float dt) {
 
-        if (executeMove) {
-            logic.executeMove();
-            executeMove = false;
-        }
+        executeMoveLogic();
 
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
@@ -223,6 +233,71 @@ public class KimbleGraphic extends AbstractGraphic {
 //                    endMessageShown = true;
 //                }
             }
+        }
+    }
+
+    private void updateExecuteMoveManual() {
+
+        if (extraInput.isExecuteNextMove()) {
+            executeMoveLogic();
+            extraInput.setExecuteNextMove(false);
+
+            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+            updateDieRoll();
+        }
+    }
+
+    private void executeMoveLogic() {
+        if (executeMove) {
+            logic.executeMove();
+            executeMove = false;
+        }
+    }
+
+    private void updateExecuteMovePlayback() {
+
+        // TODO: now it works... kind of... still an odd case when moving the same piece back and forth.
+        // TODO: this will cause the "Rolled: dieRoll" label to append the same roll twice.
+        if (extraInput.isExecuteNextMove()) {
+
+            ((PlaybackLogic) logic).getNextMove();
+            logic.executeMove();
+            extraInput.setExecuteNextMove(false);
+
+            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+            updateDieRoll();
+
+        } else if (extraInput.isExecutePreviousMove()) {
+
+            ((PlaybackLogic) logic).getPreviousMove();
+            logic.executeMove();
+            extraInput.setExecutePreviousMove(false);
+
+            hud2d.removeLastAppendTeamInfo(logic.getNextTeamInTurn().getId());
+            if (hud2d.getTeamInfo(logic.getNextTeamInTurn().getId()).length() == 0) {
+                for (Team team : logic.getTeams()) {
+                    if (logic.getNextTeamInTurn().equals(team)) {
+                        hud2d.setTeamInfo(team.getId(), "Rolled: " + logic.getDieRoll());
+                    } else {
+                        hud2d.setTeamInfo(team.getId(), "");
+                    }
+                }
+            }
+            updateDieRoll();
+        }
+    }
+
+    private void updateDieRoll() {
+        if (!logic.isGameOver()) {
+
+            die.setDieRoll(logic.getDieRoll());
+            dieHolderDome.bounce();
+
+            executeMove = true;
+//            } else {
+//                if (!endMessageShown) {
+//                    endMessageShown = true;
+//                }
         }
     }
 
@@ -251,26 +326,6 @@ public class KimbleGraphic extends AbstractGraphic {
                     started = true;
                 }
             }
-        }
-    }
-
-    private void updateExecuteMoveManual(float dt) {
-
-        if (executeMove) {
-            logic.executeMove();
-            executeMove = false;
-        }
-        if (!logic.isGameOver()) {
-            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
-
-            die.setDieRoll(logic.getDieRoll());
-            dieHolderDome.bounce();
-
-            executeMove = true;
-//            } else {
-//                if (!endMessageShown) {
-//                    endMessageShown = true;
-//                }
         }
     }
 
@@ -350,8 +405,31 @@ public class KimbleGraphic extends AbstractGraphic {
         showTags = !showTags;
     }
 
-    public void rotateCameraToTeam(int teamID) {
-        cameraPositionAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+    public boolean isShowTags() {
+        return showTags;
+    }
+
+    public void toggleMoveAuto() {
+        moveAuto = !moveAuto;
+    }
+
+    public boolean isMoveAuto() {
+        return moveAuto;
+    }
+
+    private void updateCameraAngle(int teamID, float dt) {
+
+        float goalAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+
+        // TODO: move the camera in the opposite direction if the distance is closer that way.
+//        if ((goalAngle - cameraPositionAngle) > Math.PI) {
+//            goalAngle = (float) (Math.PI - (goalAngle - cameraPositionAngle));
+//        }
+        cameraPositionAngle = MathHelper.lerp(cameraPositionAngle, goalAngle, dt);
         updateCameraPosition();
+    }
+
+    public void rotateCameraToTeam(int teamID) {
+        lookAtTeamID = teamID;
     }
 }

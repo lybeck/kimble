@@ -1,13 +1,9 @@
 package kimble.connection.serverside;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.ServerGame;
 import kimble.connection.serverside.clientloading.StartJarInterface;
 import kimble.util.Timer;
 
@@ -53,7 +49,7 @@ public class TestServer {
         GenerateTournamentHeats heats = new GenerateTournamentHeats(directoryName);
         heats.generateHeats();
 
-        Set<String> jarNames = new HashSet<>();
+        List<String> jarNames = new ArrayList<>();
         jarNames.add("KimbleBot1.jar");
         jarNames.add("KimbleBot2.jar");
         jarNames.add("KimbleBot3.jar");

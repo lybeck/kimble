@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package kimble.util;
 
 /**
@@ -11,17 +5,23 @@ package kimble.util;
  * @author Christoffer
  */
 public class MathHelper {
-    
+
+    private static final double epsilon = 0.001;
+
     /**
      * Returns a value between 'a' and 'b' with increment step 'dt'
-     * 
+     *
      * @param a
      * @param b
      * @param dt
-     * @return 
+     * @return
      */
-    public static float lerp(float a, float b, float dt){
+    public static float lerp(float a, float b, float dt) {
+
+        if (Math.abs(b - a) < epsilon) {
+            return b;
+        }
         return a + dt * (b - a);
     }
-    
+
 }
