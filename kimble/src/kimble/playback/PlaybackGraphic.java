@@ -8,7 +8,8 @@ import kimble.KimbleGraphic;
 import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.input.Input3D;
 import kimble.graphic.board.PieceGraphic;
-import kimble.graphic.hud.Hud2D;
+import kimble.graphic.hud.KimbleHud;
+import kimble.graphic.hud.PlaybackHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.input.PlaybackInput;
@@ -24,7 +25,7 @@ import org.lwjgl.util.vector.Vector4f;
 public class PlaybackGraphic extends AbstractKimbleGraphic {
 
     private BitmapFont font;
-    private Hud2D hud;
+    private PlaybackHud hud;
 
     private Shader shader;
     private Shader textShader;
@@ -60,7 +61,7 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
         input = new Input3D(getCamera());
         extraInput = new PlaybackInput(this);
 
-        hud = new Hud2D(this, getLogic().getTeams());
+        hud = new PlaybackHud(this, getLogic().getTeams());
         super.setHud(hud);
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);

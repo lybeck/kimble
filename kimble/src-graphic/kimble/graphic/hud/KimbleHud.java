@@ -20,7 +20,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class Hud2D extends AbstractHud {
+public class KimbleHud extends AbstractHud {
 
     private BitmapFont font2;
 
@@ -34,7 +34,7 @@ public class Hud2D extends AbstractHud {
     private Button showTagsButton;
     private Button moveAutoButton;
 
-    public Hud2D(AbstractKimbleGraphic graphic, List<Team> teams) {
+    public KimbleHud(AbstractKimbleGraphic graphic, List<Team> teams) {
         super(graphic, teams);
     }
 
@@ -48,6 +48,7 @@ public class Hud2D extends AbstractHud {
         positionToggleButtons();
     }
 
+    @Override
     public final void setup() {
         try {
             font2 = FontGenerator.create("font2", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1));
@@ -140,7 +141,7 @@ public class Hud2D extends AbstractHud {
 
             @Override
             public void execute() {
-                ((KimbleGraphic) getGraphic()).toggleTags();
+                getGraphic().toggleTags();
                 updateTextShowTagsButton();
             }
         });
@@ -152,7 +153,7 @@ public class Hud2D extends AbstractHud {
 
             @Override
             public void execute() {
-                ((KimbleGraphic) getGraphic()).toggleMoveAuto();
+                getGraphic().toggleMoveAuto();
                 updateTextMoveAutoButton();
             }
         });
@@ -160,7 +161,7 @@ public class Hud2D extends AbstractHud {
     }
 
     private void updateTextShowTagsButton() {
-        if (((KimbleGraphic) getGraphic()).isShowTags()) {
+        if (getGraphic().isShowTags()) {
             showTagsButton.setTextKeepWidth("Toggle Tags ON");
         } else {
             showTagsButton.setTextKeepWidth("Toggle Tags OFF");
@@ -168,7 +169,7 @@ public class Hud2D extends AbstractHud {
     }
 
     private void updateTextMoveAutoButton() {
-        if (((KimbleGraphic) getGraphic()).isMoveAuto()) {
+        if (getGraphic().isMoveAuto()) {
             moveAutoButton.setTextKeepWidth("Auto ON");
         } else {
             moveAutoButton.setTextKeepWidth("Auto OFF");
@@ -251,5 +252,10 @@ public class Hud2D extends AbstractHud {
     public void setTurnCount(int turnCount) {
         turnCountTextElement.clear();
         turnCountTextElement.addWord("Turn Count: " + turnCount, BitmapFont.WHITE);
+    }
+
+    @Override
+    public KimbleGraphic getGraphic() {
+        return (KimbleGraphic) super.getGraphic();
     }
 }

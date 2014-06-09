@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.board;
 
 import kimble.graphic.camera.Camera;
@@ -37,7 +32,7 @@ public class Cube extends Model {
     @Override
     public void render(Shader shader, Camera camera) {
         TextureManager.getTexture("temp_tex").bind();
-        super.render(shader,camera);
+        super.render(shader, camera);
         TextureManager.getTexture("temp_tex").unbind();
     }
 }
