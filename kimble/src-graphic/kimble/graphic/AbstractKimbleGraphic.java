@@ -12,7 +12,6 @@ import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.camera.Camera3D;
 import kimble.graphic.hud.AbstractHud;
-import kimble.graphic.hud.Hud2D;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
@@ -29,20 +28,13 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public abstract class AbstractKimbleGraphic {
 
-    protected final KimbleLogicInterface logic;
-    private AbstractHud hud;
-
     private boolean running;
 
-//    protected Hud2D hud2d;
+    private final KimbleLogicInterface logic;
+    private AbstractHud hud;
     protected BitmapFont font;
 
-    protected Camera3D camera;
-    private Input3D input;
-    protected ExtraInput extraInput;
-
-    protected Shader shader;
-    protected Shader textShader;
+    private Camera3D camera;
 
     private BoardGraphic board;
     protected List<PieceGraphic> pieces;
@@ -55,11 +47,15 @@ public abstract class AbstractKimbleGraphic {
     protected Map<Integer, Integer> startingRollMap;
     protected Iterator<Integer> startingRollMapKeyIterator;
 
+    private boolean rotateCamera;
+    private boolean updateCameraPosition;
     private float cameraPositionAngle;
     private float goalAngle;
 
     public AbstractKimbleGraphic(KimbleLogicInterface logic) {
         this.logic = logic;
+        this.rotateCamera = false;
+        this.updateCameraPosition = true;
         setupLWJGL();
     }
 
@@ -82,16 +78,11 @@ public abstract class AbstractKimbleGraphic {
         TextureManager.loadTextures();
 
         board = new BoardGraphic(logic.getBoard(), logic.getTeams(), new BoardSpecs());
-        shader = new Shader("shader.vert", "shader.frag");
-        textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         camera = new Camera3D(70f, 0.1f, 1000f);
         rotateCameraToTeam(0);
 
         camera.setupProjectionMatrix();
-
-        extraInput = new ExtraInput();
-        input = new Input3D(camera);
 
         pieces = new ArrayList<>();
         for (int i = 0; i < logic.getTeams().size(); i++) {
@@ -142,83 +133,6 @@ public abstract class AbstractKimbleGraphic {
     }
 
     public void input(float dt) {
-        extraInput.update(dt);
-        input.update(dt);
-    }
-
-    public void updateComponents(float dt) {
-        board.update(dt);
-        dieHolder.update(dt);
-        die.update(dt);
-        dieHolderDome.update(dt);
-
-        for (PieceGraphic p : pieces) {
-            p.update(dt);
-        }
-    }
-
-    public void update(float dt) {
-        if (Screen.isCloseRequested()) {
-            stop();
-        }
-
-        if (Screen.wasResized()) {
-            Screen.updateViewport();
-            camera.setupProjectionMatrix();
-            hud.updateViewport();
-        }
-
-        if (extraInput.isRotateCamera()) {
-            cameraPositionAngle += dt * 0.1;
-            updateCameraPosition();
-        }
-
-        if (extraInput.isUpdateCameraPosition()) {
-            updateCameraAngle(dt);
-            updateCameraPosition();
-        }
-        camera.update(dt);
-
-        updateComponents(dt);
-    }
-
-    public void renderComponents(Shader shader) {
-        board.render(shader, camera);
-
-        dieHolder.render(shader, camera);
-        die.render(shader, camera);
-        dieHolderDome.render(shader, camera);
-
-        for (PieceGraphic p : pieces) {
-            p.render(shader, camera);
-        }
-    }
-
-    public void render() {
-        shader.bind();
-        renderComponents(shader);
-        shader.unbind();
-    }
-
-    public void dispose() {
-
-        shader.dispose();
-        textShader.dispose();
-
-        board.dispose();
-
-        dieHolder.dispose();
-        die.dispose();
-        dieHolderDome.dispose();
-
-        for (PieceGraphic p : pieces) {
-            p.dispose();
-        }
-
-        ModelManager.dispose();
-        TextureManager.dispose();
-
-        Screen.dispose();
     }
 
     private void updateCameraAngle(float dt) {
@@ -243,8 +157,91 @@ public abstract class AbstractKimbleGraphic {
     }
 
     public void rotateCameraToTeam(int teamID) {
-        goalAngle = -board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y;
+        setGoalAngle(-board.getGoalSquares().get(logic.getBoard().getGoalSquare(teamID, 0).getID()).getRotation().y);
+    }
 
+    public void updateComponents(float dt) {
+        board.update(dt);
+        dieHolder.update(dt);
+        die.update(dt);
+        dieHolderDome.update(dt);
+
+        for (PieceGraphic p : pieces) {
+            p.update(dt);
+        }
+    }
+
+    public void update(float dt) {
+        if (Screen.isCloseRequested()) {
+            stop();
+        }
+
+        if (Screen.wasResized()) {
+            Screen.updateViewport();
+            camera.setupProjectionMatrix();
+            hud.updateViewport();
+        }
+
+        if (isUpdateCameraPosition()) {
+            if (isRotateCamera()) {
+                setGoalAngle(goalAngle + dt * 0.1f);
+            }
+            updateCameraAngle(dt);
+            updateCameraPosition();
+        }
+        camera.update(dt);
+
+        updateComponents(dt);
+    }
+
+    public void renderComponents(Shader shader) {
+        board.render(shader, camera);
+
+        dieHolder.render(shader, camera);
+        die.render(shader, camera);
+        dieHolderDome.render(shader, camera);
+
+        for (PieceGraphic p : pieces) {
+            p.render(shader, camera);
+        }
+    }
+
+    /**
+     * make a call to the renderComponents
+     */
+    public abstract void render();
+
+    public void dispose() {
+        board.dispose();
+
+        dieHolder.dispose();
+        die.dispose();
+        dieHolderDome.dispose();
+
+        for (PieceGraphic p : pieces) {
+            p.dispose();
+        }
+
+        ModelManager.dispose();
+        TextureManager.dispose();
+
+        Screen.dispose();
+    }
+
+    /*
+     * GETTERS and SETTERS
+     */
+    public void setHud(AbstractHud hud) {
+        this.hud = hud;
+    }
+
+    public Camera3D getCamera() {
+        return camera;
+    }
+
+    public final void setGoalAngle(float angle) {
+
+        float goalAngle = angle;
         if (goalAngle < 0) {
             goalAngle += 2 * Math.PI;
         } else if (goalAngle > 2 * Math.PI) {
@@ -264,14 +261,32 @@ public abstract class AbstractKimbleGraphic {
         } else {
             goalAngle = tempGoalAngle;
         }
+
+        this.goalAngle = goalAngle;
     }
 
-    public void setHud(AbstractHud hud) {
-        this.hud = hud;
+    public KimbleLogicInterface getLogic() {
+        return logic;
     }
 
     public AbstractHud getHud() {
         return hud;
+    }
+
+    public void setRotateCamera(boolean rotateCamera) {
+        this.rotateCamera = rotateCamera;
+    }
+
+    public boolean isRotateCamera() {
+        return rotateCamera;
+    }
+
+    public void setUpdateCameraPosition(boolean updateCameraPosition) {
+        this.updateCameraPosition = updateCameraPosition;
+    }
+
+    public boolean isUpdateCameraPosition() {
+        return updateCameraPosition;
     }
 
 }

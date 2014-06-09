@@ -7,9 +7,12 @@ import kimble.graphic.AbstractKimbleGraphic;
 import kimble.playback.PlaybackProfile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kimble.graphic.ExtraInput;
+import kimble.graphic.Input3D;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.Hud2D;
 import kimble.graphic.hud.font.FontGenerator;
+import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import kimble.playback.PlaybackLogic;
 import org.lwjgl.util.vector.Vector3f;
@@ -22,6 +25,13 @@ import org.lwjgl.util.vector.Vector4f;
 public class KimbleGraphic extends AbstractKimbleGraphic {
 
     private Hud2D hud;
+
+    protected Shader shader;
+    protected Shader textShader;
+
+    private Input3D input;
+    protected ExtraInput extraInput;
+
     private int lastTeamID = -1;
 
     private boolean showTags = false;
@@ -45,7 +55,13 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public void setup() {
         super.setup();
 
-        hud = new Hud2D(this, logic.getTeams());
+        shader = new Shader("shader.vert", "shader.frag");
+        textShader = new Shader("text_shader.vert", "text_shader.frag");
+
+        input = new Input3D(getCamera());
+        extraInput = new ExtraInput(this);
+
+        hud = new Hud2D(this, getLogic().getTeams());
         super.setHud(hud);
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
@@ -57,12 +73,18 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     }
 
     @Override
+    public void input(float dt) {
+        extraInput.update(dt);
+        input.update(dt);
+    }
+
+    @Override
     public void update(float dt) {
         super.update(dt);
 
-        if (logic.isGameOver()) {
-            for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
-                Team finishedTeam = logic.getFinishedTeams().get(i);
+        if (getLogic().isGameOver()) {
+            for (int i = 0; i < getLogic().getFinishedTeams().size(); i++) {
+                Team finishedTeam = getLogic().getFinishedTeams().get(i);
                 hud.setTeamInfo(finishedTeam.getId(), "Finished " + (i + 1));
             }
 //            stop();
@@ -79,7 +101,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             }
         } else {
             if (started) {
-                if (logic instanceof PlaybackLogic) {
+                if (getLogic() instanceof PlaybackLogic) {
                     updateExecuteMovePlayback();
                 } else {
                     updateExecuteMoveManual();
@@ -101,8 +123,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
-            if (!logic.isGameOver()) {
-                updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+            if (!getLogic().isGameOver()) {
+                updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
 
                 updateDieRoll();
 
@@ -114,8 +136,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                    endMessageShown = true;
 //                }
 
-                if (logic instanceof PlaybackLogic) {
-                    ((PlaybackLogic) logic).getNextMove();
+                if (getLogic() instanceof PlaybackLogic) {
+                    ((PlaybackLogic) getLogic()).getNextMove();
                 }
             }
         }
@@ -127,14 +149,14 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             executeMoveLogic();
             extraInput.setExecuteNextMove(false);
 
-            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
             updateDieRoll();
         }
     }
 
     private void executeMoveLogic() {
         if (executeMove) {
-            logic.executeMove();
+            getLogic().executeMove();
             executeMove = false;
         }
     }
@@ -147,24 +169,24 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
             executeMoveLogic();
 //            logic.executeMove();
-            ((PlaybackLogic) logic).getNextMove();
+            ((PlaybackLogic) getLogic()).getNextMove();
             extraInput.setExecuteNextMove(false);
 
-            updateTeamInfo(logic.getNextTeamInTurn().getId(), logic.getDieRoll());
+            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
             updateDieRoll();
 
         } else if (extraInput.isExecutePreviousMove()) {
 
-            ((PlaybackLogic) logic).getPreviousMove();
+            ((PlaybackLogic) getLogic()).getPreviousMove();
 //            logic.executeMove();
             executeMoveLogic();
             extraInput.setExecutePreviousMove(false);
 
-            hud.removeLastAppendTeamInfo(logic.getNextTeamInTurn().getId());
-            if (hud.getTeamInfo(logic.getNextTeamInTurn().getId()).length() == 0) {
-                for (Team team : logic.getTeams()) {
-                    if (logic.getNextTeamInTurn().equals(team)) {
-                        hud.setTeamInfo(team.getId(), "Rolled: " + logic.getDieRoll());
+            hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
+            if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
+                for (Team team : getLogic().getTeams()) {
+                    if (getLogic().getNextTeamInTurn().equals(team)) {
+                        hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
                     } else {
                         hud.setTeamInfo(team.getId(), "");
                     }
@@ -175,9 +197,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     }
 
     private void updateDieRoll() {
-        if (!logic.isGameOver()) {
+        if (!getLogic().isGameOver()) {
 
-            die.setDieRoll(logic.getDieRoll());
+            die.setDieRoll(getLogic().getDieRoll());
             dieHolderDome.bounce();
 
             executeMove = true;
@@ -186,7 +208,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                    endMessageShown = true;
 //                }
 
-            hud.setTurnCount(logic.getTurnCount());
+            hud.setTurnCount(getLogic().getTurnCount());
         }
     }
 
@@ -220,14 +242,14 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     private void updateTeamInfo(int teamID, int dieRoll) {
 
-        for (Team team : logic.getTeams()) {
-            if (logic.isFinished(team.getId())) {
-                for (int i = 0; i < logic.getFinishedTeams().size(); i++) {
-                    Team finishedTeam = logic.getFinishedTeams().get(i);
+        for (Team team : getLogic().getTeams()) {
+            if (getLogic().isFinished(team.getId())) {
+                for (int i = 0; i < getLogic().getFinishedTeams().size(); i++) {
+                    Team finishedTeam = getLogic().getFinishedTeams().get(i);
                     hud.setTeamInfo(finishedTeam.getId(), "Finished: " + (i + 1));
                     break;
                 }
-            } else if (logic.isDisqualified(team.getId())) {
+            } else if (getLogic().isDisqualified(team.getId())) {
                 hud.setTeamInfo(team.getId(), "DSQ");
             } else if (team.getId() == teamID) {
                 // Appends all the die rolls after each other on the hud.
@@ -245,21 +267,29 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     @Override
     public void render() {
-        super.render();
+        shader.bind();
+        renderComponents(shader);
 
         textShader.bind();
         if (showTags) {
             for (PieceGraphic p : pieces) {
                 String tag = "[" + p.getPieceLogic().getId() + "]";
                 font.renderString(textShader,
-                        camera,
+                        getCamera(),
                         tag,
                         new Vector3f(p.getPosition().x, 1.5f, p.getPosition().z),
-                        new Vector3f(camera.getRotation().x, (float) (-camera.getRotation().y + Math.PI), 0));
+                        new Vector3f(getCamera().getRotation().x, (float) (-getCamera().getRotation().y + Math.PI), 0));
             }
         }
-
         hud.render(textShader);
+    }
+
+    @Override
+    public void dispose() {
+        shader.dispose();
+        textShader.dispose();
+
+        super.dispose();
     }
 
     public void toggleTags() {

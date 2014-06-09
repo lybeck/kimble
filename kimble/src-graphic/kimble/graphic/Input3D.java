@@ -41,26 +41,28 @@ public class Input3D {
     }
 
     public void inputKeyboard(float dt) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            camera.move(0, 0, -moveSpeed * dt);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            camera.move(0, 0, moveSpeed * dt);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            camera.move(-moveSpeed * dt, 0, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            camera.move(moveSpeed * dt, 0, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            camera.move(0, moveSpeed * dt, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            camera.move(0, -moveSpeed * dt, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-            Mouse.setGrabbed(false);
+        if (Mouse.isGrabbed()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+                camera.move(0, 0, -moveSpeed * dt);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+                camera.move(0, 0, moveSpeed * dt);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+                camera.move(-moveSpeed * dt, 0, 0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+                camera.move(moveSpeed * dt, 0, 0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+                camera.move(0, moveSpeed * dt, 0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                camera.move(0, -moveSpeed * dt, 0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                Mouse.setGrabbed(false);
+            }
         }
     }
 
