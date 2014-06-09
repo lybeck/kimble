@@ -15,7 +15,6 @@ import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
-import kimble.playback.PlaybackLogic;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -136,7 +135,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     public void executeNextMove() {
         if (started) {
-            executeMoveLogic();
             updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
             updateDieRoll();
         }
