@@ -16,11 +16,21 @@ public class PickingRay {
         direction = new Vector3f();
     }
 
-    public void intersectsWithXyPlane(float[] worldPos) {
+//    public void intersectsWithXyPlane(float[] worldPos) {
+//        float s = -clickedWorldPosition.z / direction.z;
+//        worldPos[0] = clickedWorldPosition.x + direction.x * s;
+//        worldPos[1] = clickedWorldPosition.y + direction.y * s;
+//        worldPos[2] = 0;
+//    }
+    public Vector3f getIntersectionPoint() {
+        Vector3f point = new Vector3f();
+
         float s = -clickedWorldPosition.z / direction.z;
-        worldPos[0] = clickedWorldPosition.x + direction.x * s;
-        worldPos[1] = clickedWorldPosition.y + direction.y * s;
-        worldPos[2] = 0;
+        point.x = clickedWorldPosition.x + direction.x * s;
+        point.y = clickedWorldPosition.y + direction.y * s;
+        point.z = 0; //clickedWorldPosition.z + direction.z * s;
+
+        return point;
     }
 
     public void setClickedWorldPosition(Vector3f clickedWorldPosition) {

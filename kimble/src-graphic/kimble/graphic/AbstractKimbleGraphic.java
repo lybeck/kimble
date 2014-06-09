@@ -34,7 +34,7 @@ public abstract class AbstractKimbleGraphic {
 
     private Camera3D camera;
 
-    private BoardGraphic board;
+    protected BoardGraphic board;
     protected List<PieceGraphic> pieces;
     private DieHolderGraphic dieHolder;
     protected DieGraphic die;

@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -131,6 +132,25 @@ public abstract class Mesh {
 
     public int getIndexCount() {
         return indexCount;
+    }
+
+    private Vector3f aabbMin;
+    private Vector3f aabbMax;
+
+    public Vector3f getAabbMin() {
+        return aabbMin;
+    }
+
+    public void setAabbMin(Vector3f aabbMin) {
+        this.aabbMin = aabbMin;
+    }
+
+    public Vector3f getAabbMax() {
+        return aabbMax;
+    }
+
+    public void setAabbMax(Vector3f aabbMax) {
+        this.aabbMax = aabbMax;
     }
 
 }

@@ -33,6 +33,14 @@ public class OBJModel extends Mesh {
     @Override
     public VertexData[] setupVertexData() {
 
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE;
+
+        float maxX = Float.MIN_VALUE;
+        float maxY = Float.MIN_VALUE;
+        float maxZ = Float.MIN_VALUE;
+
         List<VertexData> vertexData = new ArrayList<>();
         List<Integer> indexData = new ArrayList<>();
 //        for (int i = 0; i < vertexList.size(); i++) {
@@ -50,6 +58,24 @@ public class OBJModel extends Mesh {
                 Vector3f currentPosition = vertexList.get(currentIndex.vertexIndex);
                 Vector2f currentTexCoord = null;
                 Vector3f currentNormal = null;
+
+                if (currentPosition.x < minX) {
+                    minX = currentPosition.x;
+                } else if (currentPosition.x > maxX) {
+                    maxX = currentPosition.x;
+                }
+
+                if (currentPosition.y < minY) {
+                    minY = currentPosition.y;
+                } else if (currentPosition.y > maxY) {
+                    maxY = currentPosition.x;
+                }
+
+                if (currentPosition.z < minZ) {
+                    minZ = currentPosition.z;
+                } else if (currentPosition.z > maxZ) {
+                    maxZ = currentPosition.z;
+                }
 
                 if (face.hasTexCoords()) {
                     currentTexCoord = texCoordList.get(currentIndex.texCoordIndex);
@@ -87,6 +113,10 @@ public class OBJModel extends Mesh {
         for (int i = 0; i < vertexData.size(); i++) {
             vertices[i] = vertexData.get(i);
         }
+
+        setAabbMin(new Vector3f(minX, minY, minZ));
+        setAabbMax(new Vector3f(maxX, maxY, maxZ));
+
         return vertices;
     }
 

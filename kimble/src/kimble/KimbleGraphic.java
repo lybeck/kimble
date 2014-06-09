@@ -13,11 +13,16 @@ import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
-import kimble.graphic.pickingray.PickingRay;
 import kimble.graphic.pickingray.PickingRayUtil;
+import kimble.graphic.pickingray.Ray;
+import kimble.graphic.pickingray.RayGenerator;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_LINE;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glEnd;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -115,13 +120,41 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         hud.setPlaybackSpeed(PlaybackProfile.currentProfile);
         hud.update(dt);
 
-        if (Mouse.isButtonDown(0)) {
-            pickingRayUtil.update(getCamera());
-            PickingRay pickingRay = new PickingRay();
-            pickingRayUtil.pick(Mouse.getX(), Mouse.getY(), pickingRay);
-
-            System.out.println(pickingRay);
-        }
+        // TODO: select pieces and drag them along the ground
+//        while (Mouse.next()) {
+//            if (Mouse.isButtonDown(0)) {
+//                if (Mouse.getEventButtonState()) {
+//                    Ray ray = RayGenerator.create(Mouse.getX(), Mouse.getY(), getCamera());
+//                    if (ray.intersects(dieHolderDome)) {
+//                        updateDieRoll();
+//                    }
+//                }
+//
+////                PieceGraphic model = pieces.get(0);
+////                if (ray.intersects(model)) {
+////
+//////                    System.out.println("Model pos: " + model.getPosition());
+//////                    System.out.println("Model min: " + model.getAabbMin());
+//////                    System.out.println("Model max: " + model.getAabbMax());
+//////                    System.out.println("--");
+//////                    System.out.println("Ray start: " + ray.getStartPosition());
+//////                    System.out.println("Ray dir:   " + ray.getDirection());
+//////                    System.out.println("Ray end:   " + Vector3f.add(ray.getStartPosition(), ray.getDirection(), null));
+//////                    System.out.println("Distance:  " + ray.getIntersectionDistance());
+//////                    System.out.println("---------------------------------------------------------");
+////                    System.out.println("Distance: " + ray.getIntersectionDistance());
+////
+//////                    ray.getDirection().scale(ray.getIntersectionDistance());
+////                    model.setSelected(true);
+////
+////                    Vector3f selectedPosition = new Vector3f();
+////                    Vector3f.add(ray.getStartPosition(), ray.getDirection(), selectedPosition);
+////                    model.setSelectedPosition(selectedPosition);
+////                } else {
+////                    model.setSelected(false);
+////                }
+//            }
+//        }
     }
 
     private void updateExecuteMove(float dt) {
