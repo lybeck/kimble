@@ -11,10 +11,13 @@ import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.input.ExtraInput;
 import kimble.graphic.input.Input3D;
+import kimble.graphic.pickingray.Ray;
+import kimble.graphic.pickingray.RayGenerator;
 import kimble.graphic.shader.Shader;
 import kimble.logic.KimbleLogicInterface;
 import kimble.logic.Team;
 import kimble.playback.PlaybackProfile;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -45,6 +48,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private boolean executeMove = false;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
+
+    private boolean pieceAlreadySelected = false;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
@@ -109,40 +114,30 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         hud.update(dt);
 
         // TODO: select pieces and drag them along the ground
-//        while (Mouse.next()) {
-//            if (Mouse.isButtonDown(0)) {
-//                if (Mouse.getEventButtonState()) {
-//                    Ray ray = RayGenerator.create(Mouse.getX(), Mouse.getY(), getCamera());
-//                    if (ray.intersects(dieHolderDome)) {
-//                        updateDieRoll();
-//                    }
-//                }
-//
-////                PieceGraphic model = pieces.get(0);
-////                if (ray.intersects(model)) {
-////
-//////                    System.out.println("Model pos: " + model.getPosition());
-//////                    System.out.println("Model min: " + model.getAabbMin());
-//////                    System.out.println("Model max: " + model.getAabbMax());
-//////                    System.out.println("--");
-//////                    System.out.println("Ray start: " + ray.getStartPosition());
-//////                    System.out.println("Ray dir:   " + ray.getDirection());
-//////                    System.out.println("Ray end:   " + Vector3f.add(ray.getStartPosition(), ray.getDirection(), null));
-//////                    System.out.println("Distance:  " + ray.getIntersectionDistance());
-//////                    System.out.println("---------------------------------------------------------");
-////                    System.out.println("Distance: " + ray.getIntersectionDistance());
-////
-//////                    ray.getDirection().scale(ray.getIntersectionDistance());
-////                    model.setSelected(true);
-////
-////                    Vector3f selectedPosition = new Vector3f();
-////                    Vector3f.add(ray.getStartPosition(), ray.getDirection(), selectedPosition);
-////                    model.setSelectedPosition(selectedPosition);
-////                } else {
-////                    model.setSelected(false);
-////                }
-//            }
-//        }
+        // TODO: click on a piece to make it execute it's move. Click the die to roll it! (this is possible when the game logic has been refined)
+        if (Mouse.isButtonDown(0)) {
+            Ray ray = RayGenerator.create(Mouse.getX(), Mouse.getY(), getCamera());
+
+            for (PieceGraphic piece : pieces) {
+                if (piece.isSelected()) {
+                    piece.setSelectedPosition(ray.getIntersectPointAtHeight(0f));
+                } else if (!pieceAlreadySelected && ray.intersects(piece)) {
+                    piece.setSelected(true);
+                    pieceAlreadySelected = true;
+                }
+            }
+        } else {
+            for (PieceGraphic piece : pieces) {
+                if (piece.isSelected()) {
+                    piece.setSelected(false);
+                }
+            }
+            pieceAlreadySelected = false;
+        }
+        // empty the Mouse to not interfere with the HUD.
+        while (Mouse.next()) {
+            Mouse.poll();
+        }
     }
 
     private void updateExecuteMove(float dt) {

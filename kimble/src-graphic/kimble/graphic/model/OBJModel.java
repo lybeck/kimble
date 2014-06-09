@@ -68,7 +68,7 @@ public class OBJModel extends Mesh {
                 if (currentPosition.y < minY) {
                     minY = currentPosition.y;
                 } else if (currentPosition.y > maxY) {
-                    maxY = currentPosition.x;
+                    maxY = currentPosition.y;
                 }
 
                 if (currentPosition.z < minZ) {

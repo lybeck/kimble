@@ -18,6 +18,17 @@ public class Ray {
         this.direction = direction;
     }
 
+    public Vector3f getIntersectPointAtHeight(float y) {
+        Vector3f result = new Vector3f();
+        Vector3f.add(startPosition, direction, result);
+        while (result.y > y) {
+            Vector3f.add(result, direction, result);
+        }
+//        Vector3f.sub(result, direction, result);
+        result.y = y;
+        return result;
+    }
+
     public boolean intersects(Model model) {
 
         tMin = 0.0f;

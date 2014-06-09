@@ -53,8 +53,6 @@ public abstract class AbstractHudElement {
                     if (Mouse.getEventButton() == 0) {
                         execute();
                     }
-                } else {
-
                 }
             }
         }
