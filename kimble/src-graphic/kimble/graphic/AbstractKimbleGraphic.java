@@ -12,6 +12,7 @@ import kimble.graphic.board.DieHolderGraphic;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.camera.Camera3D;
 import kimble.graphic.hud.AbstractHud;
+import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
 import kimble.graphic.shader.Shader;

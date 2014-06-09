@@ -141,31 +141,34 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
     }
 
     public void executeMoveForward() {
-        executeMoveLogic();
+        if (started) {
+            executeMoveLogic();
 //            logic.executeMove();
-        ((PlaybackLogic) getLogic()).getNextMove();
+            ((PlaybackLogic) getLogic()).getNextMove();
 
-        updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-        updateDieRoll();
+            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
+            updateDieRoll();
+        }
     }
 
     public void executeMoveBackward() {
-
-        ((PlaybackLogic) getLogic()).getPreviousMove();
+        if (started) {
+            ((PlaybackLogic) getLogic()).getPreviousMove();
 //            logic.executeMove();
-        executeMoveLogic();
+            executeMoveLogic();
 
-        hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
-        if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
-            for (Team team : getLogic().getTeams()) {
-                if (getLogic().getNextTeamInTurn().equals(team)) {
-                    hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
-                } else {
-                    hud.setTeamInfo(team.getId(), "");
+            hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
+            if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
+                for (Team team : getLogic().getTeams()) {
+                    if (getLogic().getNextTeamInTurn().equals(team)) {
+                        hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
+                    } else {
+                        hud.setTeamInfo(team.getId(), "");
+                    }
                 }
             }
+            updateDieRoll();
         }
-        updateDieRoll();
     }
 
     private void updateDieRoll() {

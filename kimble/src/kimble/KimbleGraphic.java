@@ -101,13 +101,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                 }
             }
         } else {
-            if (started) {
-                if (getLogic() instanceof PlaybackLogic) {
-                    updateExecuteMovePlayback();
-                } else {
-                    updateExecuteMoveManual();
-                }
-            } else {
+            if (!started) {
                 // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)
                 updateStartingDieRoll(dt);
             }
@@ -136,20 +130,13 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
-
-                if (getLogic() instanceof PlaybackLogic) {
-                    ((PlaybackLogic) getLogic()).getNextMove();
-                }
             }
         }
     }
 
-    private void updateExecuteMoveManual() {
-
-        if (extraInput.isExecuteNextMove()) {
+    public void executeNextMove() {
+        if (started) {
             executeMoveLogic();
-            extraInput.setExecuteNextMove(false);
-
             updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
             updateDieRoll();
         }
@@ -159,41 +146,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (executeMove) {
             getLogic().executeMove();
             executeMove = false;
-        }
-    }
-
-    private void updateExecuteMovePlayback() {
-
-        // TODO: now it works... kind of... still an odd case when moving the same piece back and forth.
-        // TODO: this will cause the "Rolled: dieRoll" label to append the same roll twice.
-        if (extraInput.isExecuteNextMove()) {
-
-            executeMoveLogic();
-//            logic.executeMove();
-            ((PlaybackLogic) getLogic()).getNextMove();
-            extraInput.setExecuteNextMove(false);
-
-            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-            updateDieRoll();
-
-        } else if (extraInput.isExecutePreviousMove()) {
-
-            ((PlaybackLogic) getLogic()).getPreviousMove();
-//            logic.executeMove();
-            executeMoveLogic();
-            extraInput.setExecutePreviousMove(false);
-
-            hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
-            if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
-                for (Team team : getLogic().getTeams()) {
-                    if (getLogic().getNextTeamInTurn().equals(team)) {
-                        hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
-                    } else {
-                        hud.setTeamInfo(team.getId(), "");
-                    }
-                }
-            }
-            updateDieRoll();
         }
     }
 
@@ -241,7 +193,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
-    private void updateTeamInfo(int teamID, int dieRoll) {
+    public void updateTeamInfo(int teamID, int dieRoll) {
 
         for (Team team : getLogic().getTeams()) {
             if (getLogic().isFinished(team.getId())) {
