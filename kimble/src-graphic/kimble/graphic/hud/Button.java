@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class Button extends AbstractHudItem {
+public class Button extends AbstractHudElement {
 
     private final BitmapFont font;
 
@@ -45,21 +45,21 @@ public class Button extends AbstractHudItem {
 
     public final void setText(String text) {
         this.text = text;
-        this.width = font.calculateWidth(text) + 2 * paddingX;
-        this.height = font.getVerticalSpacing();
-        this.rectangle = new Rectangle(position.x, position.y, width, font.getVerticalSpacing(), new Vector4f(0.4f, 0.4f, 0.4f, 0.4f));
+        this.setWidth(font.calculateWidth(text) + 2 * paddingX);
+        this.setHeight(font.getVerticalSpacing());
+        this.rectangle = new Rectangle(position.x, position.y, getWidth(), font.getVerticalSpacing(), new Vector4f(0.4f, 0.4f, 0.4f, 0.4f));
     }
 
     public final void setTextKeepWidth(String text) {
         this.text = text;
         float textWidth = font.calculateWidth(text);
         textPosition = new Vector3f(textPosition);
-        textPosition.x = position.x + (width - textWidth) / 2;
+        textPosition.x = position.x + (getWidth() - textWidth) / 2;
     }
 
+    @Override
     public final void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
+        super.setPosition(x, y);
         this.position = new Vector3f(x, y, 0);
         this.textPosition = new Vector3f(x + paddingX, y, 0);
         if (rectangle != null) {
@@ -71,4 +71,8 @@ public class Button extends AbstractHudItem {
         this.paddingX = padding;
     }
 
+    @Override
+    public void dispose() {
+        rectangle.dispose();
+    }
 }

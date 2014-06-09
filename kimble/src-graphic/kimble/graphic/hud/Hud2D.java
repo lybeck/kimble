@@ -8,56 +8,38 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.KimbleGraphic;
 import kimble.graphic.Screen;
-import kimble.graphic.camera.Camera;
-import kimble.graphic.camera.Camera2D;
 import kimble.graphic.hud.TextElement.Word;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
-import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import kimble.playback.PlaybackProfile;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
 import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
  * @author Christoffer
  */
-public class Hud2D {
-
-    private final KimbleGraphic mainWindow;
-    private final Camera camera;
+public class Hud2D extends AbstractHud {
 
     private BitmapFont font2;
 
-    private final List<Team> teams;
     private float widestTeamName;
 
     private TextElement turnCountTextElement;
-    private List<TextElement> teamOrderTextElements;
-    private List<TextElement> teamInfoTextElements;
-    private List<TextElement> playbackSpeedTextElements;
+    private List<AbstractHudElement> teamOrderTextElements;
+    private List<AbstractHudElement> teamInfoTextElements;
+    private List<AbstractHudElement> playbackSpeedTextElements;
 
     private Button showTagsButton;
     private Button moveAutoButton;
 
-    private List<AbstractHudItem> items;
-
     public Hud2D(KimbleGraphic mainWindow, List<Team> teams) {
-        this.mainWindow = mainWindow;
-        this.teams = teams;
-
-        this.camera = new Camera2D();
-        this.camera.setupProjectionMatrix();
-
-        this.items = new ArrayList<>();
-        setup();
+        super(mainWindow, teams);
     }
 
+    @Override
     public void updateViewport() {
-        camera.setupProjectionMatrix();
+        super.updateViewport();
         positionTurnCountTextElement();
         positionTeamOrderTextElements(font2);
         positionTeamInfoTextElements(font2);
@@ -82,7 +64,7 @@ public class Hud2D {
     private void createTurnCountTextElement(BitmapFont font) {
         turnCountTextElement = new TextElement(font);
         turnCountTextElement.addWord("Turn Count: 0", BitmapFont.WHITE);
-        items.add(turnCountTextElement);
+        addElement(turnCountTextElement);
     }
 
     private void createTeamOrderTextElements(BitmapFont font) {
@@ -90,8 +72,8 @@ public class Hud2D {
 
         widestTeamName = 0;
 
-        for (int i = 0; i < teams.size(); i++) {
-            Team team = teams.get(i);
+        for (int i = 0; i < getTeams().size(); i++) {
+            Team team = getTeams().get(i);
             TextElement te = new TextElement(font);
             te.addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
             if (font.calculateWidth(te.getWords()) > widestTeamName) {
@@ -102,26 +84,26 @@ public class Hud2D {
 
                 @Override
                 public void execute() {
-                    mainWindow.rotateCameraToTeam(team.getId());
+                    getGraphic().rotateCameraToTeam(team.getId());
                 }
             });
             teamOrderTextElements.add(te);
         }
 
-        items.addAll(teamOrderTextElements);
+        addElements(teamOrderTextElements);
     }
 
     private void createTeamInfoTextElements(BitmapFont font) {
         teamInfoTextElements = new ArrayList<>();
 
-        for (int i = 0; i < teams.size(); i++) {
+        for (int i = 0; i < getTeams().size(); i++) {
             TextElement te = new TextElement(font);
             te.addWord("", BitmapFont.WHITE);
             te.setPosition(15 + 15 + widestTeamName, 10 + i * font.getVerticalSpacing());
             teamInfoTextElements.add(te);
         }
 
-        items.addAll(teamInfoTextElements);
+        addElements(teamInfoTextElements);
     }
 
     private void createPlaybackSpeedTextElements(BitmapFont font) {
@@ -147,7 +129,7 @@ public class Hud2D {
 
         positionPlaybackSpeedTextElements(font);
 
-        items.addAll(playbackSpeedTextElements);
+        addElements(playbackSpeedTextElements);
     }
 
     private void createToggleButtons(BitmapFont font) {
@@ -157,11 +139,11 @@ public class Hud2D {
 
             @Override
             public void execute() {
-                mainWindow.toggleTags();
+                ((KimbleGraphic) getGraphic()).toggleTags();
                 updateTextShowTagsButton();
             }
         });
-        items.add(showTagsButton);
+        addElement(showTagsButton);
 
         moveAutoButton = new Button("Auto OFF", font);
         updateTextMoveAutoButton();
@@ -169,15 +151,15 @@ public class Hud2D {
 
             @Override
             public void execute() {
-                mainWindow.toggleMoveAuto();
+                ((KimbleGraphic) getGraphic()).toggleMoveAuto();
                 updateTextMoveAutoButton();
             }
         });
-        items.add(moveAutoButton);
+        addElement(moveAutoButton);
     }
 
     private void updateTextShowTagsButton() {
-        if (mainWindow.isShowTags()) {
+        if (((KimbleGraphic) getGraphic()).isShowTags()) {
             showTagsButton.setTextKeepWidth("Toggle Tags ON");
         } else {
             showTagsButton.setTextKeepWidth("Toggle Tags OFF");
@@ -185,7 +167,7 @@ public class Hud2D {
     }
 
     private void updateTextMoveAutoButton() {
-        if (mainWindow.isMoveAuto()) {
+        if (((KimbleGraphic) getGraphic()).isMoveAuto()) {
             moveAutoButton.setTextKeepWidth("Auto ON");
         } else {
             moveAutoButton.setTextKeepWidth("Auto OFF");
@@ -198,21 +180,21 @@ public class Hud2D {
 
     private void positionTeamOrderTextElements(BitmapFont font) {
         for (int i = 0; i < teamOrderTextElements.size(); i++) {
-            TextElement te = teamOrderTextElements.get(i);
+            AbstractHudElement te = teamOrderTextElements.get(i);
             te.setPosition(15, 15 + (i + 1) * font.getVerticalSpacing());
         }
     }
 
     private void positionTeamInfoTextElements(BitmapFont font) {
         for (int i = 0; i < teamInfoTextElements.size(); i++) {
-            TextElement te = teamInfoTextElements.get(i);
+            AbstractHudElement te = teamInfoTextElements.get(i);
             te.setPosition(30 + widestTeamName, 15 + (i + 1) * font.getVerticalSpacing());
         }
     }
 
     private void positionPlaybackSpeedTextElements(BitmapFont font) {
         for (int i = 0; i < playbackSpeedTextElements.size(); i++) {
-            TextElement te = playbackSpeedTextElements.get(i);
+            AbstractHudElement te = playbackSpeedTextElements.get(i);
             te.setPosition(15, Screen.getHeight() - (i + 1) * font.getVerticalSpacing() - 15);
         }
     }
@@ -229,25 +211,25 @@ public class Hud2D {
 
     // =======================================================
     public void setTeamInfo(int teamID, String... info) {
-        teamInfoTextElements.get(teamID).clear();
+        ((TextElement) teamInfoTextElements.get(teamID)).clear();
         for (String text : info) {
-            teamInfoTextElements.get(teamID).addWord(text, BitmapFont.WHITE);
+            ((TextElement) teamInfoTextElements.get(teamID)).addWord(text, BitmapFont.WHITE);
         }
     }
 
     public void appendTeamInfo(int teamID, String info) {
-        teamInfoTextElements.get(teamID).addWord(info, BitmapFont.WHITE);
+        ((TextElement) teamInfoTextElements.get(teamID)).addWord(info, BitmapFont.WHITE);
     }
 
     public void removeLastAppendTeamInfo(int teamID) {
-        List<Word> words = teamInfoTextElements.get(teamID).getWords();
+        List<Word> words = ((TextElement) teamInfoTextElements.get(teamID)).getWords();
         if (words.size() > 0) {
             words.remove(words.size() - 1);
         }
     }
 
     public String getTeamInfo(int teamID) {
-        List<Word> words = teamInfoTextElements.get(teamID).getWords();
+        List<Word> words = ((TextElement) teamInfoTextElements.get(teamID)).getWords();
         StringBuilder sb = new StringBuilder();
         for (Word word : words) {
             sb.append(word.getText());
@@ -258,9 +240,9 @@ public class Hud2D {
     public void setPlaybackSpeed(PlaybackProfile currentProfile) {
         for (int i = 0; i < playbackSpeedTextElements.size(); i++) {
             if (i == currentProfile.ordinal()) {
-                playbackSpeedTextElements.get(i).getWords().get(0).setColor(BitmapFont.WHITE);
+                ((TextElement) playbackSpeedTextElements.get(i)).getWords().get(0).setColor(BitmapFont.WHITE);
             } else {
-                playbackSpeedTextElements.get(i).getWords().get(0).setColor(BitmapFont.GREY);
+                ((TextElement) playbackSpeedTextElements.get(i)).getWords().get(0).setColor(BitmapFont.GREY);
             }
         }
     }
@@ -268,31 +250,5 @@ public class Hud2D {
     public void setTurnCount(int turnCount) {
         turnCountTextElement.clear();
         turnCountTextElement.addWord("Turn Count: " + turnCount, BitmapFont.WHITE);
-    }
-
-    // =======================================================
-    // Update and render
-    // =======================================================
-    public void update(float dt) {
-        camera.update(dt);
-
-        for (AbstractHudItem item : items) {
-            item.update(dt);
-        }
-    }
-
-    /**
-     * The shader needs to be bound before calling this method
-     *
-     * @param shader
-     */
-    public void render(Shader shader) {
-        glDisable(GL_DEPTH_TEST);
-
-        for (AbstractHudItem item : items) {
-            item.render(shader, camera);
-        }
-
-        glEnable(GL_DEPTH_TEST);
     }
 }
