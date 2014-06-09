@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.KimbleGraphic;
+import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.Screen;
 import kimble.graphic.hud.TextElement.Word;
 import kimble.graphic.hud.font.BitmapFont;
@@ -33,8 +34,8 @@ public class Hud2D extends AbstractHud {
     private Button showTagsButton;
     private Button moveAutoButton;
 
-    public Hud2D(KimbleGraphic mainWindow, List<Team> teams) {
-        super(mainWindow, teams);
+    public Hud2D(AbstractKimbleGraphic graphic, List<Team> teams) {
+        super(graphic, teams);
     }
 
     @Override

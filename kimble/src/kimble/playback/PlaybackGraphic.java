@@ -1,21 +1,19 @@
-package kimble;
+package kimble.playback;
 
 import java.awt.Font;
 import java.io.IOException;
-import kimble.logic.KimbleLogicInterface;
-import kimble.graphic.AbstractKimbleGraphic;
-import kimble.playback.PlaybackProfile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.graphic.input.ExtraInput;
+import kimble.KimbleGraphic;
+import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.input.Input3D;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.Hud2D;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
+import kimble.graphic.input.PlaybackInput;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
-import kimble.playback.PlaybackLogic;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -23,7 +21,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class KimbleGraphic extends AbstractKimbleGraphic {
+public class PlaybackGraphic extends AbstractKimbleGraphic {
 
     private BitmapFont font;
     private Hud2D hud;
@@ -32,7 +30,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private Shader textShader;
 
     private Input3D input;
-    protected ExtraInput extraInput;
+    private PlaybackInput extraInput;
 
     private int lastTeamID = -1;
 
@@ -47,7 +45,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
+    public PlaybackGraphic(PlaybackLogic logic, PlaybackProfile profile) {
         super(logic);
         PlaybackProfile.setCurrentProfile(profile);
     }
@@ -60,7 +58,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         input = new Input3D(getCamera());
-        extraInput = new ExtraInput(this);
+        extraInput = new PlaybackInput(this);
 
         hud = new Hud2D(this, getLogic().getTeams());
         super.setHud(hud);
@@ -75,8 +73,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     @Override
     public void input(float dt) {
-        extraInput.update(dt);
         input.update(dt);
+        extraInput.update(dt);
     }
 
     @Override
@@ -101,14 +99,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                 }
             }
         } else {
-            if (started) {
-                if (getLogic() instanceof PlaybackLogic) {
-                    updateExecuteMovePlayback();
-                } else {
-                    updateExecuteMoveManual();
-                }
-            } else {
-                // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)
+            if (!started) {
                 updateStartingDieRoll(dt);
             }
         }
@@ -137,21 +128,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                    endMessageShown = true;
 //                }
 
-                if (getLogic() instanceof PlaybackLogic) {
-                    ((PlaybackLogic) getLogic()).getNextMove();
-                }
+                ((PlaybackLogic) getLogic()).getNextMove();
             }
-        }
-    }
-
-    private void updateExecuteMoveManual() {
-
-        if (extraInput.isExecuteNextMove()) {
-            executeMoveLogic();
-            extraInput.setExecuteNextMove(false);
-
-            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-            updateDieRoll();
         }
     }
 
@@ -162,39 +140,32 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
-    private void updateExecuteMovePlayback() {
-
-        // TODO: now it works... kind of... still an odd case when moving the same piece back and forth.
-        // TODO: this will cause the "Rolled: dieRoll" label to append the same roll twice.
-        if (extraInput.isExecuteNextMove()) {
-
-            executeMoveLogic();
+    public void executeMoveForward() {
+        executeMoveLogic();
 //            logic.executeMove();
-            ((PlaybackLogic) getLogic()).getNextMove();
-            extraInput.setExecuteNextMove(false);
+        ((PlaybackLogic) getLogic()).getNextMove();
 
-            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-            updateDieRoll();
+        updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
+        updateDieRoll();
+    }
 
-        } else if (extraInput.isExecutePreviousMove()) {
+    public void executeMoveBackward() {
 
-            ((PlaybackLogic) getLogic()).getPreviousMove();
+        ((PlaybackLogic) getLogic()).getPreviousMove();
 //            logic.executeMove();
-            executeMoveLogic();
-            extraInput.setExecutePreviousMove(false);
+        executeMoveLogic();
 
-            hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
-            if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
-                for (Team team : getLogic().getTeams()) {
-                    if (getLogic().getNextTeamInTurn().equals(team)) {
-                        hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
-                    } else {
-                        hud.setTeamInfo(team.getId(), "");
-                    }
+        hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
+        if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
+            for (Team team : getLogic().getTeams()) {
+                if (getLogic().getNextTeamInTurn().equals(team)) {
+                    hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
+                } else {
+                    hud.setTeamInfo(team.getId(), "");
                 }
             }
-            updateDieRoll();
         }
+        updateDieRoll();
     }
 
     private void updateDieRoll() {
@@ -308,4 +279,5 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public boolean isMoveAuto() {
         return moveAuto;
     }
+
 }

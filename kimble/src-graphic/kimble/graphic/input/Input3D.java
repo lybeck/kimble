@@ -1,4 +1,4 @@
-package kimble.graphic;
+package kimble.graphic.input;
 
 import kimble.graphic.camera.Camera3D;
 import kimble.logic.Constants;
@@ -9,56 +9,51 @@ import org.lwjgl.input.Mouse;
  *
  * @author Christoffer
  */
-public class Input3D {
-
-    private Camera3D camera;
+public class Input3D extends Input {
 
     private float mouseSpeed;
     private float moveSpeed;
 
     public Input3D(Camera3D camera) {
-        this.camera = camera;
+        super(camera);
         this.mouseSpeed = Constants.DEFAULT_MOUSE_SPEED;
         this.moveSpeed = Constants.DEFAULT_MOVE_SPEED;
     }
 
-    public void update(float dt) {
-        inputMouse(dt);
-        inputKeyboard(dt);
-    }
-
+    @Override
     public void inputMouse(float dt) {
         if (Mouse.isGrabbed()) {
-            camera.getRotation().y += mouseSpeed * dt * (float) Mouse.getDX();
-            camera.getRotation().x -= mouseSpeed * dt * (float) Mouse.getDY();
+            getCamera().getRotation().y += mouseSpeed * dt * (float) Mouse.getDX();
+            getCamera().getRotation().x -= mouseSpeed * dt * (float) Mouse.getDY();
 
-            camera.getRotation().x = Math.min(camera.getRotation().x, camera.getMaxYaw());
-            camera.getRotation().x = Math.max(camera.getRotation().x, camera.getMinYaw());
+            getCamera().getRotation().x = Math.min(getCamera().getRotation().x, getCamera().getMaxYaw());
+            getCamera().getRotation().x = Math.max(getCamera().getRotation().x, getCamera().getMinYaw());
 
-            camera.getRotation().y %= 2 * Math.PI;
-            camera.getRotation().x %= 2 * Math.PI;
+            getCamera().getRotation().y %= 2 * Math.PI;
+            getCamera().getRotation().x %= 2 * Math.PI;
         }
     }
 
+    @Override
     public void inputKeyboard(float dt) {
         if (Mouse.isGrabbed()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-                camera.move(0, 0, -moveSpeed * dt);
+                getCamera().move(0, 0, -moveSpeed * dt);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-                camera.move(0, 0, moveSpeed * dt);
+                getCamera().move(0, 0, moveSpeed * dt);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-                camera.move(-moveSpeed * dt, 0, 0);
+                getCamera().move(-moveSpeed * dt, 0, 0);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-                camera.move(moveSpeed * dt, 0, 0);
+                getCamera().move(moveSpeed * dt, 0, 0);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-                camera.move(0, moveSpeed * dt, 0);
+                getCamera().move(0, moveSpeed * dt, 0);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                camera.move(0, -moveSpeed * dt, 0);
+                getCamera().move(0, -moveSpeed * dt, 0);
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
                 Mouse.setGrabbed(false);
@@ -66,12 +61,9 @@ public class Input3D {
         }
     }
 
-    public void setCamera(Camera3D camera) {
-        this.camera = camera;
-    }
-
+    @Override
     public Camera3D getCamera() {
-        return camera;
+        return (Camera3D) super.getCamera();
     }
 
     public void setMouseSpeed(float mouseSpeed) {

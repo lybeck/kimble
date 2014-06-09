@@ -1,4 +1,4 @@
-package kimble.graphic;
+package kimble.graphic.input;
 
 import kimble.KimbleGraphic;
 import kimble.playback.PlaybackProfile;
@@ -9,7 +9,7 @@ import org.lwjgl.input.Mouse;
  *
  * @author Christoffer
  */
-public class ExtraInput {
+public class ExtraInput extends Input {
 
     private final KimbleGraphic graphic;
 
@@ -20,9 +20,15 @@ public class ExtraInput {
         this.graphic = graphic;
     }
 
-    public void update(float dt) {
-        while (Keyboard.next()) {
+    @Override
+    public void inputMouse(float dt) {
+        // not used
+    }
 
+    @Override
+    public void inputKeyboard(float dt) {
+
+        while (Keyboard.next()) {
             // Update playback speed
             if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
                 PlaybackProfile.setCurrentProfile(PlaybackProfile.SLOW);
