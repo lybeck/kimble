@@ -11,6 +11,7 @@ import kimble.graphic.ExtraInput;
 import kimble.graphic.Input3D;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.Hud2D;
+import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
@@ -24,10 +25,11 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class KimbleGraphic extends AbstractKimbleGraphic {
 
+    private BitmapFont font;
     private Hud2D hud;
 
-    protected Shader shader;
-    protected Shader textShader;
+    private Shader shader;
+    private Shader textShader;
 
     private Input3D input;
     protected ExtraInput extraInput;
@@ -45,7 +47,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-//    private float cameraPositionAngle;
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
         PlaybackProfile.setCurrentProfile(profile);
