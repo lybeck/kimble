@@ -49,8 +49,12 @@ public abstract class AbstractHudElement {
                 && mouseY <= y + height) {
 
             while (Mouse.next()) {
-                if (Mouse.isButtonDown(0)) {
-                    execute();
+                if (Mouse.getEventButtonState()) {
+                    if (Mouse.getEventButton() == 0) {
+                        execute();
+                    }
+                } else {
+
                 }
             }
         }

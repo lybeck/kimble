@@ -2,27 +2,19 @@ package kimble;
 
 import java.awt.Font;
 import java.io.IOException;
-import kimble.logic.KimbleLogicInterface;
-import kimble.graphic.AbstractKimbleGraphic;
-import kimble.playback.PlaybackProfile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.graphic.input.ExtraInput;
-import kimble.graphic.input.Input3D;
+import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
-import kimble.graphic.pickingray.PickingRayUtil;
-import kimble.graphic.pickingray.Ray;
-import kimble.graphic.pickingray.RayGenerator;
+import kimble.graphic.input.ExtraInput;
+import kimble.graphic.input.Input3D;
 import kimble.graphic.shader.Shader;
+import kimble.logic.KimbleLogicInterface;
 import kimble.logic.Team;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.GL_LINE;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glEnd;
+import kimble.playback.PlaybackProfile;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -54,8 +46,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    private PickingRayUtil pickingRayUtil;
-
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
         PlaybackProfile.setCurrentProfile(profile);
@@ -79,8 +69,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             Logger.getLogger(KimbleGraphic.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Couldn't load font for piece text!");
         }
-
-        pickingRayUtil = new PickingRayUtil();
     }
 
     @Override
