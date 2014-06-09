@@ -1,7 +1,6 @@
 package kimble.playback;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -25,8 +24,6 @@ import kimble.logic.exception.IllegalMoveException;
  * @author Christoffer
  */
 public class PlaybackLogic implements KimbleLogicInterface {
-
-    private boolean gameOver = false;
 
     private List<Map<Integer, Integer>> startingDieRolls;
     private int startingTeam;
