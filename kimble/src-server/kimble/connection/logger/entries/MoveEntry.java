@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.logger.entries;
 
 /**
@@ -17,8 +12,8 @@ public class MoveEntry extends AbstractEntry {
     public final boolean home;
     public final boolean optional;
 
-    public MoveEntry(int teamID, int dieRoll, int pieceID, Integer startSquareID, int destSquareID, Boolean home, Boolean optional) {
-        super(teamID, dieRoll);
+    public MoveEntry(int turnCount, int teamID, int dieRoll, int pieceID, Integer startSquareID, int destSquareID, Boolean home, Boolean optional) {
+        super(turnCount, teamID, dieRoll);
 
         this.pieceID = pieceID;
         if (startSquareID == null) {

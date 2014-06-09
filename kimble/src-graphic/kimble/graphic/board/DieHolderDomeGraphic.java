@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.board;
 
 import kimble.playback.PlaybackProfile;
@@ -35,7 +30,8 @@ public class DieHolderDomeGraphic extends Model {
     @Override
     public void update(float dt) {
         super.update(dt);
-        angle = MathHelper.lerp(angle, (float) (2 * Math.PI), dt * 20 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+        angle = MathHelper.lerp(angle, (float) (2 * Math.PI), dt * 20
+                * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
         setPosition(new Vector3f(0, (float) (0.1 * Math.sin(angle)), 0));
     }
 

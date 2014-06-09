@@ -145,7 +145,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
 
             // *********************************************************************
             if (KimbleGameStateLogger.isInitialized()) {
-                KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), false, "not possible");
+                KimbleGameStateLogger.logSkip(game.getTurnCount(), game.getTeamInTurn().getId(), currentTurn.getDieRoll(), false, "not possible");
             }
             // *********************************************************************
             moveMessage = "not possible";
@@ -162,7 +162,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
 
                     // *********************************************************************
                     if (KimbleGameStateLogger.isInitialized()) {
-                        KimbleGameStateLogger.logMove(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), currentTurn.getMove(selection));
+                        KimbleGameStateLogger.logMove(game.getTurnCount(), game.getTeamInTurn().getId(), currentTurn.getDieRoll(), currentTurn.getMove(selection));
                     }
                     // *********************************************************************
                     moveMessage = "moving";
@@ -172,7 +172,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
 
                     // *********************************************************************
                     if (KimbleGameStateLogger.isInitialized()) {
-                        KimbleGameStateLogger.logSkip(game.getTeamInTurn().getId(), currentTurn.getDieRoll(), true, "pass");
+                        KimbleGameStateLogger.logSkip(game.getTurnCount(), game.getTeamInTurn().getId(), currentTurn.getDieRoll(), true, "pass");
                     }
                     // *********************************************************************
                     moveMessage = "pass";
@@ -209,7 +209,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             // *********************************************************************
             if (KimbleGameStateLogger.isInitialized()) {
                 for (Team team : game.getFinishedTeams()) {
-                    KimbleGameStateLogger.logTeamFinish(team.getId());
+                    KimbleGameStateLogger.logTeamFinished(team.getId(), getTurnCount());
                 }
                 KimbleGameStateLogger.logWinner(winner);
             }
@@ -295,6 +295,21 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     @Override
     public List<Team> getFinishedTeams() {
         return getGame().getFinishedTeams();
+    }
+
+    @Override
+    public int getTurnCount() {
+        return getGame().getTurnCount();
+    }
+
+    @Override
+    public boolean isFinished(int teamID) {
+        return getGame().isFinished(teamID);
+    }
+
+    @Override
+    public boolean isDisqualified(int teamID) {
+        return getGame().isDisqualified(teamID);
     }
 
 }

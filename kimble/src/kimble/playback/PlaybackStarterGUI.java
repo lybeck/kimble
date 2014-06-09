@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.KimbleGraphic;
 import kimble.connection.logger.LogFile;
 import kimble.graphic.Screen;
 
@@ -168,7 +167,7 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
                     PlaybackLogic logic = new PlaybackLogic(log);
 
                     Screen.setupNativesLWJGL();
-                    KimbleGraphic graphic = new KimbleGraphic(logic, (PlaybackProfile) playbackProfileComboBox.getSelectedItem());
+                    PlaybackGraphic graphic = new PlaybackGraphic(logic, (PlaybackProfile) playbackProfileComboBox.getSelectedItem());
                     graphic.start();
 
                 } catch (FileNotFoundException ex) {

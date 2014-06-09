@@ -1,18 +1,18 @@
-package kimble;
+package kimble.playback;
 
 import java.awt.Font;
 import java.io.IOException;
-import kimble.logic.KimbleLogicInterface;
-import kimble.graphic.AbstractKimbleGraphic;
-import kimble.playback.PlaybackProfile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.graphic.input.ExtraInput;
+import kimble.KimbleGraphic;
+import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.input.Input3D;
 import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.KimbleHud;
+import kimble.graphic.hud.PlaybackHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
+import kimble.graphic.input.PlaybackInput;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import org.lwjgl.util.vector.Vector3f;
@@ -22,16 +22,16 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class KimbleGraphic extends AbstractKimbleGraphic {
+public class PlaybackGraphic extends AbstractKimbleGraphic {
 
     private BitmapFont font;
-    private KimbleHud hud;
+    private PlaybackHud hud;
 
     private Shader shader;
     private Shader textShader;
 
     private Input3D input;
-    protected ExtraInput extraInput;
+    private PlaybackInput extraInput;
 
     private int lastTeamID = -1;
 
@@ -46,7 +46,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
+    public PlaybackGraphic(PlaybackLogic logic, PlaybackProfile profile) {
         super(logic);
         PlaybackProfile.setCurrentProfile(profile);
     }
@@ -59,9 +59,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
         input = new Input3D(getCamera());
-        extraInput = new ExtraInput(this);
+        extraInput = new PlaybackInput(this);
 
-        hud = new KimbleHud(this, getLogic().getTeams());
+        hud = new PlaybackHud(this, getLogic().getTeams());
         super.setHud(hud);
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
@@ -74,8 +74,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     @Override
     public void input(float dt) {
-        extraInput.update(dt);
         input.update(dt);
+        extraInput.update(dt);
     }
 
     @Override
@@ -101,7 +101,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             }
         } else {
             if (!started) {
-                // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)
                 updateStartingDieRoll(dt);
             }
         }
@@ -129,14 +128,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
-            }
-        }
-    }
 
-    public void executeNextMove() {
-        if (started) {
-            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-            updateDieRoll();
+                ((PlaybackLogic) getLogic()).getNextMove();
+            }
         }
     }
 
@@ -144,6 +138,37 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (executeMove) {
             getLogic().executeMove();
             executeMove = false;
+        }
+    }
+
+    public void executeMoveForward() {
+        if (started) {
+            executeMoveLogic();
+//            logic.executeMove();
+            ((PlaybackLogic) getLogic()).getNextMove();
+
+            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
+            updateDieRoll();
+        }
+    }
+
+    public void executeMoveBackward() {
+        if (started) {
+            ((PlaybackLogic) getLogic()).getPreviousMove();
+//            logic.executeMove();
+            executeMoveLogic();
+
+            hud.removeLastAppendTeamInfo(getLogic().getNextTeamInTurn().getId());
+            if (hud.getTeamInfo(getLogic().getNextTeamInTurn().getId()).length() == 0) {
+                for (Team team : getLogic().getTeams()) {
+                    if (getLogic().getNextTeamInTurn().equals(team)) {
+                        hud.setTeamInfo(team.getId(), "Rolled: " + getLogic().getDieRoll());
+                    } else {
+                        hud.setTeamInfo(team.getId(), "");
+                    }
+                }
+            }
+            updateDieRoll();
         }
     }
 
@@ -191,7 +216,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
-    public void updateTeamInfo(int teamID, int dieRoll) {
+    private void updateTeamInfo(int teamID, int dieRoll) {
 
         for (Team team : getLogic().getTeams()) {
             if (getLogic().isFinished(team.getId())) {
@@ -258,4 +283,5 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public boolean isMoveAuto() {
         return moveAuto;
     }
+
 }

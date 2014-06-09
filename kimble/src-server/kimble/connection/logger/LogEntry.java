@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.connection.logger;
 
 import kimble.connection.logger.entries.AbstractEntry;
@@ -21,6 +16,7 @@ public class LogEntry {
     }
 
     public EntryType type;
+    public Integer turnCount;
     public Integer teamID;
     public Integer dieRoll;
     public Integer pieceID;
@@ -32,8 +28,9 @@ public class LogEntry {
     public LogEntry() {
     }
 
-    public LogEntry(EntryType type, Integer teamID, Integer dieRoll, Integer pieceID, Integer startSquareID, Integer destSquareID, Boolean home, Boolean optional) {
+    public LogEntry(EntryType type, Integer turnCount, Integer teamID, Integer dieRoll, Integer pieceID, Integer startSquareID, Integer destSquareID, Boolean home, Boolean optional) {
         this.type = type;
+        this.turnCount = turnCount;
         this.teamID = teamID;
         this.dieRoll = dieRoll;
         this.pieceID = pieceID;
@@ -45,9 +42,9 @@ public class LogEntry {
 
     public AbstractEntry getEntry() {
         if (type == EntryType.MOVE) {
-            return new MoveEntry(teamID, dieRoll, pieceID, startSquareID, destSquareID, home, optional);
+            return new MoveEntry(turnCount, teamID, dieRoll, pieceID, startSquareID, destSquareID, home, optional);
         } else if (type == EntryType.SKIP) {
-            return new SkipEntry(teamID, dieRoll, optional);
+            return new SkipEntry(turnCount, teamID, dieRoll, optional);
         }
 
         throw new UnsupportedOperationException("No return Entry yet created for this type...");

@@ -16,6 +16,9 @@ public class Constants {
     public static final int DEFAULT_FINISHING_TEAMS = 1;
     public static final Set<Integer> DEFAULT_START_VALUES;
     public static final Set<Integer> DEFAULT_CONTINUE_TURN_VALUES;
+    
+    public static final float DEFAULT_MOUSE_SPEED = 0.5f;
+    public static final float DEFAULT_MOVE_SPEED = 5f;
 
     static {
         DEFAULT_START_VALUES = new HashSet<>(2);

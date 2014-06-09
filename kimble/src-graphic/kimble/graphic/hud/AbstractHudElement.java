@@ -11,16 +11,16 @@ import org.lwjgl.input.Mouse;
  *
  * @author Christoffer
  */
-public abstract class AbstractHudItem {
+public abstract class AbstractHudElement {
 
     private final List<Callback> callbacks;
 
-    protected float x;
-    protected float y;
-    protected float width;
-    protected float height;
+    private float x;
+    private float y;
+    private float width;
+    private float height;
 
-    public AbstractHudItem() {
+    public AbstractHudElement() {
         this.callbacks = new ArrayList<>();
     }
 
@@ -58,6 +58,11 @@ public abstract class AbstractHudItem {
 
     public abstract void render(Shader shader, Camera camera);
 
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public float getX() {
         return x;
     }
@@ -70,12 +75,21 @@ public abstract class AbstractHudItem {
         return width;
     }
 
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
     public float getHeight() {
         return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     public List<Callback> getCallbacks() {
         return callbacks;
     }
 
+    public abstract void dispose();
 }

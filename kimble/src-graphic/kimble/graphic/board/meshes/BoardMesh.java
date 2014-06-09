@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kimble.graphic.board.meshes;
 
 import java.util.List;
@@ -65,9 +60,11 @@ public class BoardMesh extends Mesh {
         for (int i = 0; i < teams.size(); i++) {
 
             Vector3f tempPosition = goalSquares.get(firstGoalSquareIndex + i * teams.get(i).getPieces().size()).getPosition();
-            float boardRadius = boardOuterPadding * (tempPosition.length() + 2.5f * (squareSideLength + goalSquarePadding));
+            float boardRadius = boardOuterPadding * (tempPosition.length() + 2.5f * (squareSideLength
+                    + goalSquarePadding));
 
-            Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), 0, (float) (boardRadius * (Math.sin(currentAngle))));
+            Vector3f startPoint = new Vector3f((float) (boardRadius * (Math.cos(currentAngle))), 0, (float) (boardRadius
+                    * (Math.sin(currentAngle))));
 
             Vector3f right = new Vector3f();
             Vector3f.cross(tempPosition, new Vector3f(0, 1, 0), right);

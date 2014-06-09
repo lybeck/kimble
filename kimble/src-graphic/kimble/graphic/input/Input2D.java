@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package kimble.graphic;
+package kimble.graphic.input;
 
 import kimble.graphic.camera.Camera2D;
 import org.lwjgl.input.Keyboard;
@@ -13,66 +8,56 @@ import org.lwjgl.input.Mouse;
  *
  * @author Christoffer
  */
-public class Input2D {
-
-    private Camera2D camera;
+public class Input2D extends Input {
 
     private float mouseSpeed;
     private float moveSpeed;
 
     public Input2D(Camera2D camera) {
-        this.camera = camera;
+        super(camera);
         this.mouseSpeed = 0.5f;
         this.moveSpeed = 1;
     }
 
-    public void update(float dt) {
-        inputMouse(dt);
-        inputKeyboard(dt);
-    }
-
+    @Override
     public void inputMouse(float dt) {
         if (Mouse.isGrabbed()) {
-            camera.getRotation().y += mouseSpeed * dt * (float) Mouse.getDX();
-            camera.getRotation().x -= mouseSpeed * dt * (float) Mouse.getDY();
+            getCamera().getRotation().y += mouseSpeed * dt * Mouse.getDX();
+            getCamera().getRotation().x -= mouseSpeed * dt * Mouse.getDY();
 
-//            camera.getRotation().x = Math.min(camera.getRotation().x, camera.getMaxYaw());
-//            camera.getRotation().x = Math.max(camera.getRotation().x, camera.getMinYaw());
-            camera.getRotation().y %= 2 * Math.PI;
-            camera.getRotation().x %= 2 * Math.PI;
+            getCamera().getRotation().y %= 2 * Math.PI;
+            getCamera().getRotation().x %= 2 * Math.PI;
         }
     }
 
+    @Override
     public void inputKeyboard(float dt) {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            camera.move(0, 0, -moveSpeed * dt);
+            getCamera().move(0, 0, -moveSpeed * dt);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            camera.move(0, 0, moveSpeed * dt);
+            getCamera().move(0, 0, moveSpeed * dt);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            camera.move(-moveSpeed * dt, 0, 0);
+            getCamera().move(-moveSpeed * dt, 0, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            camera.move(moveSpeed * dt, 0, 0);
+            getCamera().move(moveSpeed * dt, 0, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            camera.move(0, moveSpeed * dt, 0);
+            getCamera().move(0, moveSpeed * dt, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            camera.move(0, -moveSpeed * dt, 0);
+            getCamera().move(0, -moveSpeed * dt, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Mouse.setGrabbed(false);
         }
     }
 
-    public void setCamera(Camera2D camera) {
-        this.camera = camera;
-    }
-
+    @Override
     public Camera2D getCamera() {
-        return camera;
+        return (Camera2D) super.getCamera();
     }
 
     public void setMouseSpeed(float mouseSpeed) {

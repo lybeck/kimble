@@ -35,4 +35,10 @@ public interface KimbleLogicInterface {
     public int getWinner();
 
     public List<Team> getFinishedTeams();
+
+    public int getTurnCount();
+
+    public boolean isFinished(int teamID);
+
+    public boolean isDisqualified(int teamID);
 }

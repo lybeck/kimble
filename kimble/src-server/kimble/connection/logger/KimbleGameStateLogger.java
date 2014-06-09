@@ -81,7 +81,7 @@ public class KimbleGameStateLogger {
         logFile.setStartingTeam(gameStart.getStartingTeamIndex());
     }
 
-    public static void logMove(int teamID, int dieRoll, Move move) {
+    public static void logMove(int turnCount, int teamID, int dieRoll, Move move) {
         Integer pieceId = move.getPiece().getId();
         Boolean home = null;
         if (move.getPiece().isHome()) {
@@ -97,17 +97,19 @@ public class KimbleGameStateLogger {
         }
         Integer destSquare = move.getDestination().getID();
 
-//        logFile.addEntry(new LogEntryMove(teamID, dieRoll, pieceId, home, optional, startSquare, destSquare));
-        logFile.addEntry(new LogEntry(EntryType.MOVE, teamID, dieRoll, pieceId, startSquare, destSquare, home, optional));
+        logFile.addEntry(new LogEntry(EntryType.MOVE, turnCount, teamID, dieRoll, pieceId, startSquare, destSquare, home, optional));
     }
 
-    public static void logSkip(int teamID, int dieRoll, boolean optional, String reason) {
-//        logFile.addEntry(new LogEntrySkip(teamID, dieRoll, optional, reason));
-        logFile.addEntry(new LogEntry(EntryType.SKIP, teamID, dieRoll, null, null, null, null, optional));
+    public static void logSkip(int turnCount, int teamID, int dieRoll, boolean optional, String reason) {
+        logFile.addEntry(new LogEntry(EntryType.SKIP, turnCount, teamID, dieRoll, null, null, null, null, optional));
     }
 
-    public static void logTeamFinish(int teamID) {
-        logFile.addTeamFinish(teamID);
+    public static void logTeamFinished(int teamID, int turnCount) {
+        logFile.addTeamFinished(teamID, turnCount);
+    }
+
+    public static void logTeamDisqualified(int teamID, int turnCount) {
+        logFile.addTeamDisqualified(teamID, turnCount);
     }
 
     public static void logWinner(int teamID) {
