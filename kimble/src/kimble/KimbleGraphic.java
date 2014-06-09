@@ -13,8 +13,11 @@ import kimble.graphic.board.PieceGraphic;
 import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
+import kimble.graphic.pickingray.PickingRay;
+import kimble.graphic.pickingray.PickingRayUtil;
 import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -46,6 +49,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
+    private PickingRayUtil pickingRayUtil;
+
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
         PlaybackProfile.setCurrentProfile(profile);
@@ -70,6 +75,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             System.err.println("Couldn't load font for piece text!");
         }
 
+        pickingRayUtil = new PickingRayUtil();
     }
 
     @Override
@@ -108,6 +114,14 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
         hud.setPlaybackSpeed(PlaybackProfile.currentProfile);
         hud.update(dt);
+
+        if (Mouse.isButtonDown(0)) {
+            pickingRayUtil.update(getCamera());
+            PickingRay pickingRay = new PickingRay();
+            pickingRayUtil.pick(Mouse.getX(), Mouse.getY(), pickingRay);
+
+            System.out.println(pickingRay);
+        }
     }
 
     private void updateExecuteMove(float dt) {

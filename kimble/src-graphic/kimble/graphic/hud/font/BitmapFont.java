@@ -100,7 +100,6 @@ public class BitmapFont {
         for (int i = 0; i < line.length(); i++) {
             totalWidth += glyphs.get(line.charAt(i)).getWidth();
         }
-//        totalWidth += glyphs.get(' ').getWidth();
 
         return Math.round(totalWidth);
     }

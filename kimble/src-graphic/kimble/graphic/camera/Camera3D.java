@@ -74,4 +74,16 @@ public class Camera3D extends Camera {
         return minYaw;
     }
 
+    public float getFov() {
+        return fov;
+    }
+
+    public float getzNear() {
+        return zNear;
+    }
+
+    public float getzFar() {
+        return zFar;
+    }
+
 }
