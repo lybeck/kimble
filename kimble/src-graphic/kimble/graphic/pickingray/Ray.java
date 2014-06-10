@@ -24,7 +24,6 @@ public class Ray {
         while (result.y > y) {
             Vector3f.add(result, direction, result);
         }
-//        Vector3f.sub(result, direction, result);
         result.y = y;
         return result;
     }

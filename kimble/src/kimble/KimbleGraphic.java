@@ -49,7 +49,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    private boolean pieceAlreadySelected = false;
+    private PieceGraphic selectedPiece = null;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
@@ -113,31 +113,74 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         hud.setPlaybackSpeed(PlaybackProfile.currentProfile);
         hud.update(dt);
 
+        updateMousePicking();
+    }
+
+    private boolean domeClicked = false;
+
+    private void updateMousePicking() {
+
         // TODO: select pieces and drag them along the ground
         // TODO: click on a piece to make it execute it's move. Click the die to roll it! (this is possible when the game logic has been refined)
+        // TODO: what kind of movement do we want? Click on piece, click on square -> animate piece jumping to square.
         if (Mouse.isButtonDown(0)) {
             Ray ray = RayGenerator.create(Mouse.getX(), Mouse.getY(), getCamera());
 
-            for (PieceGraphic piece : pieces) {
-                if (piece.isSelected()) {
-                    piece.setSelectedPosition(ray.getIntersectPointAtHeight(0f));
-                } else if (!pieceAlreadySelected && ray.intersects(piece)) {
-                    piece.setSelected(true);
-                    pieceAlreadySelected = true;
+            if (domeClicked == false && selectedPiece == null && ray.intersects(dieHolderDome)) {
+                updateDieRoll();
+                domeClicked = true;
+            } else {
+
+                Vector3f piecePosition = null;
+                if (selectedPiece != null) {
+                    piecePosition = testPiecePosition(ray);
+                }
+
+                if (selectedPiece != null) {
+                    if (piecePosition == null) {
+                        selectedPiece.setSelectedPosition(ray.getIntersectPointAtHeight(1f));
+                    } else {
+                        selectedPiece.setSelectedPosition(piecePosition);
+                    }
+                } else {
+                    for (PieceGraphic piece : pieces) {
+                        if (ray.intersects(piece)) {
+                            selectedPiece = piece;
+                            selectedPiece.setSelected(true);
+                            break;
+                        }
+                    }
                 }
             }
         } else {
-            for (PieceGraphic piece : pieces) {
-                if (piece.isSelected()) {
-                    piece.setSelected(false);
+            if (domeClicked) {
+                domeClicked = false;
+            } else {
+                // TODO: advance in the logic when the Mouse is released and the piece is in the right spot
+                if (selectedPiece != null) {
+                    selectedPiece.setSelected(false);
+                    selectedPiece = null;
                 }
             }
-            pieceAlreadySelected = false;
         }
         // empty the Mouse to not interfere with the HUD.
         while (Mouse.next()) {
             Mouse.poll();
         }
+    }
+
+    private Vector3f testPiecePosition(Ray ray) {
+        for (Integer key : board.getSquares().keySet()) {
+            if (ray.intersects(board.getSquares().get(key))) {
+                return board.getSquares().get(key).getPosition();
+            }
+        }
+        for (Integer key : board.getGoalSquares().keySet()) {
+            if (ray.intersects(board.getGoalSquares().get(key))) {
+                return board.getGoalSquares().get(key).getPosition();
+            }
+        }
+        return null;
     }
 
     private void updateExecuteMove(float dt) {
