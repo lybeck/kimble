@@ -2,8 +2,8 @@ package kimble;
 
 import java.util.ArrayList;
 import java.util.List;
-import kimble.logic.Constants;
 import kimble.logic.IPlayer;
+import kimble.logic.player.KimblePlayer;
 import kimble.logic.player.testai.FirstMoveAI;
 import kimble.logic.player.testai.TestAILasse;
 import kimble.logic.player.testai.TestAILasse1;
@@ -23,7 +23,31 @@ public class Kimble {
                 useGui = false;
             }
         }
-        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
+//        runSingleGameNoAIs();
+        runSingleGameThreeAIsOnePlayer();
+//        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
+    }
+
+    private static void runSingleGameNoAIs() {
+        List<IPlayer> players = new ArrayList<>();
+
+        players.add(new KimblePlayer("Test 1"));
+        players.add(new KimblePlayer("Test 2"));
+        players.add(new KimblePlayer("Test 3"));
+        players.add(new KimblePlayer("Test 4"));
+
+        new ServerGame(true, players).start();
+    }
+
+    private static void runSingleGameThreeAIsOnePlayer() {
+        List<IPlayer> players = new ArrayList<>();
+
+        players.add(new FirstMoveAI("First_move_AI"));
+        players.add(new TestAILasse());
+        players.add(new TestAILasse1());
+        players.add(new KimblePlayer("Test 1"));
+
+        new ServerGame(true, players).start();
     }
 
     private static void runSingleGame(boolean useGui, int numberOfPlayers) {

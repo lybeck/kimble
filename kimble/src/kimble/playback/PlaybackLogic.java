@@ -7,15 +7,17 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kimble.logic.KimbleLogicInterface;
 import kimble.connection.logger.LogEntry;
 import kimble.connection.logger.LogEntry.EntryType;
 import kimble.connection.logger.LogFile;
 import kimble.connection.logger.entries.MoveEntry;
 import kimble.connection.logger.entries.SkipEntry;
+import kimble.logic.IPlayer;
+import kimble.logic.KimbleLogicInterface;
 import kimble.logic.Move;
 import kimble.logic.Piece;
 import kimble.logic.Team;
+import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.exception.IllegalMoveException;
 
@@ -228,6 +230,21 @@ public class PlaybackLogic implements KimbleLogicInterface {
     @Override
     public Team getNextTeamInTurn() {
         return nextTeam;
+    }
+
+    @Override
+    public boolean isAutoPlayer() {
+        return true;
+    }
+
+    @Override
+    public Turn getCurrentTurn() {
+        throw new UnsupportedOperationException("not yet implemented!");
+    }
+    
+    @Override
+    public IPlayer getCurrentPlayer(){
+        throw new UnsupportedOperationException("not yet implemented!");
     }
 
     @Override

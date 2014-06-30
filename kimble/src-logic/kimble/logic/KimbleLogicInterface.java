@@ -25,6 +25,12 @@ public interface KimbleLogicInterface {
     public boolean isGameOver();
 
     public Team getNextTeamInTurn();
+    
+    public Turn getCurrentTurn();
+    
+    public IPlayer getCurrentPlayer();
+    
+    public boolean isAutoPlayer();
 
     public int getDieRoll();
 

@@ -35,11 +35,13 @@ public abstract class KimbleAI implements IPlayer {
         return board;
     }
 
+    @Override
     public void setMyTeam(Team myTeam) {
         this.myTeam = myTeam;
         this.myTeam.setName(teamName);
     }
 
+    @Override
     public Team getMyTeam() {
         return myTeam;
     }

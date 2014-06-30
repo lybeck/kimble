@@ -1,13 +1,13 @@
 package kimble.graphic.board;
 
-import kimble.graphic.Model;
-import kimble.graphic.shader.Shader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kimble.graphic.camera.Camera;
+import kimble.graphic.Model;
 import kimble.graphic.board.meshes.BoardMesh;
+import kimble.graphic.camera.Camera;
+import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
@@ -111,7 +111,7 @@ public class BoardGraphic extends Model {
                 squareColor = REGULAR_SQUARE_COLOR;
             }
 
-            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareColor);
+            SquareGraphic squareGraphic = new SquareGraphic(s, squarePosition, squareColor);
             squareGraphic.rotate(0, -currentAngle, 0);
             squares.put(squareID, squareGraphic);
 
@@ -143,7 +143,7 @@ public class BoardGraphic extends Model {
                 float g = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).y;
                 float b = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).z;
                 Vector3f color = new Vector3f(r, g, b);
-                SquareGraphic squareGraphic = new SquareGraphic(goalPosition, color);
+                SquareGraphic squareGraphic = new SquareGraphic(goalSquare, goalPosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 goalSquares.put(squareID, squareGraphic);
             }
@@ -178,7 +178,7 @@ public class BoardGraphic extends Model {
                 float b = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).z;
                 Vector3f color = new Vector3f(r, g, b);
 
-                SquareGraphic squareGraphic = new SquareGraphic(homePosition, color);
+                SquareGraphic squareGraphic = new SquareGraphic(board.getSquare(squareID), homePosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 homeSquares.put(squareID, squareGraphic);
 

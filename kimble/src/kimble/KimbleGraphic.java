@@ -2,6 +2,8 @@ package kimble;
 
 import java.awt.Font;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.graphic.AbstractKimbleGraphic;
@@ -15,16 +17,14 @@ import kimble.graphic.pickingray.Ray;
 import kimble.graphic.pickingray.RayGenerator;
 import kimble.graphic.shader.Shader;
 import kimble.logic.KimbleLogicInterface;
+import kimble.logic.Move;
 import kimble.logic.Team;
+import kimble.logic.player.KimblePlayer;
 import kimble.playback.PlaybackProfile;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-/**
- *
- * @author Christoffer
- */
 public class KimbleGraphic extends AbstractKimbleGraphic {
 
     private BitmapFont font;
@@ -49,7 +49,13 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    private PieceGraphic selectedPiece = null;
+    private AvailableMove selectedAvailableMove = null;
+    private Destination dest = null;
+    private final List<AvailableMove> movablePieces = new ArrayList<>();
+    private boolean domeClicked = false;
+    private boolean dieRolled = false;
+
+    private float angle = 0;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
@@ -94,17 +100,34 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //            stop();
         }
 
-        if (moveAuto) {
+        if (getLogic().isAutoPlayer()) {
             turnTimer += dt;
             if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
                 if (started) {
-                    updateExecuteMove(dt);
+                    if (moveAuto) {
+                        updateExecuteMove(dt);
+                    } else {
+                        if (executeNextMove) {
+                            updateExecuteMove(dt);
+                            executeNextMove = false;
+                        }
+                    }
                 } else {
                     updateStartingDieRoll(dt);
                 }
             }
         } else {
-            if (!started) {
+            if (started) {
+                if (selectedAvailableMove == null) {
+                    for (AvailableMove move : movablePieces) {
+                        move.piece.move(0, (float) (0.25 * Math.sin(angle)), 0);
+                    }
+                    angle += dt * 5;
+                    if (angle >= Math.PI) {
+                        angle = 0;
+                    }
+                }
+            } else {
                 // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)
                 updateStartingDieRoll(dt);
             }
@@ -116,8 +139,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         updateMousePicking();
     }
 
-    private boolean domeClicked = false;
-
     private void updateMousePicking() {
 
         // TODO: select pieces and drag them along the ground
@@ -126,27 +147,28 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (Mouse.isButtonDown(0)) {
             Ray ray = RayGenerator.create(Mouse.getX(), Mouse.getY(), getCamera());
 
-            if (domeClicked == false && selectedPiece == null && ray.intersects(dieHolderDome)) {
+            if (domeClicked == false && selectedAvailableMove == null && ray.intersects(dieHolderDome)) {
                 updateDieRoll();
                 domeClicked = true;
             } else {
 
-                Vector3f piecePosition = null;
-                if (selectedPiece != null) {
-                    piecePosition = testPiecePosition(ray);
+                if (selectedAvailableMove != null) {
+                    dest = testPiecePosition(ray);
+                } else {
+                    dest = null;
                 }
 
-                if (selectedPiece != null) {
-                    if (piecePosition == null) {
-                        selectedPiece.setSelectedPosition(ray.getIntersectPointAtHeight(1f));
+                if (selectedAvailableMove != null) {
+                    if (dest.position == null || dest.id != selectedAvailableMove.destinationID) {
+                        selectedAvailableMove.piece.setSelectedPosition(ray.getIntersectPointAtHeight(1f));
                     } else {
-                        selectedPiece.setSelectedPosition(piecePosition);
+                        selectedAvailableMove.piece.setSelectedPosition(new Vector3f(dest.position));
                     }
                 } else {
-                    for (PieceGraphic piece : pieces) {
-                        if (ray.intersects(piece)) {
-                            selectedPiece = piece;
-                            selectedPiece.setSelected(true);
+                    for (AvailableMove move : movablePieces) {
+                        if (ray.intersects(move.piece)) {
+                            selectedAvailableMove = move;
+                            selectedAvailableMove.piece.setSelected(true);
                             break;
                         }
                     }
@@ -154,12 +176,22 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             }
         } else {
             if (domeClicked) {
+                executeNextMove();
+
+                angle = 0;
                 domeClicked = false;
             } else {
-                // TODO: advance in the logic when the Mouse is released and the piece is in the right spot
-                if (selectedPiece != null) {
-                    selectedPiece.setSelected(false);
-                    selectedPiece = null;
+
+                if (selectedAvailableMove != null) {
+
+                    if (!getLogic().isAutoPlayer() && dest != null) {
+                        if (((KimblePlayer) getLogic().getCurrentPlayer()).selectMove(selectedAvailableMove.piece.getPieceLogic(), dest.id, getLogic().getCurrentTurn())) {
+                            executeMoveLogic();
+                            movablePieces.clear();
+                        }
+                        selectedAvailableMove.piece.setSelected(false);
+                        selectedAvailableMove = null;
+                    }
                 }
             }
         }
@@ -167,20 +199,48 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         while (Mouse.next()) {
             Mouse.poll();
         }
+
     }
 
-    private Vector3f testPiecePosition(Ray ray) {
+    private void executePlayerMove() {
+        if (getLogic().getCurrentTurn().getMoves().isEmpty()) {
+            System.out.println("no move available, continue with next team.");
+            executeMoveLogic();
+        } else {
+            movablePieces.clear();
+            for (PieceGraphic p : pieces) {
+                for (Move move : getLogic().getCurrentTurn().getMoves()) {
+                    if (p.getPieceLogic().equals(move.getPiece())) {
+                        AvailableMove availableMove = new AvailableMove();
+                        availableMove.destinationID = move.getDestination().getID();
+                        availableMove.piece = p;
+                        movablePieces.add(availableMove);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private Destination testPiecePosition(Ray ray) {
+        Destination dest = new Destination();
         for (Integer key : board.getSquares().keySet()) {
             if (ray.intersects(board.getSquares().get(key))) {
-                return board.getSquares().get(key).getPosition();
+                if (board.getSquares().get(key).getLogic() != null) {
+                    dest.position = board.getSquares().get(key).getPosition();
+                    dest.id = board.getSquares().get(key).getLogic().getID();
+                    break;
+                }
             }
         }
         for (Integer key : board.getGoalSquares().keySet()) {
             if (ray.intersects(board.getGoalSquares().get(key))) {
-                return board.getGoalSquares().get(key).getPosition();
+                dest.position = board.getGoalSquares().get(key).getPosition();
+                dest.id = board.getGoalSquares().get(key).getLogic().getID();
+                break;
             }
         }
-        return null;
+        return dest;
     }
 
     private void updateExecuteMove(float dt) {
@@ -191,8 +251,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
             if (!getLogic().isGameOver()) {
-                updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
-
                 updateDieRoll();
 
                 turnTimer = 0;
@@ -206,10 +264,16 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
+    private boolean executeNextMove;
+
     public void executeNextMove() {
         if (started) {
-            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
             updateDieRoll();
+            executeNextMove = true;
+
+            if (!getLogic().isAutoPlayer()) {
+                executePlayerMove();
+            }
         }
     }
 
@@ -217,20 +281,25 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (executeMove) {
             getLogic().executeMove();
             executeMove = false;
+            dieRolled = false;
         }
     }
 
     private void updateDieRoll() {
-        if (!getLogic().isGameOver()) {
+        if (!getLogic().isGameOver() && !dieRolled) {
+            updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
 
             die.setDieRoll(getLogic().getDieRoll());
             dieHolderDome.bounce();
+            dieRolled = true;
 
             executeMove = true;
 //            } else {
 //                if (!endMessageShown) {
 //                    endMessageShown = true;
 //                }
+
+            movablePieces.clear();
 
             hud.setTurnCount(getLogic().getTurnCount());
         }
@@ -330,5 +399,22 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     public boolean isMoveAuto() {
         return moveAuto;
+    }
+
+    // ===================================================
+    /*
+     * Classes helping the Mouse picking
+     */
+    // ===================================================
+    private class Destination {
+
+        public Vector3f position;
+        public int id;
+    }
+
+    private class AvailableMove {
+
+        public PieceGraphic piece;
+        public int destinationID;
     }
 }
