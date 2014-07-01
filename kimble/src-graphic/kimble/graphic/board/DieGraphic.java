@@ -45,10 +45,10 @@ public class DieGraphic extends Model {
     private float angleY = 0;
     private float angleZ = 0;
 
-//    private static String MODEL_KEY = "cube";
-//    private static String TEXTURE_KEY = "temp_tex";
-    private static String MODEL_KEY = "game_die";
-    private static String TEXTURE_KEY = "Die_tex";
+    private static String MODEL_KEY = "cube";
+    private static String TEXTURE_KEY = "temp_tex";
+//    private static String MODEL_KEY = "game_die";
+//    private static String TEXTURE_KEY = "Die_tex";
 
     public DieGraphic() {
 

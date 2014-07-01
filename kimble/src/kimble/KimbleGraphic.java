@@ -266,13 +266,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                 }
             }
         }
-        for (Integer key : board.getGoalSquares().keySet()) {
-            if (ray.intersects(board.getGoalSquares().get(key))) {
-                dest.position = board.getGoalSquares().get(key).getPosition();
-                dest.id = board.getGoalSquares().get(key).getLogic().getID();
-                break;
-            }
-        }
         return dest;
     }
 

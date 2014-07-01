@@ -146,6 +146,7 @@ public class BoardGraphic extends Model {
                 SquareGraphic squareGraphic = new SquareGraphic(goalSquare, goalPosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 goalSquares.put(squareID, squareGraphic);
+                squares.put(squareID, squareGraphic);
             }
         }
     }
@@ -193,9 +194,6 @@ public class BoardGraphic extends Model {
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).update(dt);
         }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).update(dt);
-        }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).update(dt);
         }
@@ -206,9 +204,6 @@ public class BoardGraphic extends Model {
         super.render(shader, camera);
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).render(shader, camera);
-        }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).render(shader, camera);
         }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).render(shader, camera);
@@ -221,14 +216,16 @@ public class BoardGraphic extends Model {
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).dispose();
         }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).dispose();
-        }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).dispose();
         }
     }
 
+    /**
+     * Contains both the regular squares and the goal squares. NOT the HOME SQUARES
+     *
+     * @return
+     */
     public Map<Integer, SquareGraphic> getSquares() {
         return squares;
     }
