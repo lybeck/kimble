@@ -386,13 +386,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         shader.bind();
         renderComponents(shader);
 
-//        // Rendering the currently selected piece again (just to keep over all other pieces)
-//        if (selectedAvailableMove != null) {
-//            if (selectedAvailableMove.piece != null) {
-//                selectedAvailableMove.piece.render(shader, getCamera());
-//            }
-//        }
-
         textShader.bind();
         if (showTags) {
             for (PieceGraphic p : pieces) {
