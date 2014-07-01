@@ -49,7 +49,7 @@ public class Board {
 
         for (int i = 0; i < numberOfTeams; i++) {
             square = new GoalSquare(squareID++);
-            goalSquares.put(i, new ArrayList<>());
+            goalSquares.put(i, new ArrayList<Square>());
             goalSquares.get(i).add(square);
             square.setPrev(getStartSquare(i).getPrev());
             prev = square;

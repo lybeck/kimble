@@ -78,7 +78,7 @@ public class KimbleHud extends AbstractHud {
         widestTeamName = 0;
 
         for (int i = 0; i < getTeams().size(); i++) {
-            Team team = getTeams().get(i);
+            final Team team = getTeams().get(i);
             TextElement te = new TextElement(font);
             te.addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
             if (font.calculateWidth(te.getWords()) > widestTeamName) {
@@ -121,7 +121,7 @@ public class KimbleHud extends AbstractHud {
                 width = font.calculateWidth(PlaybackProfile.values()[i].name());
             }
             te.addWord("Key " + (PlaybackProfile.values()[i].ordinal() + 1) + ": " + PlaybackProfile.values()[i].name(), BitmapFont.GREY);
-            PlaybackProfile profile = PlaybackProfile.values()[PlaybackProfile.values()[i].ordinal()];
+            final PlaybackProfile profile = PlaybackProfile.values()[PlaybackProfile.values()[i].ordinal()];
             te.addCallback(new Callback() {
 
                 @Override

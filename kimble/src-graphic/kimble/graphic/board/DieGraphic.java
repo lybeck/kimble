@@ -28,6 +28,11 @@ public class DieGraphic extends Model {
 
     public static final List<Vector3f> DIE_ROLL_ROTATIONS = new ArrayList<>();
 
+    private static String MODEL_KEY = "cube";
+    private static String TEXTURE_KEY = "temp_tex";
+//    private static String MODEL_KEY = "game_die";
+//    private static String TEXTURE_KEY = "Die_tex";
+
     static {
         DIE_ROLL_ROTATIONS.add(ROTATION_ONE);
         DIE_ROLL_ROTATIONS.add(ROTATION_TWO);
@@ -44,11 +49,6 @@ public class DieGraphic extends Model {
     private float angleX = 0;
     private float angleY = 0;
     private float angleZ = 0;
-
-    private static String MODEL_KEY = "cube";
-    private static String TEXTURE_KEY = "temp_tex";
-//    private static String MODEL_KEY = "game_die";
-//    private static String TEXTURE_KEY = "Die_tex";
 
     public DieGraphic() {
 
