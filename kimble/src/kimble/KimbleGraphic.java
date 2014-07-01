@@ -76,7 +76,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         hud = new KimbleHud(this, getLogic().getTeams());
         hud.getPassTurnButton().setEnabled(false);
         super.setHud(hud);
-        
+
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
         } catch (IOException ex) {
@@ -432,9 +432,10 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (!getLogic().isAutoPlayer()) {
             ((KimblePlayer) getLogic().getCurrentPlayer()).passTurn();
             executeMoveLogic();
-        }
 
-        hud.getPassTurnButton().setEnabled(false);
+            movablePieces.clear();
+            hud.getPassTurnButton().setEnabled(false);
+        }
     }
     // ===================================================
     /*

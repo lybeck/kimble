@@ -2,6 +2,7 @@ package kimble;
 
 import java.util.ArrayList;
 import java.util.List;
+import kimble.logic.Constants;
 import kimble.logic.IPlayer;
 import kimble.logic.player.KimblePlayer;
 import kimble.logic.player.testai.FirstMoveAI;
@@ -23,8 +24,8 @@ public class Kimble {
                 useGui = false;
             }
         }
-//        runSingleGameNoAIs();
-        runSingleGameThreeAIsOnePlayer();
+        runSingleGameNoAIs();
+//        runSingleGameThreeAIsOnePlayer();
 //        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
     }
 
