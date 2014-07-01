@@ -2,6 +2,7 @@ package kimble.graphic.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import org.lwjgl.util.vector.Vector2f;
@@ -79,12 +80,14 @@ public class OBJLoader {
             face.setTexCoordIndices(t0, t1, t2);
         }
 
-        if (!(args0[2].length() == 0 || args1[2].length() == 0 || args2[2].length() == 0)) {
-            int n0 = Integer.parseInt(args0[2]) - 1;
-            int n1 = Integer.parseInt(args1[2]) - 1;
-            int n2 = Integer.parseInt(args2[2]) - 1;
+        if (args0.length == 3 && args1.length == 3 && args2.length == 3) {
+            if (!(args0[2].length() == 0 || args1[2].length() == 0 || args2[2].length() == 0)) {
+                int n0 = Integer.parseInt(args0[2]) - 1;
+                int n1 = Integer.parseInt(args1[2]) - 1;
+                int n2 = Integer.parseInt(args2[2]) - 1;
 
-            face.setNormalIndices(n0, n1, n2);
+                face.setNormalIndices(n0, n1, n2);
+            }
         }
 
         return face;

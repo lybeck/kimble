@@ -28,10 +28,12 @@ public class DieGraphic extends Model {
 
     public static final List<Vector3f> DIE_ROLL_ROTATIONS = new ArrayList<>();
 
-    private static String MODEL_KEY = "cube";
-    private static String TEXTURE_KEY = "temp_tex";
-//    private static String MODEL_KEY = "game_die";
-//    private static String TEXTURE_KEY = "Die_tex";
+//    private static String MODEL_KEY = "cube";
+//    private static String TEXTURE_KEY = "temp_tex";
+    private static String MODEL_KEY = "game_die";
+    private static String TEXTURE_KEY = "Die_tex";
+
+    private static float speedFactor = 5;
 
     static {
         DIE_ROLL_ROTATIONS.add(ROTATION_ONE);
@@ -52,10 +54,11 @@ public class DieGraphic extends Model {
 
     public DieGraphic() {
 
-        rotation = ROTATION_THREE;
+        rotation = DIE_ROLL_ROTATIONS.get(random.nextInt(DIE_ROLL_ROTATIONS.size()));
 
-        this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
-        this.getMaterial().setTextureModulator(1.0f);
+//        this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
+        this.getMaterial().setLightPosition(new Vector4f(0, 10, 0, 1));
+        this.getMaterial().setTextureModulator(0.75f);
         this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel(MODEL_KEY));
     }
@@ -66,9 +69,25 @@ public class DieGraphic extends Model {
         }
         this.rotation = DIE_ROLL_ROTATIONS.get(dieRoll - 1);
 
-        float x = (float) (rotation.x + 2 * (random.nextInt(3) + 1) * Math.PI);
-        float y = (float) (2 * (random.nextInt(3) + 1) * Math.PI);
-        float z = (float) (rotation.z + 2 * (random.nextInt(3) + 1) * Math.PI);
+        int turnsX = 0;
+        int turnsY = 0;
+        int turnsZ = 0;
+
+        int rotationDirection = random.nextInt(3);
+        if (rotationDirection == 0) {
+            turnsX = 2 * (random.nextInt(2) + 1);
+            turnsY = 2 * (random.nextInt(2) + 1);
+        } else if (rotationDirection == 1) {
+            turnsX = 2 * (random.nextInt(2) + 1);
+            turnsZ = 2 * (random.nextInt(2) + 1);
+        } else if (rotationDirection == 2) {
+            turnsY = 2 * (random.nextInt(2) + 1);
+            turnsZ = 2 * (random.nextInt(2) + 1);
+        }
+
+        float x = (float) (rotation.x + turnsX * Math.PI);
+        float y = (float) (rotation.y + turnsY * Math.PI);
+        float z = (float) (rotation.z + turnsZ * Math.PI);
 
         this.rotation = new Vector3f(x, y, z);
     }
@@ -81,9 +100,12 @@ public class DieGraphic extends Model {
                 || Math.abs(rotation.y - angleY) >= 0.01
                 || Math.abs(rotation.z - angleZ) >= 0.01) {
 
-            angleX = MathHelper.lerp(angleX, rotation.x, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-            angleY = MathHelper.lerp(angleY, rotation.y, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
-            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * 5 * PlaybackProfile.currentProfile.getTurnTimeSpeedUp());
+            angleX = MathHelper.lerp(angleX, rotation.x, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+                    * speedFactor);
+            angleY = MathHelper.lerp(angleY, rotation.y, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+                    * speedFactor);
+            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+                    * speedFactor);
 
             this.rotate(angleX, angleY, angleZ);
         }

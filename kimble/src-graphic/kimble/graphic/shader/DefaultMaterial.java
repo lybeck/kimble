@@ -12,6 +12,8 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class DefaultMaterial implements Material {
 
+    private static int textureModulatorLocation;
+
     private Vector4f lightPosition;
     private Vector4f diffuse;
     private Vector4f ambient;
@@ -25,8 +27,6 @@ public class DefaultMaterial implements Material {
     private int ambientLocation;
     private int specularLocation;
     private int shininessLocation;
-
-    private static int textureModulatorLocation;
 
     public DefaultMaterial() {
         lightPosition = new Vector4f(0, 20, 0, 1);

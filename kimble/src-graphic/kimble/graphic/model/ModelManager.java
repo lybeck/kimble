@@ -15,7 +15,10 @@ public class ModelManager {
         "game_die",
         "game_board_die_holder",
         "game_board_die_holder_dome",
-        "cube"};
+        "cube",
+        "reindeers",
+        "firetruck"
+    };
 
     private static final Map<String, OBJModel> models = new HashMap<>();
 
