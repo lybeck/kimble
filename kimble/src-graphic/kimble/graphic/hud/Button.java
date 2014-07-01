@@ -40,7 +40,11 @@ public class Button extends AbstractHudElement {
     @Override
     public void render(Shader shader, Camera camera) {
         rectangle.render(shader, camera);
-        font.renderString(shader, camera, text, textPosition, rotation);
+        if (isEnabled()) {
+            font.renderString(shader, camera, text, textPosition, rotation);
+        } else {
+            font.renderString(shader, camera, text, textPosition, rotation, BitmapFont.GREY);
+        }
     }
 
     public final void setText(String text) {

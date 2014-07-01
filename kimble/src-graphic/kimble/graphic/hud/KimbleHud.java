@@ -33,6 +33,7 @@ public class KimbleHud extends AbstractHud {
 
     private Button showTagsButton;
     private Button moveAutoButton;
+    private Button passTurnButton;
 
     public KimbleHud(AbstractKimbleGraphic graphic, List<Team> teams) {
         super(graphic, teams);
@@ -46,6 +47,7 @@ public class KimbleHud extends AbstractHud {
         positionTeamInfoTextElements(font2);
         positionPlaybackSpeedTextElements(font2);
         positionToggleButtons();
+        positionButtons();
     }
 
     @Override
@@ -60,6 +62,7 @@ public class KimbleHud extends AbstractHud {
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
         createToggleButtons(font2);
+        createButtons(font2);
         updateViewport();
     }
 
@@ -160,6 +163,18 @@ public class KimbleHud extends AbstractHud {
         addElement(moveAutoButton);
     }
 
+    private void createButtons(BitmapFont font) {
+        passTurnButton = new Button("Pass Turn", font);
+        passTurnButton.addCallback(new Callback() {
+
+            @Override
+            public void execute() {
+                getGraphic().passTurnIfOnlyOptionalMoves();
+            }
+        });
+        addElement(passTurnButton);
+    }
+
     private void updateTextShowTagsButton() {
         if (getGraphic().isShowTags()) {
             showTagsButton.setTextKeepWidth("Toggle Tags ON");
@@ -205,6 +220,11 @@ public class KimbleHud extends AbstractHud {
         showTagsButton.setPosition(Screen.getWidth() - showTagsButton.getWidth() - 15, 15);
         moveAutoButton.setPosition(Screen.getWidth() - moveAutoButton.getWidth() - 15, 15 + moveAutoButton.getHeight()
                 + 5);
+    }
+
+    private void positionButtons() {
+        passTurnButton.setPosition(Screen.getWidth() - passTurnButton.getWidth() - 15, Screen.getHeight()
+                - passTurnButton.getHeight() - 15);
     }
     // =======================================================
     /*
@@ -252,6 +272,10 @@ public class KimbleHud extends AbstractHud {
     public void setTurnCount(int turnCount) {
         turnCountTextElement.clear();
         turnCountTextElement.addWord("Turn Count: " + turnCount, BitmapFont.WHITE);
+    }
+
+    public Button getPassTurnButton() {
+        return passTurnButton;
     }
 
     @Override

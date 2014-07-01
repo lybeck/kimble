@@ -30,6 +30,10 @@ public class KimblePlayer implements IPlayer {
         return false;
     }
 
+    public void passTurn() {
+        selectedMove = -1;
+    }
+
     public int getSelectedMove() {
         return selectedMove;
     }

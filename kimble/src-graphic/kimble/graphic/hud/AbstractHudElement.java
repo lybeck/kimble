@@ -20,8 +20,11 @@ public abstract class AbstractHudElement {
     private float width;
     private float height;
 
+    private boolean enabled;
+
     public AbstractHudElement() {
         this.callbacks = new ArrayList<>();
+        this.enabled = true;
     }
 
     public void addCallback(Callback callback) {
@@ -89,9 +92,18 @@ public abstract class AbstractHudElement {
         this.height = height;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     public List<Callback> getCallbacks() {
         return callbacks;
     }
 
     public abstract void dispose();
+
 }

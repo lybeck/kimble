@@ -193,9 +193,14 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                     throw new RuntimeException("Move selection was < -2. What?");
                 }
             } else {
-                // TODO: not yet possible to make "pass" move (can't use selection -1)
-                game.executeMove(((KimblePlayer) currentPlayer).getSelectedMove());
-//                throw new UnsupportedOperationException("Human players not yet supported!");
+                int selection = ((KimblePlayer) currentPlayer).getSelectedMove();
+                if (selection >= 0) {
+                    game.executeMove(selection);
+                } else if (selection == -1) {
+                    game.executeNoMove();
+                } else {
+                    throw new UnsupportedOperationException("Human player move selection was < -2. What?");
+                }
             }
         }
         if (DEBUG) {

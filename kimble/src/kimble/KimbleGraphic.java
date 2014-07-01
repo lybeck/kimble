@@ -56,6 +56,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private boolean dieRolled = false;
 
     private float angle = 0;
+    private boolean executeNextMove;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
@@ -101,6 +102,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
 
         if (getLogic().isAutoPlayer()) {
+            hud.getPassTurnButton().setEnabled(false);
+
             turnTimer += dt;
             if (turnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
                 if (started) {
@@ -117,6 +120,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                 }
             }
         } else {
+
             if (started) {
                 if (selectedAvailableMove == null) {
                     for (AvailableMove move : movablePieces) {
@@ -176,7 +180,12 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             }
         } else {
             if (domeClicked) {
-                executeNextMove();
+
+                if (onlyOptionalMoves()) {
+                    hud.getPassTurnButton().setEnabled(true);
+                }
+
+                tryExecuteNextMove();
 
                 angle = 0;
                 domeClicked = false;
@@ -202,7 +211,10 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     }
 
-    private void executePlayerMove() {
+    /**
+     * Highlights all movable pieces. If no piece is movable, the turn will be given to the next player.
+     */
+    private void highlightMovablePieces() {
         if (getLogic().getCurrentTurn().getMoves().isEmpty()) {
             System.out.println("no move available, continue with next team.");
             executeMoveLogic();
@@ -220,6 +232,19 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                 }
             }
         }
+    }
+
+    public boolean onlyOptionalMoves() {
+        if (getLogic().getCurrentTurn().getMoves().isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < getLogic().getCurrentTurn().getMoves().size(); i++) {
+            if (!getLogic().getCurrentTurn().getMoves().get(i).isOptional()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Destination testPiecePosition(Ray ray) {
@@ -264,15 +289,13 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
-    private boolean executeNextMove;
-
-    public void executeNextMove() {
+    public void tryExecuteNextMove() {
         if (started) {
             updateDieRoll();
             executeNextMove = true;
 
             if (!getLogic().isAutoPlayer()) {
-                executePlayerMove();
+                highlightMovablePieces();
             }
         }
     }
@@ -401,10 +424,22 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         return moveAuto;
     }
 
+    /**
+     * Make sure to check if there are only optional moves in the available moves list. See @onlyOptionalMoves()
+     */
+    public void passTurnIfOnlyOptionalMoves() {
+        if (!getLogic().isAutoPlayer()) {
+            ((KimblePlayer) getLogic().getCurrentPlayer()).passTurn();
+            executeMoveLogic();
+        }
+
+        hud.getPassTurnButton().setEnabled(false);
+    }
     // ===================================================
     /*
      * Classes helping the Mouse picking
      */
+
     // ===================================================
     private class Destination {
 

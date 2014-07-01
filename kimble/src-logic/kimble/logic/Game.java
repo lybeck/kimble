@@ -1,10 +1,10 @@
 package kimble.logic;
 
-import kimble.logic.board.Board;
-import kimble.logic.board.Square;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import kimble.logic.board.Board;
+import kimble.logic.board.Square;
 import kimble.logic.exception.IllegalMoveException;
 
 /**
