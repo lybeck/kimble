@@ -20,9 +20,7 @@ public class TextureManager {
 
     private static final String[] textureNames = new String[]{
         "Die_tex",
-        "temp_tex",
-        "sleigh_comp",
-        "scav_vehicles_comp"
+        "temp_tex"
     };
 
     private static final Map<String, Texture> textures = new HashMap<>();

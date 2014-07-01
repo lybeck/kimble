@@ -2,7 +2,6 @@ package kimble.graphic.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import org.lwjgl.util.vector.Vector2f;
