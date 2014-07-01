@@ -31,10 +31,10 @@ public class Kimble {
     private static void runSingleGameNoAIs() {
         List<IPlayer> players = new ArrayList<>();
 
-        players.add(new KimblePlayer("Test 1"));
-        players.add(new KimblePlayer("Test 2"));
-        players.add(new KimblePlayer("Test 3"));
-        players.add(new KimblePlayer("Test 4"));
+        players.add(new KimblePlayer("Human 1"));
+        players.add(new KimblePlayer("Human 2"));
+        players.add(new KimblePlayer("Human 3"));
+        players.add(new KimblePlayer("Human 4"));
 
         new ServerGame(true, players).start();
     }
@@ -45,7 +45,7 @@ public class Kimble {
         players.add(new FirstMoveAI("First_move_AI"));
         players.add(new TestAILasse());
         players.add(new TestAILasse1());
-        players.add(new KimblePlayer("Test 1"));
+        players.add(new KimblePlayer("Human 1"));
 
         new ServerGame(true, players).start();
     }

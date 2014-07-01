@@ -3,12 +3,12 @@ package kimble.graphic.board;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import kimble.graphic.camera.Camera;
-import kimble.playback.PlaybackProfile;
 import kimble.graphic.Model;
-import kimble.graphic.shader.Shader;
+import kimble.graphic.camera.Camera;
 import kimble.graphic.model.ModelManager;
 import kimble.graphic.model.TextureManager;
+import kimble.graphic.shader.Shader;
+import kimble.playback.PlaybackProfile;
 import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -45,6 +45,11 @@ public class DieGraphic extends Model {
     private float angleY = 0;
     private float angleZ = 0;
 
+//    private static String MODEL_KEY = "cube";
+//    private static String TEXTURE_KEY = "temp_tex";
+    private static String MODEL_KEY = "game_die";
+    private static String TEXTURE_KEY = "Die_tex";
+
     public DieGraphic() {
 
         rotation = ROTATION_THREE;
@@ -52,7 +57,7 @@ public class DieGraphic extends Model {
         this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
         this.getMaterial().setTextureModulator(1.0f);
         this.setPosition(new Vector3f(0, 0.7f, 0));
-        this.setMesh(ModelManager.getModel("cube"));
+        this.setMesh(ModelManager.getModel(MODEL_KEY));
     }
 
     public void setDieRoll(int dieRoll) {
@@ -86,9 +91,9 @@ public class DieGraphic extends Model {
 
     @Override
     public void render(Shader shader, Camera camera) {
-        TextureManager.getTexture("temp_tex").bind();
+        TextureManager.getTexture(TEXTURE_KEY).bind();
         super.render(shader, camera);
-        TextureManager.getTexture("temp_tex").unbind();
+        TextureManager.getTexture(TEXTURE_KEY).unbind();
     }
 
 }

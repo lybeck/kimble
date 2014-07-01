@@ -74,6 +74,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         extraInput = new ExtraInput(this);
 
         hud = new KimbleHud(this, getLogic().getTeams());
+        hud.getPassTurnButton().setEnabled(false);
+
         super.setHud(hud);
         try {
             font = FontGenerator.create("pieceLabel", new Font("Monospaced", Font.BOLD, 20), new Vector4f(1, 1, 1, 1), -0.02f);
@@ -126,10 +128,16 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                     for (AvailableMove move : movablePieces) {
                         move.piece.move(0, (float) (0.25 * Math.sin(angle)), 0);
                     }
-                    angle += dt * 5;
-                    if (angle >= Math.PI) {
-                        angle = 0;
+                } else {
+                    if (!(dest != null && selectedAvailableMove.destinationID == dest.id)) {
+                        board.getSquares().get(selectedAvailableMove.destinationID).move(0, (float) (0.1
+                                * Math.sin(angle)), 0);
                     }
+                }
+
+                angle += dt * 5;
+                if (angle >= Math.PI) {
+                    angle = 0;
                 }
             } else {
                 // TODO: Make this method a manual one as well! (Needed if people wants to "believe that they rolled the die)

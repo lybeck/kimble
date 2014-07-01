@@ -22,6 +22,14 @@ public class SquareGraphic extends Model {
         this.setMesh(ModelManager.getModel("game_board_position"));
     }
 
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+
+        Vector3f position = getPosition();
+        setPosition(new Vector3f(position.x, 0, position.z));
+    }
+
     public Square getLogic() {
         return logic;
     }
