@@ -11,7 +11,6 @@ import kimble.graphic.shader.Shader;
 import kimble.playback.PlaybackProfile;
 import kimble.util.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -19,21 +18,19 @@ import org.lwjgl.util.vector.Vector4f;
  */
 public class DieGraphic extends Model {
 
-    public static final Vector3f ROTATION_ONE = new Vector3f((float) Math.toRadians(90), 0, 0);
-    public static final Vector3f ROTATION_TWO = new Vector3f(0, 0, (float) Math.toRadians(-90));
-    public static final Vector3f ROTATION_THREE = new Vector3f(0, 0, 0);
-    public static final Vector3f ROTATION_FOUR = new Vector3f((float) Math.toRadians(180), 0, 0);
-    public static final Vector3f ROTATION_FIVE = new Vector3f(0, 0, (float) Math.toRadians(90));
-    public static final Vector3f ROTATION_SIX = new Vector3f((float) Math.toRadians(-90), 0, 0);
+    public static final Vector3f ROTATION_ONE = new Vector3f(0, 0, (float) Math.toRadians(90));
+    public static final Vector3f ROTATION_TWO = new Vector3f((float) Math.toRadians(90), 0, 0);
+    public static final Vector3f ROTATION_THREE = new Vector3f((float) Math.toRadians(180), 0, 0);
+    public static final Vector3f ROTATION_FOUR = new Vector3f(0, 0, 0);
+    public static final Vector3f ROTATION_FIVE = new Vector3f((float) Math.toRadians(-90), 0, 0);
+    public static final Vector3f ROTATION_SIX = new Vector3f(0, 0, (float) Math.toRadians(-90));
 
     public static final List<Vector3f> DIE_ROLL_ROTATIONS = new ArrayList<>();
 
-//    private static String MODEL_KEY = "cube";
-//    private static String TEXTURE_KEY = "temp_tex";
-    private static String MODEL_KEY = "game_die";
-    private static String TEXTURE_KEY = "Die_tex";
+    private static final String MODEL_KEY = "game_die";
+    private static final String TEXTURE_KEY = "Die_tex";
 
-    private static float speedFactor = 5;
+    private static final float speedFactor = 5;
 
     static {
         DIE_ROLL_ROTATIONS.add(ROTATION_ONE);
@@ -56,9 +53,7 @@ public class DieGraphic extends Model {
 
         rotation = DIE_ROLL_ROTATIONS.get(random.nextInt(DIE_ROLL_ROTATIONS.size()));
 
-//        this.getMaterial().setDiffuse(new Vector4f(0, 0, 0, 1));
-        this.getMaterial().setLightPosition(new Vector4f(0, 10, 0, 1));
-        this.getMaterial().setTextureModulator(0.75f);
+        this.getMaterial().setTextureModulator(1);
         this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel(MODEL_KEY));
     }

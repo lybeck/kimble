@@ -73,10 +73,10 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        logFileList = new javax.swing.JList();
+        logFileList = new javax.swing.JList<File>();
         jPanel1 = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
-        playbackProfileComboBox = new javax.swing.JComboBox();
+        playbackProfileComboBox = new javax.swing.JComboBox<PlaybackProfile>();
         jScrollPane2 = new javax.swing.JScrollPane();
         infoTextArea = new javax.swing.JTextArea();
 
@@ -235,8 +235,8 @@ public class PlaybackStarterGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList logFileList;
-    private javax.swing.JComboBox playbackProfileComboBox;
+    private javax.swing.JList<File> logFileList;
+    private javax.swing.JComboBox<PlaybackProfile> playbackProfileComboBox;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 }

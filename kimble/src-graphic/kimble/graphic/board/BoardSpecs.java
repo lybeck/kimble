@@ -14,7 +14,7 @@ public class BoardSpecs {
     public float specialSquareColorFadeFactor;
 
     public BoardSpecs() {
-        this(0.8f, 0.1f, 0.03f, 1.15f, 1.0f, 0.6f);
+        this(0.8f, 0.1f, 0.03f, 1.15f, 1.0f, /*0.6f*/ 1.0f);
     }
 
     public BoardSpecs(float squareSideLength, float squarePadding, float goalSquarePadding, float boardOuterPadding, float dieCupRadius, float specialSquareColorFadeFactor) {

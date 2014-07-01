@@ -64,7 +64,7 @@ public class BoardGraphic extends Model {
         radius = calcRadius();
         generateBoard();
 
-        this.getMaterial().setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 1));
+//        this.getMaterial().setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 0.2f));
         this.setMesh(new BoardMesh(teams, vertexCount, segmentAngle, goalSquares, firstGoalSquareIndex, specs));
     }
 
