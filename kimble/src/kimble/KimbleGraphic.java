@@ -59,7 +59,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     private float angle = 0;
     private boolean executeNextMove;
-    
+
     private Model table;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
@@ -87,7 +87,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             Logger.getLogger(KimbleGraphic.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Couldn't load font for piece text!");
         }
-        
+
         table = new TableGraphic();
     }
 
@@ -100,7 +100,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     @Override
     public void update(float dt) {
         super.update(dt);
-        
+
         table.update(dt);
 
         if (getLogic().isGameOver()) {
@@ -268,7 +268,22 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         for (Integer key : board.getSquares().keySet()) {
             if (ray.intersects(board.getSquares().get(key))) {
                 if (board.getSquares().get(key).getLogic() != null) {
-                    dest.position = board.getSquares().get(key).getPosition();
+                    /*
+                     * marks the hovered square
+                     */
+//                    dest.position = board.getSquares().get(key).getPosition();
+//                    dest.position.y += 0.1f;
+                    /*
+                     * marks the hovered square
+                     */
+                    /*
+                     * small lift to the piece when at right square
+                     */
+                    dest.position = new Vector3f(board.getSquares().get(key).getPosition());
+                    dest.position.y += 0.1f;
+                    /*
+                     * small lift to the piece when at right square
+                     */
                     dest.id = board.getSquares().get(key).getLogic().getID();
                     break;
                 }
@@ -393,9 +408,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     @Override
     public void render() {
         shader.bind();
-        
+
         table.render(shader, getCamera());
-        
+
         renderComponents(shader);
 
         textShader.bind();
@@ -416,9 +431,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public void dispose() {
         shader.dispose();
         textShader.dispose();
-        
+
         table.dispose();
-        
+
         super.dispose();
     }
 
