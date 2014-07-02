@@ -49,7 +49,7 @@ public class BoardMesh extends Mesh {
         VertexData[] vertices = new VertexData[vertexCount + 1];
         float segmentLength = (float) (2 * Math.PI / teams.size());
 
-        float currentAngle = -0.5f * segmentAngle;
+        float currentAngle = 0; //-0.5f * segmentAngle;
 
         VertexData v0 = new VertexData();
         v0.setPosition(new Vector3f(0, 0, 0));

@@ -12,7 +12,6 @@ import kimble.logic.Team;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -21,6 +20,8 @@ import org.lwjgl.util.vector.Vector4f;
 public class BoardGraphic extends Model {
 
     public static final List<Vector3f> TEAM_COLORS;
+
+    public static final Vector3f REGULAR_SQUARE_COLOR = new Vector3f(0.5f, 0.5f, 0.5f);
 
     static {
         TEAM_COLORS = new ArrayList<>();
@@ -33,8 +34,6 @@ public class BoardGraphic extends Model {
         TEAM_COLORS.add(new Vector3f(1, 0.4f, 0));
         TEAM_COLORS.add(new Vector3f(.3f, 0.3f, 0.45f));
     }
-
-    public static final Vector3f REGULAR_SQUARE_COLOR = new Vector3f(0.5f, 0.5f, 0.5f);
 
     private final Board board;
     private final List<Team> teams;
@@ -87,7 +86,7 @@ public class BoardGraphic extends Model {
     }
 
     private void generateRegularSquares(float radius, float segmentAngle) {
-        float currentAngle = 0;
+        float currentAngle = 0.5f * segmentAngle;
 
         squares = new HashMap<>();
         for (Square s : board.getSquares()) {

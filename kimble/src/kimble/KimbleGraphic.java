@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.graphic.AbstractKimbleGraphic;
+import kimble.graphic.Model;
 import kimble.graphic.board.PieceGraphic;
+import kimble.graphic.board.TableGraphic;
 import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
@@ -57,6 +59,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 
     private float angle = 0;
     private boolean executeNextMove;
+    
+    private Model table;
 
     public KimbleGraphic(KimbleLogicInterface logic, PlaybackProfile profile) {
         super(logic);
@@ -83,6 +87,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             Logger.getLogger(KimbleGraphic.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Couldn't load font for piece text!");
         }
+        
+        table = new TableGraphic();
     }
 
     @Override
@@ -94,6 +100,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     @Override
     public void update(float dt) {
         super.update(dt);
+        
+        table.update(dt);
 
         if (getLogic().isGameOver()) {
             for (int i = 0; i < getLogic().getFinishedTeams().size(); i++) {
@@ -385,6 +393,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     @Override
     public void render() {
         shader.bind();
+        
+        table.render(shader, getCamera());
+        
         renderComponents(shader);
 
         textShader.bind();
@@ -405,7 +416,9 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public void dispose() {
         shader.dispose();
         textShader.dispose();
-
+        
+        table.dispose();
+        
         super.dispose();
     }
 
