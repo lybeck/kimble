@@ -9,17 +9,15 @@ import java.util.logging.Logger;
 import kimble.KimbleGraphic;
 import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.Screen;
+import kimble.graphic.camera.Camera;
 import kimble.graphic.hud.TextElement.Word;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
+import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import kimble.playback.PlaybackProfile;
 import org.lwjgl.util.vector.Vector4f;
 
-/**
- *
- * @author Christoffer
- */
 public class KimbleHud extends AbstractHud {
 
     private BitmapFont font2;
@@ -33,6 +31,10 @@ public class KimbleHud extends AbstractHud {
 
     private Button showTagsButton;
     private Button moveAutoButton;
+    private Button passTurnButton;
+
+    private Rectangle teamInfoBackgroundRectangle;
+    private Rectangle speedBackgroundRectangle;
 
     public KimbleHud(AbstractKimbleGraphic graphic, List<Team> teams) {
         super(graphic, teams);
@@ -46,6 +48,9 @@ public class KimbleHud extends AbstractHud {
         positionTeamInfoTextElements(font2);
         positionPlaybackSpeedTextElements(font2);
         positionToggleButtons();
+        positionButtons();
+
+        createRectangles();
     }
 
     @Override
@@ -60,7 +65,23 @@ public class KimbleHud extends AbstractHud {
         createTeamInfoTextElements(font2);
         createPlaybackSpeedTextElements(font2);
         createToggleButtons(font2);
+        createButtons(font2);
+
         updateViewport();
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+
+        teamInfoBackgroundRectangle.update(dt);
+        speedBackgroundRectangle.update(dt);
+    }
+
+    @Override
+    public void preRender(Shader shader, Camera camera) {
+        teamInfoBackgroundRectangle.render(shader, camera);
+        speedBackgroundRectangle.render(shader, camera);
     }
 
     private void createTurnCountTextElement(BitmapFont font) {
@@ -75,7 +96,7 @@ public class KimbleHud extends AbstractHud {
         widestTeamName = 0;
 
         for (int i = 0; i < getTeams().size(); i++) {
-            Team team = getTeams().get(i);
+            final Team team = getTeams().get(i);
             TextElement te = new TextElement(font);
             te.addWord("[" + team.getId() + "] " + team.getName(), BitmapFont.TEXT_MATERIALS.get(team.getId()));
             if (font.calculateWidth(te.getWords()) > widestTeamName) {
@@ -118,7 +139,7 @@ public class KimbleHud extends AbstractHud {
                 width = font.calculateWidth(PlaybackProfile.values()[i].name());
             }
             te.addWord("Key " + (PlaybackProfile.values()[i].ordinal() + 1) + ": " + PlaybackProfile.values()[i].name(), BitmapFont.GREY);
-            PlaybackProfile profile = PlaybackProfile.values()[PlaybackProfile.values()[i].ordinal()];
+            final PlaybackProfile profile = PlaybackProfile.values()[PlaybackProfile.values()[i].ordinal()];
             te.addCallback(new Callback() {
 
                 @Override
@@ -158,6 +179,43 @@ public class KimbleHud extends AbstractHud {
             }
         });
         addElement(moveAutoButton);
+    }
+
+    private void createButtons(BitmapFont font) {
+        passTurnButton = new Button("Pass Turn", font);
+        passTurnButton.addCallback(new Callback() {
+
+            @Override
+            public void execute() {
+                getGraphic().passTurnIfOnlyOptionalMoves();
+            }
+        });
+        addElement(passTurnButton);
+    }
+
+    private void createRectangles() {
+
+        if (teamInfoBackgroundRectangle != null) {
+            teamInfoBackgroundRectangle.dispose();
+        }
+        if (speedBackgroundRectangle != null) {
+            speedBackgroundRectangle.dispose();
+        }
+
+        float x = turnCountTextElement.getX() - 5;
+        float y = turnCountTextElement.getY();
+        float width = widestTeamName + 200;
+        float height = teamOrderTextElements.size() * teamOrderTextElements.get(0).getHeight()
+                + turnCountTextElement.getHeight() + 5;
+        Vector4f color = new Vector4f(0.4f, 0.4f, 0.4f, 0.4f);
+
+        teamInfoBackgroundRectangle = new Rectangle(x, y, width, height, color);
+
+        x = playbackSpeedTextElements.get(playbackSpeedTextElements.size() - 1).getX() - 5;
+        y = playbackSpeedTextElements.get(playbackSpeedTextElements.size() - 1).getY();
+        height = playbackSpeedTextElements.size() * playbackSpeedTextElements.get(0).getHeight();
+
+        speedBackgroundRectangle = new Rectangle(x, y, width, height, color);
     }
 
     private void updateTextShowTagsButton() {
@@ -206,11 +264,16 @@ public class KimbleHud extends AbstractHud {
         moveAutoButton.setPosition(Screen.getWidth() - moveAutoButton.getWidth() - 15, 15 + moveAutoButton.getHeight()
                 + 5);
     }
+
+    private void positionButtons() {
+        passTurnButton.setPosition(Screen.getWidth() - passTurnButton.getWidth() - 15, Screen.getHeight()
+                - passTurnButton.getHeight() - 15);
+    }
+
     // =======================================================
     /*
      * Setters
      */
-
     // =======================================================
     public void setTeamInfo(int teamID, String... info) {
         ((TextElement) teamInfoTextElements.get(teamID)).clear();
@@ -254,8 +317,20 @@ public class KimbleHud extends AbstractHud {
         turnCountTextElement.addWord("Turn Count: " + turnCount, BitmapFont.WHITE);
     }
 
+    public Button getPassTurnButton() {
+        return passTurnButton;
+    }
+
     @Override
     public KimbleGraphic getGraphic() {
         return (KimbleGraphic) super.getGraphic();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        teamInfoBackgroundRectangle.dispose();
+        speedBackgroundRectangle.dispose();
     }
 }

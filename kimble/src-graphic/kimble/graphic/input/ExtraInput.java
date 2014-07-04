@@ -59,7 +59,7 @@ public class ExtraInput extends Input {
              * Manual Movement
              */ //
             else if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-                graphic.executeNextMove();
+                graphic.tryExecuteNextMove();
             }
         }
     }

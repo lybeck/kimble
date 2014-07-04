@@ -49,11 +49,11 @@ public class BoardMesh extends Mesh {
         VertexData[] vertices = new VertexData[vertexCount + 1];
         float segmentLength = (float) (2 * Math.PI / teams.size());
 
-        float currentAngle = -0.5f * segmentAngle;
+        float currentAngle = 0; //-0.5f * segmentAngle;
 
         VertexData v0 = new VertexData();
         v0.setPosition(new Vector3f(0, 0, 0));
-        v0.setColor(new Vector3f(0.2f, 0.2f, 0.2f));
+        v0.setColor(new Vector3f(0.75f, 0.75f, 0.75f));
         vertices[0] = v0;
 
         int index = 1;
@@ -77,10 +77,10 @@ public class BoardMesh extends Mesh {
 
             VertexData leftVertex = new VertexData();
             leftVertex.setPosition(leftPoint);
-            leftVertex.setColor(new Vector3f(0, 0, 0));
+            leftVertex.setColor(new Vector3f(0.2f, 0.2f, 0.2f));
             VertexData rightVertex = new VertexData();
             rightVertex.setPosition(rightPoint);
-            rightVertex.setColor(new Vector3f(0, 0, 0));
+            rightVertex.setColor(new Vector3f(0.2f, 0.2f, 0.2f));
 
             vertices[index++] = leftVertex;
             vertices[index++] = rightVertex;

@@ -72,14 +72,26 @@ public abstract class AbstractHud {
      *
      * @param shader
      */
-    public void render(Shader shader) {
+    public final void render(Shader shader) {
         glDisable(GL_DEPTH_TEST);
+
+        preRender(shader, camera);
 
         for (AbstractHudElement element : elements) {
             element.render(shader, camera);
         }
 
+        postRender(shader, camera);
+
         glEnable(GL_DEPTH_TEST);
+    }
+
+    public void preRender(Shader shader, Camera camera) {
+
+    }
+
+    public void postRender(Shader shader, Camera camera) {
+
     }
 
     public void dispose() {

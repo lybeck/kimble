@@ -248,7 +248,7 @@ public abstract class KimbleClient implements Runnable {
                     squares.add(squareInfo);
                 } else {
                     if (!goalSquares.containsKey(teamId)) {
-                        goalSquares.put(teamId, new ArrayList<>());
+                        goalSquares.put(teamId, new ArrayList<SquareInfo>());
                     }
                     goalSquares.get(teamId).add(squareInfo);
                 }

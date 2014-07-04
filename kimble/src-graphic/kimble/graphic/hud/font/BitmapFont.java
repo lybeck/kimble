@@ -44,9 +44,13 @@ public class BitmapFont {
     }
 
     public void renderString(Shader shader, Camera camera, String line, Vector3f position, Vector3f rotation) {
+        this.renderString(shader, camera, line, position, rotation, WHITE);
+    }
+
+    public void renderString(Shader shader, Camera camera, String line, Vector3f position, Vector3f rotation, TextMaterial color) {
         TextureManager.getTexture(textureKey).bind();
 
-        renderLine(line, position, rotation, shader, camera, WHITE);
+        renderLine(line, position, rotation, shader, camera, color);
 
         TextureManager.getTexture(textureKey).unbind();
     }
@@ -100,7 +104,6 @@ public class BitmapFont {
         for (int i = 0; i < line.length(); i++) {
             totalWidth += glyphs.get(line.charAt(i)).getWidth();
         }
-//        totalWidth += glyphs.get(' ').getWidth();
 
         return Math.round(totalWidth);
     }

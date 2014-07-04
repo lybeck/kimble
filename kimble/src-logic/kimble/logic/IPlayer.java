@@ -7,4 +7,8 @@ package kimble.logic;
 public interface IPlayer {
 
     boolean isAIPlayer();
+    
+    void setMyTeam(Team myTeam);
+    
+    Team getMyTeam();
 }

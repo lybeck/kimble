@@ -1,11 +1,11 @@
 package kimble.graphic;
 
-import kimble.graphic.camera.Camera;
-import kimble.graphic.shader.Shader;
 import java.nio.FloatBuffer;
+import kimble.graphic.camera.Camera;
 import kimble.graphic.model.Mesh;
 import kimble.graphic.shader.DefaultMaterial;
 import kimble.graphic.shader.Material;
+import kimble.graphic.shader.Shader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
@@ -140,4 +140,13 @@ public abstract class Model {
     public DefaultMaterial getMaterial() {
         return material;
     }
+
+    public Vector3f getAabbMax() {
+        return getMesh().getAabbMax();
+    }
+
+    public Vector3f getAabbMin() {
+        return getMesh().getAabbMin();
+    }
+
 }

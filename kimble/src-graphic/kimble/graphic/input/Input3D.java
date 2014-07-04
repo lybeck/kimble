@@ -23,8 +23,8 @@ public class Input3D extends Input {
     @Override
     public void inputMouse(float dt) {
         if (Mouse.isGrabbed()) {
-            getCamera().getRotation().y += mouseSpeed * dt * (float) Mouse.getDX();
-            getCamera().getRotation().x -= mouseSpeed * dt * (float) Mouse.getDY();
+            getCamera().getRotation().y += mouseSpeed * dt * Mouse.getDX();
+            getCamera().getRotation().x -= mouseSpeed * dt * Mouse.getDY();
 
             getCamera().getRotation().x = Math.min(getCamera().getRotation().x, getCamera().getMaxYaw());
             getCamera().getRotation().x = Math.max(getCamera().getRotation().x, getCamera().getMinYaw());

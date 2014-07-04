@@ -175,7 +175,7 @@ public class LogFile {
             if (teamToGoalSquares.containsKey(teamID)) {
                 teamToGoalSquares.get(teamID).add(squareID);
             } else {
-                teamToGoalSquares.put(teamID, new ArrayList<>());
+                teamToGoalSquares.put(teamID, new ArrayList<Integer>());
                 teamToGoalSquares.get(teamID).add(squareID);
             }
         }

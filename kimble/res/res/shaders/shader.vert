@@ -21,28 +21,22 @@ in vec2 in_TextureCoord;
 
 out vec4 pass_Color;
 out vec2 pass_TextureCoord;
+out vec4 pos;
+out vec3 normal;
+out vec4 lightDir;
 
 void main(void) {
-	
-        vec4 spec = vec4(0.0);
 
         //Calculate the normal matrix
         mat4 normalMatrix = transpose(inverse(viewMatrix * modelMatrix));
-        vec4 normal = normalize(normalMatrix * vec4(in_Normal, 0.0));
+        normal = normalize(mat3(normalMatrix) * in_Normal);  //view space normal
+		pos = viewMatrix * modelMatrix * vec4(in_Position, 1); //view space position
+		lightDir = normalize(viewMatrix * material.lightPosition - pos); //view space light vector
         
-        float intensity = max(dot(normal, viewMatrix * material.lightPosition), 0.0);
+        float intensity = max(dot(normal, lightDir.xyz), 0.0);
 
-        if(intensity > 0.0){
-            vec4 pos = viewMatrix * modelMatrix * vec4(in_Position, 1);
-            vec4 eye = normalize(-pos);
-            vec4 h = normalize(viewMatrix * material.lightPosition + eye);
-
-            float intSpec = max(dot(h, normal), 0.0);
-            spec = material.specular * pow(intSpec, material.shininess);
-        }
-
-        pass_TextureCoord = in_TextureCoord;
-        pass_Color = in_Color * max(intensity * material.diffuse + spec, material.ambient);
+        pass_TextureCoord = vec2(in_TextureCoord.x, 1 - in_TextureCoord.y); //flip y due to problems with how LWJGL maps textures
+        pass_Color = in_Color * (intensity * material.diffuse + material.ambient);
        
-        gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(in_Position, 1);
+        gl_Position = projectionMatrix * pos; 
 }

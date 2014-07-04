@@ -1,18 +1,17 @@
 package kimble.graphic.board;
 
-import kimble.graphic.Model;
-import kimble.graphic.shader.Shader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kimble.graphic.camera.Camera;
+import kimble.graphic.Model;
 import kimble.graphic.board.meshes.BoardMesh;
+import kimble.graphic.camera.Camera;
+import kimble.graphic.shader.Shader;
 import kimble.logic.Team;
 import kimble.logic.board.Board;
 import kimble.logic.board.Square;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -21,6 +20,8 @@ import org.lwjgl.util.vector.Vector4f;
 public class BoardGraphic extends Model {
 
     public static final List<Vector3f> TEAM_COLORS;
+
+    public static final Vector3f REGULAR_SQUARE_COLOR = new Vector3f(0.5f, 0.5f, 0.5f);
 
     static {
         TEAM_COLORS = new ArrayList<>();
@@ -33,8 +34,6 @@ public class BoardGraphic extends Model {
         TEAM_COLORS.add(new Vector3f(1, 0.4f, 0));
         TEAM_COLORS.add(new Vector3f(.3f, 0.3f, 0.45f));
     }
-
-    public static final Vector3f REGULAR_SQUARE_COLOR = new Vector3f(0.5f, 0.5f, 0.5f);
 
     private final Board board;
     private final List<Team> teams;
@@ -64,7 +63,7 @@ public class BoardGraphic extends Model {
         radius = calcRadius();
         generateBoard();
 
-        this.getMaterial().setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 1));
+//        this.getMaterial().setDiffuse(new Vector4f(REGULAR_SQUARE_COLOR.x, REGULAR_SQUARE_COLOR.y, REGULAR_SQUARE_COLOR.z, 0.2f));
         this.setMesh(new BoardMesh(teams, vertexCount, segmentAngle, goalSquares, firstGoalSquareIndex, specs));
     }
 
@@ -87,7 +86,7 @@ public class BoardGraphic extends Model {
     }
 
     private void generateRegularSquares(float radius, float segmentAngle) {
-        float currentAngle = 0;
+        float currentAngle = 0.5f * segmentAngle;
 
         squares = new HashMap<>();
         for (Square s : board.getSquares()) {
@@ -111,7 +110,7 @@ public class BoardGraphic extends Model {
                 squareColor = REGULAR_SQUARE_COLOR;
             }
 
-            SquareGraphic squareGraphic = new SquareGraphic(squarePosition, squareColor);
+            SquareGraphic squareGraphic = new SquareGraphic(s, squarePosition, squareColor);
             squareGraphic.rotate(0, -currentAngle, 0);
             squares.put(squareID, squareGraphic);
 
@@ -143,9 +142,10 @@ public class BoardGraphic extends Model {
                 float g = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).y;
                 float b = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).z;
                 Vector3f color = new Vector3f(r, g, b);
-                SquareGraphic squareGraphic = new SquareGraphic(goalPosition, color);
+                SquareGraphic squareGraphic = new SquareGraphic(goalSquare, goalPosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 goalSquares.put(squareID, squareGraphic);
+                squares.put(squareID, squareGraphic);
             }
         }
     }
@@ -178,7 +178,7 @@ public class BoardGraphic extends Model {
                 float b = specs.specialSquareColorFadeFactor * TEAM_COLORS.get(teamID).z;
                 Vector3f color = new Vector3f(r, g, b);
 
-                SquareGraphic squareGraphic = new SquareGraphic(homePosition, color);
+                SquareGraphic squareGraphic = new SquareGraphic(board.getSquare(squareID), homePosition, color);
                 squareGraphic.rotate(0, -(currentAngle - 0.5f * segmentAngle), 0);
                 homeSquares.put(squareID, squareGraphic);
 
@@ -193,9 +193,6 @@ public class BoardGraphic extends Model {
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).update(dt);
         }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).update(dt);
-        }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).update(dt);
         }
@@ -206,9 +203,6 @@ public class BoardGraphic extends Model {
         super.render(shader, camera);
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).render(shader, camera);
-        }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).render(shader, camera);
         }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).render(shader, camera);
@@ -221,14 +215,16 @@ public class BoardGraphic extends Model {
         for (int squareIndex : squares.keySet()) {
             squares.get(squareIndex).dispose();
         }
-        for (int squareIndex : goalSquares.keySet()) {
-            goalSquares.get(squareIndex).dispose();
-        }
         for (int squareIndex : homeSquares.keySet()) {
             homeSquares.get(squareIndex).dispose();
         }
     }
 
+    /**
+     * Contains both the regular squares and the goal squares. NOT the HOME SQUARES
+     *
+     * @return
+     */
     public Map<Integer, SquareGraphic> getSquares() {
         return squares;
     }

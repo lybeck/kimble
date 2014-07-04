@@ -1,6 +1,5 @@
 package kimble;
 
-import kimble.logic.KimbleLogicInterface;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,11 +8,13 @@ import kimble.logic.Constants;
 import kimble.logic.Game;
 import kimble.logic.GameStart;
 import kimble.logic.IPlayer;
+import kimble.logic.KimbleLogicInterface;
 import kimble.logic.Move;
 import kimble.logic.Team;
 import kimble.logic.Turn;
 import kimble.logic.board.Board;
 import kimble.logic.player.KimbleAI;
+import kimble.logic.player.KimblePlayer;
 
 /**
  *
@@ -24,6 +25,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private static boolean DEBUG;
     private final Game game;
     private final List<IPlayer> players;
+    private IPlayer currentPlayer;
     private int winner;
 
     private final Set<Integer> startValues;
@@ -71,8 +73,9 @@ public class KimbleGameLogic implements KimbleLogicInterface {
 
         for (int i = 0; i < players.size(); i++) {
             IPlayer player = players.get(i);
+
+            player.setMyTeam(game.getTeam(i));
             if (player.isAIPlayer()) {
-                ((KimbleAI) player).setMyTeam(game.getTeam(i));
                 ((KimbleAI) player).setBoard(game.getBoard());
 
                 // *********************************************************************
@@ -82,7 +85,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                 // *********************************************************************
 
             } else {
-                throw new UnsupportedOperationException("Human players not yet supported!");
+                System.out.println("Human player in list");
+//                throw new UnsupportedOperationException("Human players not yet supported!");
             }
         }
 
@@ -111,6 +115,12 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         // *********************************************************************
 
         currentTurn = game.getNextTurn();
+        for (IPlayer player : players) {
+            if (player.getMyTeam().equals(game.getTeamInTurn())) {
+                currentPlayer = player;
+                break;
+            }
+        }
     }
 
     @Override
@@ -152,11 +162,10 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             selectedMove = null;
             game.executeNoMove();
         } else {
-            IPlayer player = players.get(game.getTeamInTurn().getId());
-            if (player.isAIPlayer()) {
+            if (currentPlayer.isAIPlayer()) {
 
                 // selectMove logs this output...
-                int selection = ((KimbleAI) player).selectMove(currentTurn, game.getTeams());
+                int selection = ((KimbleAI) currentPlayer).selectMove(currentTurn, game.getTeams());
 
                 if (selection >= 0) {
 
@@ -184,7 +193,14 @@ public class KimbleGameLogic implements KimbleLogicInterface {
                     throw new RuntimeException("Move selection was < -2. What?");
                 }
             } else {
-                throw new UnsupportedOperationException("Human players not yet supported!");
+                int selection = ((KimblePlayer) currentPlayer).getSelectedMove();
+                if (selection >= 0) {
+                    game.executeMove(selection);
+                } else if (selection == -1) {
+                    game.executeNoMove();
+                } else {
+                    throw new UnsupportedOperationException("Human player move selection was < -2. What?");
+                }
             }
         }
         if (DEBUG) {
@@ -217,6 +233,8 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         } else {
             currentTurn = game.getNextTurn();
         }
+
+        currentPlayer = players.get(game.getTeamInTurn().getId());
     }
 
     @Override
@@ -248,8 +266,14 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         return startValues;
     }
 
+    @Override
     public Turn getCurrentTurn() {
         return currentTurn;
+    }
+
+    @Override
+    public IPlayer getCurrentPlayer() {
+        return currentPlayer;
     }
 
     @Override
@@ -260,6 +284,11 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     @Override
     public Team getNextTeamInTurn() {
         return getGame().getTeamInTurn();
+    }
+
+    @Override
+    public boolean isAutoPlayer() {
+        return currentPlayer.isAIPlayer();
     }
 
     @Override
