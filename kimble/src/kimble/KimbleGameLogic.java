@@ -40,13 +40,14 @@ public class KimbleGameLogic implements KimbleLogicInterface {
     private String moveMessage;
     private Move selectedMove;
 
-    public KimbleGameLogic(List<IPlayer> players, boolean debug) {
+    public KimbleGameLogic(List<IPlayer> players, long seed, boolean debug) {
         this(players,
                 Constants.DEFAULT_START_VALUES,
                 Constants.DEFAULT_CONTINUE_TURN_VALUES,
                 Constants.DEFAULT_NUMBER_OF_PIECES,
                 Constants.DEFAULT_SIDE_LENGTH,
                 Constants.DEFAULT_FINISHING_TEAMS,
+                seed,
                 debug);
     }
 
@@ -56,6 +57,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
             int numberOfPieces,
             int sideLength,
             int numberOfFinishingTeams,
+            long seed,
             boolean debug) {
         this.players = players;
         this.startValues = startValues;
@@ -63,7 +65,7 @@ public class KimbleGameLogic implements KimbleLogicInterface {
         this.numberOfPieces = numberOfPieces;
         this.sideLength = sideLength;
         this.game = new Game(startValues, continueTurnValues, players.size(), numberOfPieces, sideLength,
-                numberOfFinishingTeams);
+                numberOfFinishingTeams, Constants.DEFAULT_DIE_SIDES, seed);
         DEBUG = debug;
 
         setup();

@@ -1,6 +1,5 @@
 package kimble.logic;
 
-import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -14,10 +13,24 @@ public class Die {
 
     public Die() {
         this.maxValue = Constants.DEFAULT_DIE_SIDES;
-        random = new SecureRandom();
+        this.random = new Random();
+    }
+
+    public Die(int nDieSides) {
+        this.maxValue = nDieSides;
+        this.random = new Random();
+    }
+
+    public Die(int nDieSides, long seed) {
+        this.maxValue = nDieSides;
+        this.random = new Random(seed);
     }
 
     public int roll() {
         return random.nextInt(maxValue) + 1;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }

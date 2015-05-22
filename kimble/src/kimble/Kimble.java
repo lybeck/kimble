@@ -24,9 +24,10 @@ public class Kimble {
                 useGui = false;
             }
         }
-//        runSingleGameNoAIs();
+        runSingleGameNoAIs();
 //        runSingleGameThreeAIsOnePlayer();
-        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
+//        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
+//        runSingleGame(useGui, 8);
     }
 
     private static void runSingleGameNoAIs() {
@@ -37,7 +38,7 @@ public class Kimble {
         players.add(new KimblePlayer("Human 3"));
         players.add(new KimblePlayer("Human 4"));
 
-        new ServerGame(true, players).start();
+        new KimbleHotSeat(players).start();
     }
 
     private static void runSingleGameThreeAIsOnePlayer() {

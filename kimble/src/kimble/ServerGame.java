@@ -1,6 +1,7 @@
 package kimble;
 
 import java.util.List;
+import java.util.Random;
 import kimble.logic.IPlayer;
 import kimble.playback.PlaybackProfile;
 
@@ -23,7 +24,7 @@ public class ServerGame {
 
     public ServerGame(boolean useGui, List<IPlayer> players) {
         this.useGui = useGui;
-        this.logic = new KimbleGameLogic(players, DEBUG);
+        this.logic = new KimbleGameLogic(players, new Random().nextLong(), DEBUG);
     }
 
     public void start() {

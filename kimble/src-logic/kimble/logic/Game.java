@@ -26,12 +26,12 @@ public class Game {
     private Turn currentTurn;
     private int turnCount;
 
-    public Game() {
+    public Game(long seed) {
         this(Constants.DEFAULT_START_VALUES, Constants.DEFAULT_CONTINUE_TURN_VALUES, Constants.DEFAULT_NUMBER_OF_TEAMS,
-                Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH, Constants.DEFAULT_FINISHING_TEAMS);
+                Constants.DEFAULT_NUMBER_OF_PIECES, Constants.DEFAULT_SIDE_LENGTH, Constants.DEFAULT_FINISHING_TEAMS, Constants.DEFAULT_DIE_SIDES, seed);
     }
 
-    public Game(Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfTeams, int numberOfPieces, int sideLength, int numberOfPlayersToFinish) {
+    public Game(Set<Integer> startValues, Set<Integer> continueTurnValues, int numberOfTeams, int numberOfPieces, int sideLength, int numberOfPlayersToFinish, int nDieSides, long seed) {
         teams = new ArrayList<>(numberOfTeams);
         for (int i = 0; i < numberOfTeams; i++) {
             teams.add(new Team(i, numberOfPieces));
@@ -41,7 +41,7 @@ public class Game {
         this.startValues = startValues;
         this.continueTurnValues = continueTurnValues;
         this.board = new Board(numberOfTeams, numberOfPieces, sideLength);
-        this.die = new Die();
+        this.die = new Die(nDieSides, seed);
         this.numberOfPlayersToFinish = numberOfPlayersToFinish;
         this.turnIndex = -1;
         this.turnCount = 1;
