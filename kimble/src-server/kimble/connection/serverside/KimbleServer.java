@@ -1,6 +1,5 @@
 package kimble.connection.serverside;
 
-import kimble.connection.logger.KimbleGameStateLogger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.ServerGame;
+import kimble.connection.logger.KimbleGameStateLogger;
 import kimble.connection.messages.DisconnectMessage;
 import kimble.connection.messages.GameInitMessage;
 import kimble.connection.messages.YourTeamIdMessage;

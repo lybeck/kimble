@@ -1,13 +1,12 @@
 package kimble.connection.serverside;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.connection.serverside.clientloading.StartJarInterface;
 import kimble.logic.Constants;
-import kimble.util.Timer;
 
 /**
  *
@@ -28,7 +27,7 @@ public class TestServer {
             kimbleServer = new KimbleServer(port, clientInfo.size(), USE_LOGGER, USE_GUI);
             KimbleClientLoader.load(kimbleServer, clientInfo, hostAddress, port);
             kimbleServer.run();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             Logger.getLogger(TestServer.class.getName()).log(Level.SEVERE, null, ex);
             if (kimbleServer != null) {
                 kimbleServer.disconnectClients();

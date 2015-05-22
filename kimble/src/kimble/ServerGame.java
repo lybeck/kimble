@@ -1,8 +1,8 @@
 package kimble;
 
-import kimble.playback.PlaybackProfile;
 import java.util.List;
 import kimble.logic.IPlayer;
+import kimble.playback.PlaybackProfile;
 
 /**
  *
