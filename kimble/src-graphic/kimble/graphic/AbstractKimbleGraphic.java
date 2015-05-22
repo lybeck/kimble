@@ -118,6 +118,7 @@ public abstract class AbstractKimbleGraphic {
         while (running) {
             Screen.clear();
 
+            // TODO: Use real time calculation for smoother graphics
             float dt = 0.016f;
 
             input(dt);
