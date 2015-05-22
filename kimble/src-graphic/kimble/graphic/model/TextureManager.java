@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 
+// http://agf81.deviantart.com/art/Wood-Planks-D632-329164545
+
 /**
  *
  * @author Christoffer

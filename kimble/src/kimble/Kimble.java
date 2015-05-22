@@ -24,9 +24,9 @@ public class Kimble {
                 useGui = false;
             }
         }
-        runSingleGameNoAIs();
+//        runSingleGameNoAIs();
 //        runSingleGameThreeAIsOnePlayer();
-//        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
+        runSingleGame(useGui, Constants.DEFAULT_NUMBER_OF_TEAMS);
     }
 
     private static void runSingleGameNoAIs() {
