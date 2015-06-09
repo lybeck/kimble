@@ -272,6 +272,14 @@ public abstract class AbstractKimbleGraphic {
         return hud;
     }
 
+    public BoardGraphic getBoard() {
+        return board;
+    }
+
+    public DieHolderDomeGraphic getDieHolderDome() {
+        return dieHolderDome;
+    }
+
     public void setRotateCamera(boolean rotateCamera) {
         this.rotateCamera = rotateCamera;
     }
