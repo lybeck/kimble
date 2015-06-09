@@ -41,17 +41,15 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private boolean showTags = false;
     private boolean moveAuto = true;
 
+    private boolean started;
+    private boolean dieRolled = false;
+    private boolean executeMove = false;
+    private boolean executeNextMove;
+
     private boolean endMessageShown = false;
 
-    private boolean started;
-
-    private boolean executeMove = false;
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
-
-    private boolean dieRolled = false;
-
-    private boolean executeNextMove;
 
     private Model table;
 
@@ -104,6 +102,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public void update(float dt) {
         super.update(dt);
 
+        // If the game is over show the finishing order and the winner.
         if (getLogic().isGameOver()) {
             for (int i = 0; i < getLogic().getFinishedTeams().size(); i++) {
                 Team finishedTeam = getLogic().getFinishedTeams().get(i);
@@ -112,6 +111,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //            stop();
         }
 
+        // Check whether the player is a human
         if (getLogic().isAutoPlayer()) {
             hud.getPassTurnButton().setEnabled(false);
 
@@ -205,6 +205,10 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
+    /**
+     * Try to execute a move, if it is possible the die will do some roll magic and the game highlights the movable
+     * pieces for the player. If it is a bot in turn the game will just continue with the next player.
+     */
     public void tryExecuteNextMove() {
         if (started) {
             updateDieRoll();
@@ -213,6 +217,8 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
             if (!getLogic().isAutoPlayer()) {
                 highlightMovablePieces();
             }
+        } else {
+            System.out.println("cheater!!! You can't make a move before the game has started");
         }
     }
 
