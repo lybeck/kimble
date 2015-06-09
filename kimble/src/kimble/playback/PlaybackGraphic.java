@@ -58,7 +58,7 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
         shader = new Shader("shader.vert", "shader.frag");
         textShader = new Shader("text_shader.vert", "text_shader.frag");
 
-        input = new Input3D(getCamera());
+        input = new Input3D(getCamera(), this);
         extraInput = new PlaybackInput(this);
 
         hud = new PlaybackHud(this, getLogic().getTeams());

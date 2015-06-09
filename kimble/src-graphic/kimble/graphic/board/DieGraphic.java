@@ -43,7 +43,7 @@ public class DieGraphic extends Model {
 
     private final Random random = new Random();
 
-    private Vector3f rotation;
+    private Vector3f targetRotation;
 
     private float angleX = 0;
     private float angleY = 0;
@@ -51,55 +51,76 @@ public class DieGraphic extends Model {
 
     public DieGraphic() {
 
-        rotation = DIE_ROLL_ROTATIONS.get(random.nextInt(DIE_ROLL_ROTATIONS.size()));
+        targetRotation = DIE_ROLL_ROTATIONS.get(random.nextInt(DIE_ROLL_ROTATIONS.size()));
 
         this.getMaterial().setTextureModulator(1);
         this.setPosition(new Vector3f(0, 0.7f, 0));
         this.setMesh(ModelManager.getModel(MODEL_KEY));
     }
 
-    public void setDieRoll(int dieRoll) {
+    public void setDieRoll(int dieRoll, float animationDuration) {
         if (dieRoll <= 0) {
             return;
         }
-        this.rotation = DIE_ROLL_ROTATIONS.get(dieRoll - 1);
+        this.targetRotation = DIE_ROLL_ROTATIONS.get(dieRoll - 1);
 
-        int turnsX = 0;
-        int turnsY = 0;
-        int turnsZ = 0;
+        int upperLimit = 5;
+        int turnsX = upperLimit - random.nextInt(upperLimit + 1);
+        int turnsY = upperLimit - random.nextInt(upperLimit + 1);
+        int turnsZ = upperLimit - random.nextInt(upperLimit + 1);
 
-        int rotationDirection = random.nextInt(3);
-        if (rotationDirection == 0) {
-            turnsX = 2 * (random.nextInt(2) + 1);
-            turnsY = 2 * (random.nextInt(2) + 1);
-        } else if (rotationDirection == 1) {
-            turnsX = 2 * (random.nextInt(2) + 1);
-            turnsZ = 2 * (random.nextInt(2) + 1);
-        } else if (rotationDirection == 2) {
-            turnsY = 2 * (random.nextInt(2) + 1);
-            turnsZ = 2 * (random.nextInt(2) + 1);
-        }
+        float x = (float) (targetRotation.x + turnsX * 2 * Math.PI);
+        float y = (float) (targetRotation.y + turnsY * 2 * Math.PI);
+        float z = (float) (targetRotation.z + turnsZ * 2 * Math.PI);
 
-        float x = (float) (rotation.x + turnsX * Math.PI);
-        float y = (float) (rotation.y + turnsY * Math.PI);
-        float z = (float) (rotation.z + turnsZ * Math.PI);
+        this.targetRotation = new Vector3f(x, y, z);
+        
+        System.out.println("Current rotation:");
+        System.out.println(this.getRotation().x);
+        System.out.println(this.getRotation().y);
+        System.out.println(this.getRotation().z);
+        System.out.println("");
+        System.out.println("Target rotation:");
+        System.out.println(targetRotation.x);
+        System.out.println(targetRotation.y);
+        System.out.println(targetRotation.z);
 
-        this.rotation = new Vector3f(x, y, z);
+//        int turnsX = 1;
+//        int turnsY = 1;
+//        int turnsZ = 1;
+//
+//        int rotationDirection = random.nextInt(3);
+//        if (rotationDirection == 0) {
+//            turnsX = random.nextInt(2) + 1;
+//            turnsY = random.nextInt(2) + 1;
+//        } else if (rotationDirection == 1) {
+//            turnsX = random.nextInt(2) + 1;
+//            turnsZ = random.nextInt(2) + 1;
+//        } else if (rotationDirection == 2) {
+//            turnsY = random.nextInt(2) + 1;
+//            turnsZ = random.nextInt(2) + 1;
+//        }
+//
+//        float x = (float) (targetRotation.x + turnsX * 2 * Math.PI);
+//        float y = (float) (targetRotation.y + turnsY * 2 * Math.PI);
+//        float z = (float) (targetRotation.z + turnsZ * 2 * Math.PI);
+//
+//        this.targetRotation = new Vector3f(x, y, z);
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
 
-        if (Math.abs(rotation.x - angleX) >= 0.01
-                || Math.abs(rotation.y - angleY) >= 0.01
-                || Math.abs(rotation.z - angleZ) >= 0.01) {
+        if (Math.abs(targetRotation.x - angleX) >= 0.01
+                || Math.abs(targetRotation.y - angleY) >= 0.01
+                || Math.abs(targetRotation.z - angleZ) >= 0.01) {
 
-            angleX = MathHelper.lerp(angleX, rotation.x, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+            angleX = MathHelper.lerp(angleX, targetRotation.x, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
                     * speedFactor);
-            angleY = MathHelper.lerp(angleY, rotation.y, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+            angleY = MathHelper.lerp(angleY, targetRotation.y, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
                     * speedFactor);
-            angleZ = MathHelper.lerp(angleZ, rotation.z, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
+            angleZ = MathHelper.lerp(angleZ, targetRotation.z, dt * PlaybackProfile.currentProfile.getTurnTimeSpeedUp()
                     * speedFactor);
 
             this.rotate(angleX, angleY, angleZ);
