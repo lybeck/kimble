@@ -2,8 +2,6 @@ package kimble;
 
 import java.awt.Font;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.graphic.AbstractKimbleGraphic;
@@ -22,6 +20,7 @@ import kimble.logic.Piece;
 import kimble.logic.Team;
 import kimble.logic.player.KimblePlayer;
 import kimble.playback.PlaybackProfile;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -50,7 +49,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     private float turnTimer = 0;
     private float nextTurnTimer = 0;
 
-    private final List<AvailableMove> movablePieces = new ArrayList<>();
     private boolean dieRolled = false;
 
     private boolean executeNextMove;
@@ -96,6 +94,10 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         while (Mouse.next()) {
             Mouse.poll();
         }
+        // empty the Keyboard to not interfere with the HUD.
+        while (Keyboard.next()) {
+            Keyboard.poll();
+        }
     }
 
     @Override
@@ -137,7 +139,6 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
 
         hud.setPlaybackSpeed(PlaybackProfile.currentProfile);
-//        hud.update(dt);
 
         table.update(dt);
     }
@@ -146,46 +147,47 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
      * Highlights all movable pieces. If no piece is movable, the turn will be given to the next player.
      */
     private void highlightMovablePieces() {
-        movablePieces.clear();
+        input.cleaMovablePieces();
 
         if (getLogic().getCurrentTurn().getMoves().isEmpty()) {
             System.out.println("no move available, continue with next team.");
             executeMoveLogic();
         } else {
+            // Assigning the current movable pieces to the list. Checking the move data given by the logic.
             for (PieceGraphic p : pieces) {
                 for (Move move : getLogic().getCurrentTurn().getMoves()) {
                     if (p.getPieceLogic().equals(move.getPiece())) {
                         AvailableMove availableMove = new AvailableMove();
                         availableMove.destinationID = move.getDestination().getID();
                         availableMove.piece = p;
-                        movablePieces.add(availableMove);
+                        input.addMovablePiece(availableMove);
                         break;
                     }
                 }
             }
         }
-
-        input.setMovablePieces(movablePieces);
     }
 
-    public boolean onlyOptionalMoves() {
+    public void checkOnlyOptionalMoves() {
         if (getLogic().getCurrentTurn().getMoves().isEmpty()) {
-            return false;
+            return;
         }
 
         for (Move move : getLogic().getCurrentTurn().getMoves()) {
             if (!move.isOptional()) {
-                return false;
+                return;
             }
         }
 
-        return true;
+        // If all moves are optional, one can choose to pass the turn.
+        hud.getPassTurnButton().setEnabled(true);
     }
 
     private void updateExecuteMove(float dt) {
 
         executeMoveLogic();
 
+        // continues with the timer to handle all the updates
         nextTurnTimer += dt;
         if (nextTurnTimer >= PlaybackProfile.currentProfile.getTurnTimeStep()) {
 
@@ -214,6 +216,13 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         }
     }
 
+    /**
+     * Perform the logical move if it is allowed to do it.
+     *
+     * The method doesn't do anything if the <code>executeMove</code> variable is false. Otherwise it will tell the
+     * logic to execute the next move and assign the <code>dieRolled</code> and <code>executeMove</code> variables to
+     * false and wait for the user interface to change the state of these variables again.
+     */
     private void executeMoveLogic() {
         if (executeMove) {
             getLogic().executeMove();
@@ -236,7 +245,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
 //                    endMessageShown = true;
 //                }
 
-            movablePieces.clear();
+            input.cleaMovablePieces();
 
             hud.setTurnCount(getLogic().getTurnCount());
         }
@@ -346,19 +355,19 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
     public void movePieceToDestination(Piece pieceLogic, int destinationId) {
         if (((KimblePlayer) getLogic().getCurrentPlayer()).selectMove(pieceLogic, destinationId, getLogic().getCurrentTurn())) {
             executeMoveLogic();
-            movablePieces.clear();
+            input.cleaMovablePieces();
         }
     }
 
     /**
-     * Make sure to check if there are only optional moves in the available moves list. See @onlyOptionalMoves()
+     * Make sure to check if there are only optional moves in the available moves list. See @checkOnlyOptionalMoves()
      */
     public void passTurnIfOnlyOptionalMoves() {
         if (!getLogic().isAutoPlayer()) {
             ((KimblePlayer) getLogic().getCurrentPlayer()).passTurn();
             executeMoveLogic();
 
-            movablePieces.clear();
+            input.cleaMovablePieces();
             hud.getPassTurnButton().setEnabled(false);
         }
     }

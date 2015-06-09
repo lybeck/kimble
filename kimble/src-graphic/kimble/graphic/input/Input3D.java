@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import kimble.KimbleGraphic;
 import kimble.graphic.camera.Camera3D;
-import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.pickingray.Ray;
 import kimble.graphic.pickingray.RayGenerator;
 import kimble.logic.Constants;
@@ -19,19 +18,18 @@ import org.lwjgl.util.vector.Vector3f;
 public class Input3D extends Input {
 
     //---------------------------------------------------------------------
-    // Graphic update stuff
+    // Stuff needed to check the state of the graphical components to
+    // determine the next move of the game.
     //---------------------------------------------------------------------
-    private List<KimbleGraphic.AvailableMove> movablePieces;
-
     private final KimbleGraphic graphic;
+    private final List<KimbleGraphic.AvailableMove> movablePieces;
 
     private KimbleGraphic.AvailableMove selectedAvailableMove;
-    private KimbleGraphic.Destination dest;
-    //---------------------------------------------------------------------
+    private KimbleGraphic.Destination finalDest;
 
+    private boolean domeClicked;
     private float angle;
-
-    private boolean domeClicked = false;
+    //---------------------------------------------------------------------
 
     private float mouseSpeed;
     private float moveSpeed;
@@ -40,48 +38,57 @@ public class Input3D extends Input {
         super(camera);
 
         this.graphic = graphic;
+        this.movablePieces = new ArrayList<>();
+
+        this.selectedAvailableMove = null;
+        this.finalDest = null;
+
+        this.domeClicked = false;
+        this.angle = 0;
 
         this.mouseSpeed = Constants.DEFAULT_MOUSE_SPEED;
         this.moveSpeed = Constants.DEFAULT_MOVE_SPEED;
 
-        this.movablePieces = new ArrayList<>();
-        this.selectedAvailableMove = null;
-
-        this.dest = null;
-
-        this.angle = 0;
     }
 
     @Override
     public void inputMouse(float dt) {
 
+        if (Mouse.isGrabbed()) {
+            inputMouseGrabbed(dt);
+        } else {
+            inputMouseNotGrabbed(dt);
+        }
+    }
+
+    private void inputMouseGrabbed(float dt) {
+        getCamera().getRotation().y += mouseSpeed * dt * Mouse.getDX();
+        getCamera().getRotation().x -= mouseSpeed * dt * Mouse.getDY();
+
+        getCamera().getRotation().x = Math.min(getCamera().getRotation().x, getCamera().getMaxYaw());
+        getCamera().getRotation().x = Math.max(getCamera().getRotation().x, getCamera().getMinYaw());
+
+        getCamera().getRotation().y %= 2 * Math.PI;
+        getCamera().getRotation().x %= 2 * Math.PI;
+    }
+
+    private void inputMouseNotGrabbed(float dt) {
         updateMousePicking();
 
-        if (Mouse.isGrabbed()) {
-            getCamera().getRotation().y += mouseSpeed * dt * Mouse.getDX();
-            getCamera().getRotation().x -= mouseSpeed * dt * Mouse.getDY();
-
-            getCamera().getRotation().x = Math.min(getCamera().getRotation().x, getCamera().getMaxYaw());
-            getCamera().getRotation().x = Math.max(getCamera().getRotation().x, getCamera().getMinYaw());
-
-            getCamera().getRotation().y %= 2 * Math.PI;
-            getCamera().getRotation().x %= 2 * Math.PI;
+        if (selectedAvailableMove == null) {
+            for (KimbleGraphic.AvailableMove move : movablePieces) {
+                move.piece.move(0, (float) (0.25 * Math.sin(angle)), 0);
+            }
         } else {
-            if (selectedAvailableMove == null) {
-                for (KimbleGraphic.AvailableMove move : movablePieces) {
-                    move.piece.move(0, (float) (0.25 * Math.sin(angle)), 0);
-                }
-            } else {
-                if (!(dest != null && selectedAvailableMove.destinationID == dest.id)) {
-                    graphic.getBoard().getSquares().get(selectedAvailableMove.destinationID).move(0, (float) (0.1
-                            * Math.sin(angle)), 0);
-                }
+            if (!(finalDest != null && selectedAvailableMove.destinationID == finalDest.id)) {
+                graphic.getBoard().getSquares().get(selectedAvailableMove.destinationID).move(0, (float) (0.1
+                        * Math.sin(angle)), 0);
             }
+        }
 
-            angle += dt * 5;
-            if (angle >= Math.PI) {
-                angle = 0;
-            }
+        angle += dt * 5;
+        if (angle >= Math.PI) {
+            angle = 0;
         }
     }
 
@@ -99,16 +106,16 @@ public class Input3D extends Input {
             } else {
 
                 if (selectedAvailableMove != null) {
-                    dest = testPiecePosition(ray);
+                    finalDest = testPiecePosition(ray);
                 } else {
-                    dest = null;
+                    finalDest = null;
                 }
 
                 if (selectedAvailableMove != null) {
-                    if (dest.position == null || dest.id != selectedAvailableMove.destinationID) {
+                    if (finalDest.position == null || finalDest.id != selectedAvailableMove.destinationID) {
                         selectedAvailableMove.piece.setSelectedPosition(ray.getIntersectPointAtHeight(1f));
                     } else {
-                        selectedAvailableMove.piece.setSelectedPosition(new Vector3f(dest.position));
+                        selectedAvailableMove.piece.setSelectedPosition(new Vector3f(finalDest.position));
                     }
                 } else {
                     for (KimbleGraphic.AvailableMove move : movablePieces) {
@@ -122,9 +129,7 @@ public class Input3D extends Input {
             }
         } else {
             if (domeClicked) {
-                if (graphic.onlyOptionalMoves()) {
-                    ((KimbleHud) graphic.getHud()).getPassTurnButton().setEnabled(true);
-                }
+                graphic.checkOnlyOptionalMoves();
                 graphic.tryExecuteNextMove();
 
                 angle = 0;
@@ -132,8 +137,8 @@ public class Input3D extends Input {
             } else {
                 if (selectedAvailableMove != null) {
                     // TODO: Come back and look at this piece of code
-                    if (dest != null) {
-                        graphic.movePieceToDestination(selectedAvailableMove.piece.getPieceLogic(), dest.id);
+                    if (finalDest != null) {
+                        graphic.movePieceToDestination(selectedAvailableMove.piece.getPieceLogic(), finalDest.id);
                         selectedAvailableMove.piece.setSelected(false);
                         selectedAvailableMove = null;
                     }
@@ -222,8 +227,15 @@ public class Input3D extends Input {
     //-----------------------------------------------------------
     //
     //-----------------------------------------------------------
-    public void setMovablePieces(List<KimbleGraphic.AvailableMove> movablePieces) {
-        this.movablePieces = movablePieces;
+//    public void setMovablePieces(List<KimbleGraphic.AvailableMove> movablePieces) {
+//        this.movablePieces = movablePieces;
+//    }
+    public void cleaMovablePieces() {
+        this.movablePieces.clear();
+    }
+
+    public void addMovablePiece(KimbleGraphic.AvailableMove movablePiece) {
+        this.movablePieces.add(movablePiece);
     }
 
 }
