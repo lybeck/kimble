@@ -241,7 +241,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
         if (!getLogic().isGameOver() && !dieRolled) {
             updateTeamInfo(getLogic().getNextTeamInTurn().getId(), getLogic().getDieRoll());
 
-            die.setDieRoll(getLogic().getDieRoll(), PlaybackProfile.currentProfile.getTurnTimeStep());
+            die.setDieRoll(getLogic().getDieRoll());
             dieHolderDome.bounce();
             dieRolled = true;
 
@@ -272,7 +272,7 @@ public class KimbleGraphic extends AbstractKimbleGraphic {
                     hud.appendTeamInfo(teamID, ", " + startingRollMap.get(teamID));
                 }
 
-                die.setDieRoll(startingRollMap.get(teamID), PlaybackProfile.currentProfile.getTurnTimeStep());
+                die.setDieRoll(startingRollMap.get(teamID));
                 dieHolderDome.bounce();
             } else {
                 if (startingRollsIterator.hasNext()) {

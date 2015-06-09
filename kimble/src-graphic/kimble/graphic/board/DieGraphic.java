@@ -58,7 +58,7 @@ public class DieGraphic extends Model {
         this.setMesh(ModelManager.getModel(MODEL_KEY));
     }
 
-    public void setDieRoll(int dieRoll, float animationDuration) {
+    public void setDieRoll(int dieRoll) {
         if (dieRoll <= 0) {
             return;
         }
@@ -74,7 +74,7 @@ public class DieGraphic extends Model {
         float z = (float) (targetRotation.z + turnsZ * 2 * Math.PI);
 
         this.targetRotation = new Vector3f(x, y, z);
-        
+
         System.out.println("Current rotation:");
         System.out.println(this.getRotation().x);
         System.out.println(this.getRotation().y);

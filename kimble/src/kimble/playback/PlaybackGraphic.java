@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kimble.KimbleGraphic;
-import kimble.graphic.AbstractKimbleGraphic;
 import kimble.graphic.input.Input3D;
 import kimble.graphic.board.PieceGraphic;
-import kimble.graphic.hud.KimbleHud;
 import kimble.graphic.hud.PlaybackHud;
 import kimble.graphic.hud.font.BitmapFont;
 import kimble.graphic.hud.font.FontGenerator;
@@ -22,7 +20,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Christoffer
  */
-public class PlaybackGraphic extends AbstractKimbleGraphic {
+public class PlaybackGraphic extends KimbleGraphic {
 
     private BitmapFont font;
     private PlaybackHud hud;
@@ -47,8 +45,7 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
     private float nextTurnTimer = 0;
 
     public PlaybackGraphic(PlaybackLogic logic, PlaybackProfile profile) {
-        super(logic);
-        PlaybackProfile.setCurrentProfile(profile);
+        super(logic, profile);
     }
 
     @Override
@@ -172,7 +169,8 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
         }
     }
 
-    private void updateDieRoll() {
+    @Override
+    public void updateDieRoll() {
         if (!getLogic().isGameOver()) {
 
             die.setDieRoll(getLogic().getDieRoll());
@@ -214,31 +212,6 @@ public class PlaybackGraphic extends AbstractKimbleGraphic {
                 }
             }
         }
-    }
-
-    private void updateTeamInfo(int teamID, int dieRoll) {
-
-        for (Team team : getLogic().getTeams()) {
-            if (getLogic().isFinished(team.getId())) {
-                for (int i = 0; i < getLogic().getFinishedTeams().size(); i++) {
-                    Team finishedTeam = getLogic().getFinishedTeams().get(i);
-                    hud.setTeamInfo(finishedTeam.getId(), "Finished: " + (i + 1));
-                    break;
-                }
-            } else if (getLogic().isDisqualified(team.getId())) {
-                hud.setTeamInfo(team.getId(), "DSQ");
-            } else if (team.getId() == teamID) {
-                // Appends all the die rolls after each other on the hud.
-                if (lastTeamID != teamID) {
-                    hud.setTeamInfo(teamID, "Rolled: " + dieRoll);
-                } else {
-                    hud.appendTeamInfo(teamID, ", " + dieRoll);
-                }
-            } else {
-                hud.setTeamInfo(team.getId(), "");
-            }
-        }
-        lastTeamID = teamID;
     }
 
     @Override
